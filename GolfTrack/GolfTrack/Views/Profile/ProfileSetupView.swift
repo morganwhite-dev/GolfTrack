@@ -36,25 +36,33 @@ struct ProfileSetupView: View {
                 }
 
                 if !knowsHandicap {
-                    Section("Average 18-Hole Score") {
-                        Picker("Average 18-hole score range", selection: $average18) {
+                    Section {
+                        Picker("Score relative to par", selection: $average18) {
                             Text("Not sure").tag(Optional<Average18ScoreRange>.none)
                             ForEach(Average18ScoreRange.allCases) { range in
                                 Text(range.displayName).tag(Optional(range))
                             }
                         }
                         .pickerStyle(.navigationLink)
+                    } header: {
+                        Text("Average 18-Hole Score")
+                    } footer: {
+                        Text("Relative to whatever course you usually play — works the same for a standard, par-3, or executive course.")
                     }
                 }
 
-                Section("Average 9-Hole Score (optional)") {
-                    Picker("Average 9-hole score range", selection: $average9) {
+                Section {
+                    Picker("Score relative to par", selection: $average9) {
                         Text("Not sure").tag(Optional<Average9ScoreRange>.none)
                         ForEach(Average9ScoreRange.allCases) { range in
                             Text(range.displayName).tag(Optional(range))
                         }
                     }
                     .pickerStyle(.navigationLink)
+                } header: {
+                    Text("Average 9-Hole Score (optional)")
+                } footer: {
+                    Text("Relative to par, so this applies whether you play a par-36 nine or a par-3 nine like Wendell Coffee.")
                 }
 
                 Section("Main Golf Goals") {

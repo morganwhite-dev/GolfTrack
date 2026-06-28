@@ -16,20 +16,24 @@ struct ProfileView: View {
                 }
             }
 
-            Section("Scoring Baseline") {
+            Section {
                 TextField("Estimated handicap", text: $handicapText)
                     .keyboardType(.numbersAndPunctuation)
                     .onChange(of: handicapText) { _, newValue in
                         profile.estimatedHandicap = Double(newValue)
                     }
-                Picker("Average 18-hole score", selection: $profile.average18ScoreRange) {
+                Picker("Avg 18-hole score (vs. par)", selection: $profile.average18ScoreRange) {
                     Text("Not sure").tag(Optional<Average18ScoreRange>.none)
                     ForEach(Average18ScoreRange.allCases) { Text($0.displayName).tag(Optional($0)) }
                 }
-                Picker("Average 9-hole score", selection: $profile.average9ScoreRange) {
+                Picker("Avg 9-hole score (vs. par)", selection: $profile.average9ScoreRange) {
                     Text("Not sure").tag(Optional<Average9ScoreRange>.none)
                     ForEach(Average9ScoreRange.allCases) { Text($0.displayName).tag(Optional($0)) }
                 }
+            } header: {
+                Text("Scoring Baseline")
+            } footer: {
+                Text("Both are relative to par, so they apply the same way to standard, par-3, and executive courses.")
             }
 
             Section("Main Golf Goals") {

@@ -20,30 +20,33 @@ enum SkillLevel: String, DisplayNamed {
     }
 }
 
+/// Relative-to-par buckets rather than absolute strokes, so the same answer is meaningful
+/// whether the round was played on a par-72 standard course or any other par total.
 enum Average18ScoreRange: String, DisplayNamed {
-    case under80, range80to90, range90to100, range100to110, range110to120, range120Plus
+    case evenOrBetter, plus1to10, plus11to20, plus21to30, plus31to40, plus40Plus
     var displayName: String {
         switch self {
-        case .under80: return "Under 80"
-        case .range80to90: return "80-90"
-        case .range90to100: return "90-100"
-        case .range100to110: return "100-110"
-        case .range110to120: return "110-120"
-        case .range120Plus: return "120+"
+        case .evenOrBetter: return "Even or better"
+        case .plus1to10: return "+1 to +10"
+        case .plus11to20: return "+11 to +20"
+        case .plus21to30: return "+21 to +30"
+        case .plus31to40: return "+31 to +40"
+        case .plus40Plus: return "+40 or more"
         }
     }
 }
 
+/// Relative-to-par buckets — works the same for a par-36 standard nine or a par-27 par-3 nine.
 enum Average9ScoreRange: String, DisplayNamed {
-    case under36, range36to40, range40to45, range45to50, range50to60, range60Plus
+    case evenOrBetter, plus1to5, plus6to10, plus11to15, plus16to20, plus20Plus
     var displayName: String {
         switch self {
-        case .under36: return "Under 36"
-        case .range36to40: return "36-40"
-        case .range40to45: return "40-45"
-        case .range45to50: return "45-50"
-        case .range50to60: return "50-60"
-        case .range60Plus: return "60+"
+        case .evenOrBetter: return "Even or better"
+        case .plus1to5: return "+1 to +5"
+        case .plus6to10: return "+6 to +10"
+        case .plus11to15: return "+11 to +15"
+        case .plus16to20: return "+16 to +20"
+        case .plus20Plus: return "+20 or more"
         }
     }
 }
