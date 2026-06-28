@@ -116,12 +116,18 @@ struct SectionHeader: View {
 /// (skill level) and multi-select (goals) lists so selection always looks/feels the same.
 struct SelectableRow: View {
     let label: String
+    var subtitle: String? = nil
     let isSelected: Bool
     let action: () -> Void
     var body: some View {
         Button(action: action) {
             HStack {
-                Text(label).foregroundStyle(.primary)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(label).foregroundStyle(.primary)
+                    if let subtitle {
+                        Text(subtitle).font(.caption).foregroundStyle(.secondary)
+                    }
+                }
                 Spacer()
                 Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
                     .font(.title3)
@@ -147,57 +153,6 @@ struct InputField: View {
             .padding(.horizontal, 14)
             .padding(.vertical, 12)
             .background(Color.secondary.opacity(0.08), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
-    }
-}
-
-/// Par + typical-score steppers that compute "relative to par" live, so the user never has
-/// to do the subtraction themselves — just enter the par for their holes and what they shoot.
-struct RelativeToParInput: View {
-    let title: String
-    let helpText: String
-    @Binding var isEnabled: Bool
-    @Binding var par: Int
-    @Binding var score: Int
-    var parRange: ClosedRange<Int>
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Toggle(isOn: $isEnabled.animation()) {
-                Text(title).font(.subheadline.weight(.semibold))
-            }
-            .tint(.brandRed)
-
-            if isEnabled {
-                Text(helpText)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-
-                Stepper(value: $par, in: parRange) {
-                    HStack {
-                        Text("Par for those holes")
-                        Spacer()
-                        Text("\(par)").foregroundStyle(.secondary)
-                    }
-                }
-                Stepper(value: $score, in: par...(par + 80)) {
-                    HStack {
-                        Text("What you typically shoot")
-                        Spacer()
-                        Text("\(score)").foregroundStyle(.secondary)
-                    }
-                }
-
-                HStack(spacing: 6) {
-                    Text("That's").font(.subheadline).foregroundStyle(.secondary)
-                    Pill(text: scoreToParText(score - par))
-                    Text("relative to par").font(.subheadline).foregroundStyle(.secondary)
-                }
-                .padding(.top, 2)
-            }
-        }
-        .onChange(of: par) { _, newPar in
-            if score < newPar { score = newPar }
-        }
     }
 }
 

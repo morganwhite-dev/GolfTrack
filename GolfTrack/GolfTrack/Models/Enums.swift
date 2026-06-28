@@ -41,6 +41,24 @@ enum GolfGoal: String, DisplayNamed {
         case .other: return "Other custom goal"
         }
     }
+
+    /// The break-X goals are named after what they'd mean on a standard course (par 36 for 9,
+    /// par 72 for 18), but the actual number checked against a round always adjusts to that
+    /// round's course par (see project-goal-scaling-design memory).
+    /// This surfaces that adjustment in the UI so the label doesn't look disconnected from the
+    /// number actually being tracked.
+    var parOffsetSubtitle: String? {
+        switch self {
+        case .break50On9: return "Par +14 on whatever course you play"
+        case .break45On9: return "Par +9 on whatever course you play"
+        case .break40On9: return "Par +4 on whatever course you play"
+        case .break36On9: return "Even par on whatever course you play"
+        case .break100On18: return "Par +28 on whatever course you play"
+        case .break90On18: return "Par +18 on whatever course you play"
+        case .break80On18: return "Par +8 on whatever course you play"
+        default: return nil
+        }
+    }
 }
 
 enum CourseType: String, DisplayNamed {

@@ -7,10 +7,6 @@ final class UserProfile {
     var name: String = ""
     var skillLevelRaw: String = SkillLevel.beginner.rawValue
     var estimatedHandicap: Double?
-    /// Self-reported average score relative to par (score minus par), not absolute strokes —
-    /// works the same whether the holes played are a standard par-36 nine or a par-3 nine.
-    var average18RelativeToPar: Int?
-    var average9RelativeToPar: Int?
     var goalRawValues: [String] = []
     var customGoalText: String?
     var createdDate: Date = Date()

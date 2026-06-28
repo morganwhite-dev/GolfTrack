@@ -10,16 +10,6 @@ struct ProfileSetupView: View {
     @State private var selectedGoals: Set<GolfGoal> = []
     @State private var customGoalText = ""
 
-    @State private var knows18 = false
-    @State private var par18 = 72
-    @State private var score18 = 95
-
-    @State private var knows9 = false
-    @State private var par9 = 36
-    @State private var score9 = 48
-
-    private var knowsHandicap: Bool { !handicapText.trimmingCharacters(in: .whitespaces).isEmpty }
-
     var body: some View {
         ScrollView {
             VStack(spacing: 20) {
@@ -59,34 +49,11 @@ struct ProfileSetupView: View {
                 }
                 .cardStyle()
 
-                VStack(alignment: .leading, spacing: 16) {
-                    SectionHeader(title: "Scoring Baseline", subtitle: "Optional — helps tailor early feedback", icon: "target")
-                    Text("Not sure yet? Skip this — once you log a few rounds, GolfTrack calculates this automatically from your real scores.")
-                        .font(.caption).foregroundStyle(.secondary)
-
-                    if !knowsHandicap {
-                        Divider()
-                        RelativeToParInput(
-                            title: "Average 18-hole score",
-                            helpText: "Set the par for the 18 holes you usually play, then what you typically shoot.",
-                            isEnabled: $knows18, par: $par18, score: $score18, parRange: 54...80
-                        )
-                    }
-
-                    Divider()
-                    RelativeToParInput(
-                        title: "Average 9-hole score",
-                        helpText: "E.g. Wendell Coffee is a 9-hole par-3 course — par 27. Set par to 27, then enter what you typically shoot there.",
-                        isEnabled: $knows9, par: $par9, score: $score9, parRange: 24...45
-                    )
-                }
-                .cardStyle()
-
                 VStack(alignment: .leading, spacing: 12) {
                     SectionHeader(title: "Main Goals", icon: "checkmark.seal.fill")
                     VStack(spacing: 8) {
                         ForEach(GolfGoal.allCases) { goal in
-                            SelectableRow(label: goal.displayName, isSelected: selectedGoals.contains(goal)) {
+                            SelectableRow(label: goal.displayName, subtitle: goal.parOffsetSubtitle, isSelected: selectedGoals.contains(goal)) {
                                 toggle(goal)
                             }
                         }
@@ -114,8 +81,6 @@ struct ProfileSetupView: View {
     private func save() {
         let profile = UserProfile(name: name.trimmingCharacters(in: .whitespaces), skillLevel: skillLevel)
         if let handicap = Double(handicapText) { profile.estimatedHandicap = handicap }
-        profile.average18RelativeToPar = (knowsHandicap || !knows18) ? nil : score18 - par18
-        profile.average9RelativeToPar = knows9 ? score9 - par9 : nil
         profile.goals = Array(selectedGoals)
         profile.customGoalText = selectedGoals.contains(.other) ? customGoalText : nil
         context.insert(profile)
