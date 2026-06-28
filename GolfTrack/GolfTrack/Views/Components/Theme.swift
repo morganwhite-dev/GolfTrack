@@ -365,6 +365,7 @@ struct ChipScrollRow<T: DisplayNamed>: View {
 /// with deeper club-tracking detail tucked away until tapped.
 struct ExpandableSection<Content: View>: View {
     let title: String
+    var subtitle: String? = nil
     @Binding var isExpanded: Bool
     @ViewBuilder var content: Content
 
@@ -374,7 +375,12 @@ struct ExpandableSection<Content: View>: View {
                 withAnimation(.easeInOut(duration: 0.2)) { isExpanded.toggle() }
             } label: {
                 HStack {
-                    Text(title).font(.subheadline.weight(.semibold)).foregroundStyle(.textPrimary)
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(title).font(.subheadline.weight(.semibold)).foregroundStyle(.textPrimary)
+                        if let subtitle {
+                            Text(subtitle).font(.caption).foregroundStyle(.textSecondary)
+                        }
+                    }
                     Spacer()
                     Image(systemName: "chevron.down")
                         .font(.caption.weight(.semibold))

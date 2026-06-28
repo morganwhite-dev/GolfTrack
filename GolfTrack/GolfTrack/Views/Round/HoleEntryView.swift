@@ -31,7 +31,7 @@ struct HoleEntryView: View {
                 }
 
                 fieldSection(title: "Miss Direction") {
-                    ChipScrollRow(items: MissDirection.allCases, selected: holeScore.missDirection, allowsDeselect: false) { direction in
+                    ChipScrollRow(items: MissDirection.allCases, selected: holeScore.missDirection == .na ? nil : holeScore.missDirection, allowsDeselect: false) { direction in
                         holeScore.missDirection = direction ?? .na
                     }
                 }
@@ -43,7 +43,11 @@ struct HoleEntryView: View {
                     }
                 }
 
-                ExpandableSection(title: "More Details", isExpanded: $showMoreDetails) {
+                ExpandableSection(
+                    title: "More Details",
+                    subtitle: "Optional — only if you hit your approach or short game on this hole",
+                    isExpanded: $showMoreDetails
+                ) {
                     VStack(alignment: .leading, spacing: 16) {
                         fieldSection(title: "Approach Club", padded: false) {
                             ChipScrollRow(items: ClubType.orderedAll, selected: holeScore.approachClub) { club in
@@ -58,17 +62,17 @@ struct HoleEntryView: View {
                             }
                         }
                         fieldSection(title: "Fairway Hit", padded: false) {
-                            ChipScrollRow(items: YesNoNA.allCases, selected: holeScore.fairwayHit, allowsDeselect: false) { value in
+                            ChipScrollRow(items: YesNoNA.allCases, selected: holeScore.fairwayHit == .na ? nil : holeScore.fairwayHit, allowsDeselect: false) { value in
                                 holeScore.fairwayHit = value ?? .na
                             }
                         }
                         fieldSection(title: "Green in Regulation", padded: false) {
-                            ChipScrollRow(items: YesNoNA.allCases, selected: holeScore.greenInRegulation, allowsDeselect: false) { value in
+                            ChipScrollRow(items: YesNoNA.allCases, selected: holeScore.greenInRegulation == .na ? nil : holeScore.greenInRegulation, allowsDeselect: false) { value in
                                 holeScore.greenInRegulation = value ?? .na
                             }
                         }
-                        fieldSection(title: "Shot Issue", padded: false) {
-                            ChipScrollRow(items: ShotIssue.allCases, selected: holeScore.shotIssue, allowsDeselect: false) { issue in
+                        fieldSection(title: "Shot Issue (technical cause, if different from miss direction)", padded: false) {
+                            ChipScrollRow(items: ShotIssue.allCases, selected: holeScore.shotIssue == .none ? nil : holeScore.shotIssue, allowsDeselect: false) { issue in
                                 holeScore.shotIssue = issue ?? .none
                             }
                         }
