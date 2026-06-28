@@ -58,20 +58,16 @@ struct HomeView: View {
     // MARK: - Top bar
 
     private var topBar: some View {
-        HStack {
-            HStack(spacing: 10) {
-                ZStack {
-                    Circle().fill(Color.emerald.opacity(0.16)).frame(width: 34, height: 34)
-                    Image(systemName: "flag.fill").font(.subheadline).foregroundStyle(.emerald)
-                }
-                Text("GolfTrack").font(.title3.weight(.bold)).foregroundStyle(.textPrimary)
+        ZStack {
+            Text("GolfTrack").font(.title3.weight(.bold)).foregroundStyle(.textPrimary)
+            HStack {
+                Spacer()
+                Image(systemName: "bell")
+                    .font(.subheadline)
+                    .foregroundStyle(.textSecondary)
+                    .frame(width: 34, height: 34)
+                    .background(Color.white.opacity(0.05), in: Circle())
             }
-            Spacer()
-            Image(systemName: "bell")
-                .font(.subheadline)
-                .foregroundStyle(.textSecondary)
-                .frame(width: 34, height: 34)
-                .background(Color.white.opacity(0.05), in: Circle())
         }
         .padding(.top, 6)
     }
