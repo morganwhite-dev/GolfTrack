@@ -8,6 +8,9 @@ struct GolfTrackApp: App {
     init() {
         let context = ModelContext(container)
         StorageService.seedIfNeeded(context: context)
+        #if DEBUG
+        StorageService.seedSampleRoundsIfNeeded(context: context)
+        #endif
     }
 
     var body: some Scene {
