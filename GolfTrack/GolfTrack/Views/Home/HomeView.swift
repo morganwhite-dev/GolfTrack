@@ -49,7 +49,7 @@ struct HomeView: View {
             ToolbarItem(placement: .principal) {
                 Label("GolfTrack", systemImage: "flag.fill")
                     .font(.headline)
-                    .foregroundStyle(.golfGreen)
+                    .foregroundStyle(.brandRed)
             }
         }
         .navigationDestination(for: GolfRound.self) { round in
@@ -68,7 +68,7 @@ struct HomeView: View {
             HStack(spacing: 8) {
                 Pill(text: profile.skillLevel.displayName)
                 if let goal = profile.goals.first {
-                    Pill(text: goal.displayName, color: .fairwayGreen)
+                    Pill(text: goal.displayName, color: .charcoal)
                 }
             }
         }
@@ -117,11 +117,8 @@ struct HomeView: View {
                 }
             }
             .padding(20)
-            .background(
-                LinearGradient(colors: [.golfGreen, .fairwayGreen], startPoint: .topLeading, endPoint: .bottomTrailing),
-                in: RoundedRectangle(cornerRadius: 22, style: .continuous)
-            )
-            .shadow(color: Color.golfGreen.opacity(0.35), radius: 14, x: 0, y: 8)
+            .background(LinearGradient.brandRed, in: RoundedRectangle(cornerRadius: 22, style: .continuous))
+            .shadow(color: Color.brandRed.opacity(0.35), radius: 14, x: 0, y: 8)
         }
         .buttonStyle(.plain)
     }
@@ -130,9 +127,9 @@ struct HomeView: View {
         let avg = Double(completedRounds.reduce(0) { $0 + $1.totalStrokes }) / Double(max(completedRounds.count, 1))
         let best = completedRounds.map(\.totalStrokes).min() ?? 0
         return HStack(spacing: 12) {
-            StatTile(icon: "target", title: "Avg Score", value: String(format: "%.1f", avg), tint: .blue)
+            StatTile(icon: "target", title: "Avg Score", value: String(format: "%.1f", avg), tint: .charcoal)
             StatTile(icon: "trophy.fill", title: "Best Score", value: "\(best)", tint: .warningAmber)
-            StatTile(icon: "calendar", title: "Rounds", value: "\(completedRounds.count)", tint: .fairwayGreen)
+            StatTile(icon: "calendar", title: "Rounds", value: "\(completedRounds.count)", tint: .brandRed)
         }
     }
 
@@ -163,8 +160,8 @@ struct HomeView: View {
     private var emptyStateCard: some View {
         VStack(spacing: 12) {
             ZStack {
-                Circle().fill(Color.golfGreen.opacity(0.12)).frame(width: 64, height: 64)
-                Image(systemName: "flag.fill").font(.title2).foregroundStyle(.golfGreen)
+                Circle().fill(Color.brandRed.opacity(0.12)).frame(width: 64, height: 64)
+                Image(systemName: "flag.fill").font(.title2).foregroundStyle(.brandRed)
             }
             Text("No rounds yet").font(.headline)
             Text("Play your first round to start building stats and getting personalized advice.")
@@ -181,7 +178,7 @@ private struct StatTile: View {
     let icon: String
     let title: String
     let value: String
-    var tint: Color = .golfGreen
+    var tint: Color = .brandRed
     var body: some View {
         VStack(spacing: 8) {
             Image(systemName: icon).font(.title3).foregroundStyle(tint)

@@ -47,7 +47,7 @@ struct ProfileView: View {
                             Text(goal.displayName).foregroundStyle(.primary)
                             Spacer()
                             if profile.goals.contains(goal) {
-                                Image(systemName: "checkmark.circle.fill").foregroundStyle(.golfGreen)
+                                Image(systemName: "checkmark.circle.fill").foregroundStyle(.brandRed)
                             } else {
                                 Image(systemName: "circle").foregroundStyle(.secondary)
                             }

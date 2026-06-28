@@ -1,21 +1,26 @@
 import SwiftUI
 
 extension Color {
-    static let golfGreen = Color(red: 0.13, green: 0.42, blue: 0.25)
-    static let fairwayGreen = Color(red: 0.20, green: 0.55, blue: 0.32)
-    static let sandTan = Color(red: 0.82, green: 0.71, blue: 0.52)
+    static let brandRed = Color(red: 0.74, green: 0.09, blue: 0.15)
+    static let brandRedLight = Color(red: 0.92, green: 0.27, blue: 0.24)
+    static let charcoal = Color(red: 0.16, green: 0.16, blue: 0.18)
     static let warningAmber = Color(red: 0.85, green: 0.55, blue: 0.15)
-    static let dangerRed = Color(red: 0.78, green: 0.22, blue: 0.22)
+    static let slateGray = Color(red: 0.45, green: 0.47, blue: 0.50)
+}
+
+/// The app's signature gradient — used on primary CTAs, hero cards, and selected chips.
+extension LinearGradient {
+    static let brandRed = LinearGradient(colors: [.brandRed, .brandRedLight], startPoint: .topLeading, endPoint: .bottomTrailing)
 }
 
 // Lets these resolve via leading-dot syntax in generic `some ShapeStyle` contexts
-// (e.g. .foregroundStyle(.golfGreen)), not just where the parameter type is concretely `Color`.
+// (e.g. .foregroundStyle(.brandRed)), not just where the parameter type is concretely `Color`.
 extension ShapeStyle where Self == Color {
-    static var golfGreen: Color { Color.golfGreen }
-    static var fairwayGreen: Color { Color.fairwayGreen }
-    static var sandTan: Color { Color.sandTan }
+    static var brandRed: Color { Color.brandRed }
+    static var brandRedLight: Color { Color.brandRedLight }
+    static var charcoal: Color { Color.charcoal }
     static var warningAmber: Color { Color.warningAmber }
-    static var dangerRed: Color { Color.dangerRed }
+    static var slateGray: Color { Color.slateGray }
 }
 
 struct CardBackground: ViewModifier {
@@ -24,8 +29,8 @@ struct CardBackground: ViewModifier {
     func body(content: Content) -> some View {
         content
             .padding(padding)
-            .background(Color(.secondarySystemBackground), in: RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
-            .shadow(color: .black.opacity(0.06), radius: 10, x: 0, y: 4)
+            .background(Color(.systemBackground), in: RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
+            .shadow(color: .black.opacity(0.07), radius: 10, x: 0, y: 4)
     }
 }
 extension View {
@@ -37,7 +42,7 @@ extension View {
 /// Small rounded tag used for skill level, goals, and hole-count badges.
 struct Pill: View {
     let text: String
-    var color: Color = .golfGreen
+    var color: Color = .brandRed
     var body: some View {
         Text(text)
             .font(.caption.weight(.semibold))
@@ -48,8 +53,9 @@ struct Pill: View {
     }
 }
 
-/// Circular score-relative-to-par indicator, color coded: under par (green), even (blue),
-/// a little over (amber), well over (red). Used anywhere a round or hole score is summarized.
+/// Circular score-relative-to-par indicator. Follows real golf-leaderboard convention —
+/// red marks an under-par (good) score — with amber/charcoal carrying the "needs work" signal
+/// instead of red, so red stays a positive, brand-consistent color rather than an alarm color.
 struct ScoreBadge: View {
     let scoreToPar: Int
     var size: CGFloat = 44
@@ -69,10 +75,10 @@ struct ScoreBadge: View {
 
     private var color: Color {
         switch scoreToPar {
-        case ..<0: return .golfGreen
-        case 0: return .blue
+        case ..<0: return .brandRed
+        case 0: return .charcoal
         case 1...4: return .warningAmber
-        default: return .dangerRed
+        default: return .slateGray
         }
     }
 }
@@ -97,14 +103,14 @@ struct SectionHeader: View {
 }
 
 struct PrimaryButtonStyle: ButtonStyle {
-    var color: Color = .golfGreen
+    var gradient: LinearGradient = .brandRed
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .font(.headline)
             .frame(maxWidth: .infinity)
             .padding(.vertical, 14)
             .foregroundStyle(.white)
-            .background(color.opacity(configuration.isPressed ? 0.8 : 1), in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+            .background(gradient.opacity(configuration.isPressed ? 0.8 : 1), in: RoundedRectangle(cornerRadius: 14, style: .continuous))
             .scaleEffect(configuration.isPressed ? 0.98 : 1)
             .animation(.easeOut(duration: 0.15), value: configuration.isPressed)
     }
@@ -125,7 +131,13 @@ struct ChoiceChip: View {
                 .padding(.horizontal, 14)
                 .padding(.vertical, 10)
                 .frame(minWidth: 44, minHeight: 44)
-                .background(isSelected ? Color.golfGreen : Color.secondary.opacity(0.15))
+                .background {
+                    if isSelected {
+                        LinearGradient.brandRed
+                    } else {
+                        Color.secondary.opacity(0.15)
+                    }
+                }
                 .foregroundStyle(isSelected ? .white : .primary)
                 .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
         }

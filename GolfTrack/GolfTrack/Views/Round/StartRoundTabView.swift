@@ -5,7 +5,7 @@ struct StartRoundTabView: View {
     @Bindable var profile: UserProfile
     var body: some View {
         VStack(spacing: 12) {
-            Image(systemName: "flag.fill").font(.system(size: 40)).foregroundStyle(.golfGreen)
+            Image(systemName: "flag.fill").font(.system(size: 40)).foregroundStyle(.brandRed)
             Text("Start Round setup is coming in the next checkpoint.")
                 .font(.subheadline).foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
