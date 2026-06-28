@@ -47,9 +47,6 @@ struct HomeView: View {
         }
         .appBackground()
         .toolbar(.hidden, for: .navigationBar)
-        .navigationDestination(for: GolfRound.self) { round in
-            RoundDetailView(round: round)
-        }
         .fullScreenCover(item: $resumeRound) { round in
             RoundFlowView(round: round)
         }
@@ -129,14 +126,14 @@ struct HomeView: View {
                 }
             }
 
-            if let plan = latestPlan {
+            if let plan = latestPlan, let round = mostRecentRound {
                 Text(plan.mainFocus)
                     .font(.title2.weight(.bold)).foregroundStyle(.textPrimary)
                 if let hook = plan.recommendedDrills?.first?.relatedSkill, !hook.isEmpty {
                     Text(hook).font(.subheadline).foregroundStyle(.textSecondary)
                 }
 
-                NavigationLink(value: mostRecentRound) {
+                NavigationLink(destination: RoundInsightDestination(round: round)) {
                     Text("View Insight")
                         .font(.subheadline.weight(.semibold))
                         .foregroundStyle(.black)
@@ -173,8 +170,8 @@ struct HomeView: View {
 
             weekStrip
 
-            if let drill = latestPlan?.recommendedDrills?.first {
-                NavigationLink(value: mostRecentRound) {
+            if let drill = latestPlan?.recommendedDrills?.first, let round = mostRecentRound {
+                NavigationLink(destination: PracticePlanDestination(round: round)) {
                     HStack(spacing: 12) {
                         ZStack {
                             Circle().fill(Color.emerald.opacity(0.16)).frame(width: 40, height: 40)
@@ -294,8 +291,8 @@ struct HomeView: View {
             HStack {
                 SectionHeader(title: "Suggested Drills")
                 Spacer()
-                if mostRecentRound != nil {
-                    NavigationLink(value: mostRecentRound) {
+                if let round = mostRecentRound {
+                    NavigationLink(destination: PracticePlanDestination(round: round)) {
                         Text("See All").font(.caption.weight(.semibold)).foregroundStyle(.emerald)
                     }
                 }
@@ -332,5 +329,36 @@ struct HomeView: View {
             Label("Log a Round", systemImage: "flag.fill")
         }
         .buttonStyle(.primaryGolf)
+    }
+}
+
+/// Focused, read-only view of just a round's advice — what "View Insight" on Today's Focus opens.
+/// Deliberately separate from the full Practice Plan destination and from History's full
+/// RoundDetailView so each entry point on Home leads somewhere distinct, not a repeat of the others.
+private struct RoundInsightDestination: View {
+    let round: GolfRound
+    var body: some View {
+        ScrollView {
+            if let advice = round.advice {
+                AdviceView(advice: advice).padding()
+            }
+        }
+        .appBackground()
+        .navigationTitle("Round Insight")
+        .navigationBarTitleDisplayMode(.inline)
+    }
+}
+
+private struct PracticePlanDestination: View {
+    let round: GolfRound
+    var body: some View {
+        ScrollView {
+            if let plan = round.practicePlan {
+                PracticePlanView(plan: plan).padding()
+            }
+        }
+        .appBackground()
+        .navigationTitle("Practice Plan")
+        .navigationBarTitleDisplayMode(.inline)
     }
 }

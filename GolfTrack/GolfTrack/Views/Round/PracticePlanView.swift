@@ -39,12 +39,6 @@ struct PracticePlanView: View {
                 }
                 .cardStyle()
 
-                VStack(alignment: .leading, spacing: 8) {
-                    SectionHeader(title: "Next Round Goal", icon: "flag.checkered")
-                    Text(plan.nextRoundGoal).font(.subheadline.weight(.semibold))
-                }
-                .cardStyle()
-
                 if let onDone {
                     Button("Done") { onDone() }
                         .buttonStyle(.primaryGolf)
