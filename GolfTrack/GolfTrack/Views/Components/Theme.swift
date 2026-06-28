@@ -163,6 +163,40 @@ struct InputField: View {
     }
 }
 
+/// Label/value row used throughout summary, history, stats, and club detail screens.
+struct StatRow: View {
+    let label: String
+    let value: String
+    var valueColor: Color = .primary
+    var body: some View {
+        HStack {
+            Text(label).font(.subheadline).foregroundStyle(.secondary)
+            Spacer()
+            Text(value).font(.subheadline.weight(.semibold)).foregroundStyle(valueColor)
+        }
+    }
+}
+
+/// Compact metric tile for dashboard-style grids (Round Summary, Stats, Club Stats).
+struct MetricTile: View {
+    let title: String
+    let value: String
+    var icon: String? = nil
+    var tint: Color = .brandRed
+    var body: some View {
+        VStack(spacing: 6) {
+            if let icon {
+                Image(systemName: icon).font(.subheadline).foregroundStyle(tint)
+            }
+            Text(value).font(.title3.weight(.bold))
+            Text(title).font(.caption).foregroundStyle(.secondary).multilineTextAlignment(.center)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 12)
+        .cardStyle(padding: 8, cornerRadius: 14)
+    }
+}
+
 struct PrimaryButtonStyle: ButtonStyle {
     var gradient: LinearGradient = .brandRed
     func makeBody(configuration: Configuration) -> some View {
@@ -203,5 +237,97 @@ struct ChoiceChip: View {
                 .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
         }
         .buttonStyle(.plain)
+    }
+}
+
+/// Big +/- counter used for strokes/putts/penalties — fast to tap mid-round, no keyboard.
+struct BigStepperBox: View {
+    let title: String
+    @Binding var value: Int
+    var range: ClosedRange<Int> = 0...20
+
+    var body: some View {
+        VStack(spacing: 6) {
+            Text(title).font(.caption.weight(.medium)).foregroundStyle(.secondary)
+            HStack(spacing: 10) {
+                Button { value = max(range.lowerBound, value - 1) } label: {
+                    Image(systemName: "minus.circle.fill").font(.title2)
+                }
+                Text("\(value)")
+                    .font(.system(.title2, design: .rounded).bold())
+                    .frame(minWidth: 30)
+                Button { value = min(range.upperBound, value + 1) } label: {
+                    Image(systemName: "plus.circle.fill").font(.title2)
+                }
+            }
+            .foregroundStyle(.brandRed)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 12)
+        .cardStyle(padding: 8, cornerRadius: 14)
+    }
+}
+
+/// Horizontally scrollable row of chips for picking one case of a DisplayNamed enum —
+/// used for club pickers and other longer option lists during fast hole entry.
+struct ChipScrollRow<T: DisplayNamed>: View {
+    let items: [T]
+    let selected: T?
+    let allowsDeselect: Bool
+    let onSelect: (T?) -> Void
+
+    init(items: [T], selected: T?, allowsDeselect: Bool = true, onSelect: @escaping (T?) -> Void) {
+        self.items = items
+        self.selected = selected
+        self.allowsDeselect = allowsDeselect
+        self.onSelect = onSelect
+    }
+
+    var body: some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: 8) {
+                ForEach(items) { item in
+                    ChoiceChip(label: item.displayName, isSelected: selected == item) {
+                        if allowsDeselect && selected == item {
+                            onSelect(nil)
+                        } else {
+                            onSelect(item)
+                        }
+                    }
+                }
+            }
+            .padding(.vertical, 2)
+        }
+    }
+}
+
+/// Collapsible section for secondary fields — keeps the main hole-entry screen fast,
+/// with deeper club-tracking detail tucked away until tapped.
+struct ExpandableSection<Content: View>: View {
+    let title: String
+    @Binding var isExpanded: Bool
+    @ViewBuilder var content: Content
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Button {
+                withAnimation(.easeInOut(duration: 0.2)) { isExpanded.toggle() }
+            } label: {
+                HStack {
+                    Text(title).font(.subheadline.weight(.semibold)).foregroundStyle(.primary)
+                    Spacer()
+                    Image(systemName: "chevron.down")
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(.secondary)
+                        .rotationEffect(.degrees(isExpanded ? 180 : 0))
+                }
+            }
+            .buttonStyle(.plain)
+
+            if isExpanded {
+                content
+            }
+        }
+        .cardStyle()
     }
 }

@@ -1,21 +1,69 @@
 import SwiftUI
+import SwiftData
 
-/// Placeholder — replaced with the full play/summary/reflection/advice/practice-plan flow
-/// across the Hole Entry, Round Summary, Reflection, Advice, and Practice Plan checkpoints.
 struct RoundFlowView: View {
-    let round: GolfRound
+    @Bindable var round: GolfRound
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.modelContext) private var context
+    @State private var stage: Stage = .play
+
+    enum Stage { case play, summary, reflection, advice, practicePlan }
 
     var body: some View {
-        VStack(spacing: 16) {
-            Text(round.course?.name ?? "Round").font(.title2.bold())
-            Text("Hole-by-hole entry is coming in a later checkpoint.")
-                .font(.subheadline).foregroundStyle(.secondary)
-                .multilineTextAlignment(.center)
-                .padding(.horizontal)
-            Button("Close") { dismiss() }
-                .buttonStyle(.primaryGolf)
-                .padding(.horizontal)
+        Group {
+            switch stage {
+            case .play:
+                RoundProgressView(
+                    round: round,
+                    onFinish: { withAnimation { stage = .summary } },
+                    onDiscard: { dismiss() }
+                )
+            case .summary:
+                ScrollView {
+                    RoundSummaryView(round: round, onContinue: { withAnimation { stage = .reflection } })
+                        .padding()
+                }
+                .background(Color(.systemGroupedBackground))
+            case .reflection:
+                RoundReflectionView(round: round, onContinue: {
+                    generateAdviceAndPlan()
+                    withAnimation { stage = .advice }
+                })
+            case .advice:
+                if let advice = round.advice {
+                    ScrollView {
+                        AdviceView(advice: advice, onContinue: { withAnimation { stage = .practicePlan } })
+                            .padding()
+                    }
+                    .background(Color(.systemGroupedBackground))
+                }
+            case .practicePlan:
+                if let plan = round.practicePlan {
+                    ScrollView {
+                        PracticePlanView(plan: plan, onDone: { dismiss() })
+                            .padding()
+                    }
+                    .background(Color(.systemGroupedBackground))
+                }
+            }
         }
+    }
+
+    private func generateAdviceAndPlan() {
+        let stats = RoundStats(round: round)
+        let profile = try? context.fetch(FetchDescriptor<UserProfile>()).first
+        let advice = RoundAnalysisService.generateAdvice(round: round, stats: stats, profile: profile)
+        round.advice = advice
+        context.insert(advice)
+
+        let plan = PracticePlanService.generatePlan(round: round, stats: stats, advice: advice)
+        round.practicePlan = plan
+        context.insert(plan)
+        for drill in plan.recommendedDrills ?? [] {
+            context.insert(drill)
+        }
+
+        try? context.save()
+        ClubStatsService.recompute(in: context)
     }
 }

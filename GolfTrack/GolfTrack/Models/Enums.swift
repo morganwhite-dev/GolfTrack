@@ -1,6 +1,6 @@
 import Foundation
 
-protocol DisplayNamed: RawRepresentable, CaseIterable, Identifiable, Codable where RawValue == String {
+protocol DisplayNamed: RawRepresentable, CaseIterable, Identifiable, Hashable, Codable where RawValue == String {
     var displayName: String { get }
 }
 extension DisplayNamed {
