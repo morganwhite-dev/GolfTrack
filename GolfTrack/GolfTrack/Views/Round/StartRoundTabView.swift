@@ -1,16 +1,56 @@
 import SwiftUI
 
-/// Placeholder for the Start Round tab — replaced with full course/date/holes setup in the Round Setup checkpoint.
 struct StartRoundTabView: View {
     @Bindable var profile: UserProfile
+    @State private var showCourseSearch = false
+    @State private var selectedCourse: GolfCourse?
+
     var body: some View {
-        VStack(spacing: 12) {
-            Image(systemName: "flag.fill").font(.system(size: 40)).foregroundStyle(.brandRed)
-            Text("Start Round setup is coming in the next checkpoint.")
-                .font(.subheadline).foregroundStyle(.secondary)
-                .multilineTextAlignment(.center)
-                .padding(.horizontal)
+        ScrollView {
+            VStack(spacing: 20) {
+                if let course = selectedCourse {
+                    VStack(alignment: .leading, spacing: 12) {
+                        SectionHeader(title: "Selected Course", icon: "flag.fill")
+                        NavigationLink(value: course) {
+                            CourseRow(course: course)
+                        }
+                        .buttonStyle(.plain)
+                        Button("Choose a Different Course") { showCourseSearch = true }
+                            .font(.subheadline.weight(.semibold))
+                            .foregroundStyle(.brandRed)
+                    }
+                    .cardStyle()
+
+                    Text("Round setup (date, holes, tee box, target score) is coming in the next checkpoint.")
+                        .font(.caption).foregroundStyle(.secondary)
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal)
+                } else {
+                    VStack(spacing: 12) {
+                        ZStack {
+                            Circle().fill(Color.brandRed.opacity(0.12)).frame(width: 64, height: 64)
+                            Image(systemName: "flag.fill").font(.title2).foregroundStyle(.brandRed)
+                        }
+                        Text("Pick a course to begin").font(.headline)
+                        Button("Choose Course") { showCourseSearch = true }
+                            .buttonStyle(.primaryGolf)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 20)
+                    .cardStyle()
+                }
+            }
+            .padding()
         }
+        .background(Color(.systemGroupedBackground))
         .navigationTitle("Start Round")
+        .navigationDestination(for: GolfCourse.self) { course in
+            CourseDetailView(course: course)
+        }
+        .sheet(isPresented: $showCourseSearch) {
+            CourseSearchView { course in
+                selectedCourse = course
+            }
+        }
     }
 }
