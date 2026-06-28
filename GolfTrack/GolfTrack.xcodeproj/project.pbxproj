@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		15979FB747F9D72FCD466C2E /* RoundDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A868BC46B30B4D559023B47 /* RoundDetailView.swift */; };
 		1E61533C846380634D02C1C1 /* GolfRound.swift in Sources */ = {isa = PBXBuildFile; fileRef = 800535A311534353911AE49E /* GolfRound.swift */; };
+		24EDD5CBC55A019F415CD78B /* RoundSetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E758D3D715F8951EC60955FE /* RoundSetupView.swift */; };
 		2586A1E0B75F85CD67417B11 /* GolfTrackApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 227F8E5F22332EF29DA30A24 /* GolfTrackApp.swift */; };
 		27309004614C8389EC77ABD5 /* CourseSearchService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A0EC0AF6A2F8CF25CD8E8F7 /* CourseSearchService.swift */; };
 		2A61CF8E58E060D12D79015F /* RoundReflection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7379234CD4DB51B5F647411A /* RoundReflection.swift */; };
@@ -66,6 +67,7 @@
 		BA60C46F82B5B53315311C2F /* ClubStats.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClubStats.swift; sourceTree = "<group>"; };
 		C982F7DC5037CE3E6E3E0685 /* RoundAdvice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundAdvice.swift; sourceTree = "<group>"; };
 		D63E4E8924977CE3DC0D5661 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		E758D3D715F8951EC60955FE /* RoundSetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundSetupView.swift; sourceTree = "<group>"; };
 		EB69B8152370A850BA675632 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		FA2D56CEBADF64B10ACF9F83 /* HistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -214,6 +216,7 @@
 			isa = PBXGroup;
 			children = (
 				5FD02ECF53C9FB036C54079E /* RoundFlowView.swift */,
+				E758D3D715F8951EC60955FE /* RoundSetupView.swift */,
 				944496BD9844773E2CEDD1D7 /* StartRoundTabView.swift */,
 			);
 			path = Round;
@@ -320,6 +323,7 @@
 				15979FB747F9D72FCD466C2E /* RoundDetailView.swift in Sources */,
 				99F304C6EFFE4232FF61F826 /* RoundFlowView.swift in Sources */,
 				2A61CF8E58E060D12D79015F /* RoundReflection.swift in Sources */,
+				24EDD5CBC55A019F415CD78B /* RoundSetupView.swift in Sources */,
 				3AE684ED25ACDE043CCB55A2 /* StartRoundTabView.swift in Sources */,
 				7C0098274A4D20E9D7D33DFB /* StatsView.swift in Sources */,
 				8E8CCBEFA828BB2002454366 /* StorageService.swift in Sources */,

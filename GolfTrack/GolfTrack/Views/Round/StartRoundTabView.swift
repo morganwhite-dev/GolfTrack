@@ -4,6 +4,7 @@ struct StartRoundTabView: View {
     @Bindable var profile: UserProfile
     @State private var showCourseSearch = false
     @State private var selectedCourse: GolfCourse?
+    @State private var showRoundSetup = false
 
     var body: some View {
         ScrollView {
@@ -21,10 +22,8 @@ struct StartRoundTabView: View {
                     }
                     .cardStyle()
 
-                    Text("Round setup (date, holes, tee box, target score) is coming in the next checkpoint.")
-                        .font(.caption).foregroundStyle(.secondary)
-                        .multilineTextAlignment(.center)
-                        .padding(.horizontal)
+                    Button("Continue to Round Setup") { showRoundSetup = true }
+                        .buttonStyle(.primaryGolf)
                 } else {
                     VStack(spacing: 12) {
                         ZStack {
@@ -46,6 +45,11 @@ struct StartRoundTabView: View {
         .navigationTitle("Start Round")
         .navigationDestination(for: GolfCourse.self) { course in
             CourseDetailView(course: course)
+        }
+        .navigationDestination(isPresented: $showRoundSetup) {
+            if let course = selectedCourse {
+                RoundSetupView(course: course)
+            }
         }
         .sheet(isPresented: $showCourseSearch) {
             CourseSearchView { course in

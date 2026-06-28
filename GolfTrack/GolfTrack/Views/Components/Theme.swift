@@ -1,9 +1,16 @@
 import SwiftUI
+import UIKit
 
 extension Color {
     static let brandRed = Color(red: 0.74, green: 0.09, blue: 0.15)
     static let brandRedLight = Color(red: 0.92, green: 0.27, blue: 0.24)
-    static let charcoal = Color(red: 0.16, green: 0.16, blue: 0.18)
+    /// Adaptive — near-black in light mode, light gray in dark mode. A fixed dark value here
+    /// reads as near-invisible text/pills once the system is in Dark Mode.
+    static let charcoal = Color(UIColor { traits in
+        traits.userInterfaceStyle == .dark
+            ? UIColor(white: 0.82, alpha: 1)
+            : UIColor(red: 0.16, green: 0.16, blue: 0.18, alpha: 1)
+    })
     static let warningAmber = Color(red: 0.85, green: 0.55, blue: 0.15)
     static let slateGray = Color(red: 0.45, green: 0.47, blue: 0.50)
 }
