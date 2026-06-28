@@ -1,0 +1,255 @@
+import Foundation
+
+protocol DisplayNamed: RawRepresentable, CaseIterable, Identifiable, Codable where RawValue == String {
+    var displayName: String { get }
+}
+extension DisplayNamed {
+    var id: String { rawValue }
+}
+
+enum SkillLevel: String, DisplayNamed {
+    case beginner, highHandicap, midHandicap, lowHandicap, scratch
+    var displayName: String {
+        switch self {
+        case .beginner: return "Beginner / newer golfer"
+        case .highHandicap: return "High handicap"
+        case .midHandicap: return "Mid handicap"
+        case .lowHandicap: return "Low handicap"
+        case .scratch: return "Scratch / advanced"
+        }
+    }
+}
+
+enum Average18ScoreRange: String, DisplayNamed {
+    case under80, range80to90, range90to100, range100to110, range110to120, range120Plus
+    var displayName: String {
+        switch self {
+        case .under80: return "Under 80"
+        case .range80to90: return "80-90"
+        case .range90to100: return "90-100"
+        case .range100to110: return "100-110"
+        case .range110to120: return "110-120"
+        case .range120Plus: return "120+"
+        }
+    }
+}
+
+enum Average9ScoreRange: String, DisplayNamed {
+    case under36, range36to40, range40to45, range45to50, range50to60, range60Plus
+    var displayName: String {
+        switch self {
+        case .under36: return "Under 36"
+        case .range36to40: return "36-40"
+        case .range40to45: return "40-45"
+        case .range45to50: return "45-50"
+        case .range50to60: return "50-60"
+        case .range60Plus: return "60+"
+        }
+    }
+}
+
+enum GolfGoal: String, DisplayNamed {
+    case betterContact, learnClubDistances, reducePenalties, improvePutting
+    case break50On9, break45On9, break40On9, break36On9
+    case break100On18, break90On18, break80On18
+    case other
+    var displayName: String {
+        switch self {
+        case .betterContact: return "Make better contact"
+        case .learnClubDistances: return "Learn club distances"
+        case .reducePenalties: return "Reduce penalties"
+        case .improvePutting: return "Improve putting"
+        case .break50On9: return "Break 50 on 9 holes"
+        case .break45On9: return "Break 45 on 9 holes"
+        case .break40On9: return "Break 40 on 9 holes"
+        case .break36On9: return "Break 36 on 9 holes"
+        case .break100On18: return "Break 100 on 18 holes"
+        case .break90On18: return "Break 90 on 18 holes"
+        case .break80On18: return "Break 80 on 18 holes"
+        case .other: return "Other custom goal"
+        }
+    }
+}
+
+enum CourseType: String, DisplayNamed {
+    case standard, par3, executive, other
+    var displayName: String {
+        switch self {
+        case .standard: return "Standard"
+        case .par3: return "Par-3"
+        case .executive: return "Executive"
+        case .other: return "Other"
+        }
+    }
+}
+
+enum ShotResult: String, DisplayNamed {
+    case good, left, right, short, long, thin, fat, topped, chunked, shanked, safeMiss, pulled, pushed, sliced, hooked
+    var displayName: String {
+        switch self {
+        case .good: return "Good"
+        case .left: return "Left"
+        case .right: return "Right"
+        case .short: return "Short"
+        case .long: return "Long"
+        case .thin: return "Thin"
+        case .fat: return "Fat"
+        case .topped: return "Topped"
+        case .chunked: return "Chunked"
+        case .shanked: return "Shanked"
+        case .safeMiss: return "Safe miss"
+        case .pulled: return "Pulled"
+        case .pushed: return "Pushed"
+        case .sliced: return "Sliced"
+        case .hooked: return "Hooked"
+        }
+    }
+    /// Common options shown for a quick tee-shot-result picker during fast hole entry.
+    static let teeShotQuickOptions: [ShotResult] = [.good, .left, .right, .short, .long]
+}
+
+enum YesNoNA: String, DisplayNamed {
+    case yes, no, na
+    var displayName: String {
+        switch self {
+        case .yes: return "Yes"
+        case .no: return "No"
+        case .na: return "N/A"
+        }
+    }
+}
+
+enum MissDirection: String, DisplayNamed {
+    case left, right, short, long, good, na
+    var displayName: String {
+        switch self {
+        case .left: return "Left"
+        case .right: return "Right"
+        case .short: return "Short"
+        case .long: return "Long"
+        case .good: return "Good"
+        case .na: return "N/A"
+        }
+    }
+}
+
+enum ContactQuality: String, DisplayNamed {
+    case pure, good, okay, poor
+    var displayName: String { rawValue.capitalized }
+}
+
+enum ShotIssue: String, DisplayNamed {
+    case none, thin, fat, topped, chunked, shanked, pulled, pushed, sliced, hooked
+    var displayName: String { self == .none ? "None" : rawValue.capitalized }
+}
+
+enum Confidence: String, DisplayNamed {
+    case high, medium, low
+    var displayName: String { rawValue.capitalized }
+}
+
+enum ClubType: String, DisplayNamed {
+    case driver, wood3, wood5, wood7, hybrid
+    case iron3, iron4, iron5, iron6, iron7, iron8, iron9
+    case pitchingWedge, gapWedge, sandWedge, lobWedge, putter, other
+    var displayName: String {
+        switch self {
+        case .driver: return "Driver"
+        case .wood3: return "3 Wood"
+        case .wood5: return "5 Wood"
+        case .wood7: return "7 Wood"
+        case .hybrid: return "Hybrid"
+        case .iron3: return "3 Iron"
+        case .iron4: return "4 Iron"
+        case .iron5: return "5 Iron"
+        case .iron6: return "6 Iron"
+        case .iron7: return "7 Iron"
+        case .iron8: return "8 Iron"
+        case .iron9: return "9 Iron"
+        case .pitchingWedge: return "Pitching Wedge"
+        case .gapWedge: return "Gap Wedge"
+        case .sandWedge: return "Sand Wedge"
+        case .lobWedge: return "Lob Wedge"
+        case .putter: return "Putter"
+        case .other: return "Other"
+        }
+    }
+    /// Fixed display order — consistent regardless of course type.
+    static let orderedAll: [ClubType] = [
+        .driver, .wood3, .wood5, .wood7, .hybrid,
+        .iron3, .iron4, .iron5, .iron6, .iron7, .iron8, .iron9,
+        .pitchingWedge, .gapWedge, .sandWedge, .lobWedge, .putter, .other
+    ]
+}
+
+enum ShotType: String, DisplayNamed {
+    case teeShot, approach, chip, pitch, recovery, putt
+    var displayName: String {
+        switch self {
+        case .teeShot: return "Tee Shot"
+        case .approach: return "Approach"
+        case .chip: return "Chip"
+        case .pitch: return "Pitch"
+        case .recovery: return "Recovery"
+        case .putt: return "Putt"
+        }
+    }
+}
+
+enum WalkOrCart: String, DisplayNamed {
+    case walking, cart
+    var displayName: String { rawValue.capitalized }
+}
+
+enum RoundRating: String, DisplayNamed {
+    case great, solid, closeToGoal, average, needsWork, tough
+    var displayName: String {
+        switch self {
+        case .great: return "Great round"
+        case .solid: return "Solid round"
+        case .closeToGoal: return "Close to your goal"
+        case .average: return "Average round"
+        case .needsWork: return "Needs work"
+        case .tough: return "Tough round, but useful data"
+        }
+    }
+}
+
+enum BiggestMiss: String, DisplayNamed {
+    case left, right, short, long, poorContact, distanceControl, decisionMaking
+    var displayName: String {
+        switch self {
+        case .left: return "Left"
+        case .right: return "Right"
+        case .short: return "Short"
+        case .long: return "Long"
+        case .poorContact: return "Poor contact"
+        case .distanceControl: return "Distance control"
+        case .decisionMaking: return "Decision-making"
+        }
+    }
+}
+
+enum FeelRating: String, DisplayNamed {
+    case good, okay, poor
+    var displayName: String { rawValue.capitalized }
+}
+
+enum DrillCategory: String, DisplayNamed {
+    case putting, chipping, wedges, irons, driver, teeShots, contact, alignment, distanceControl, mentalGame, courseManagement
+    var displayName: String {
+        switch self {
+        case .putting: return "Putting"
+        case .chipping: return "Chipping"
+        case .wedges: return "Wedges"
+        case .irons: return "Irons"
+        case .driver: return "Driver"
+        case .teeShots: return "Tee Shots"
+        case .contact: return "Contact"
+        case .alignment: return "Alignment"
+        case .distanceControl: return "Distance Control"
+        case .mentalGame: return "Mental Game"
+        case .courseManagement: return "Course Management"
+        }
+    }
+}

@@ -1,0 +1,493 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		15979FB747F9D72FCD466C2E /* RoundDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A868BC46B30B4D559023B47 /* RoundDetailView.swift */; };
+		1E61533C846380634D02C1C1 /* GolfRound.swift in Sources */ = {isa = PBXBuildFile; fileRef = 800535A311534353911AE49E /* GolfRound.swift */; };
+		2586A1E0B75F85CD67417B11 /* GolfTrackApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 227F8E5F22332EF29DA30A24 /* GolfTrackApp.swift */; };
+		2A61CF8E58E060D12D79015F /* RoundReflection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7379234CD4DB51B5F647411A /* RoundReflection.swift */; };
+		39885B7AA25D4263D5294E77 /* UserProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 033289298741820BC938ED69 /* UserProfile.swift */; };
+		399A0BFE8EE2BDC4DC1A834F /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 859124040CB3D73B891E6B42 /* RootView.swift */; };
+		3AE684ED25ACDE043CCB55A2 /* StartRoundTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 944496BD9844773E2CEDD1D7 /* StartRoundTabView.swift */; };
+		492F27A028B15FE3418359D1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7A26A8652A6F67FA3E89CC5E /* Assets.xcassets */; };
+		4D12D3B356799A62BE567E6C /* RoundAdvice.swift in Sources */ = {isa = PBXBuildFile; fileRef = C982F7DC5037CE3E6E3E0685 /* RoundAdvice.swift */; };
+		62A974035C425B8616A60078 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9641D26C43567F41ED374B6A /* ProfileView.swift */; };
+		765B5910096889490E7D5A33 /* GolfCourse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 864E23350F680EC4EAC5ACCA /* GolfCourse.swift */; };
+		7C0098274A4D20E9D7D33DFB /* StatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04B823DEBBD997D2C3369B51 /* StatsView.swift */; };
+		855B83161CA16D85AC4DD594 /* ClubStats.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA60C46F82B5B53315311C2F /* ClubStats.swift */; };
+		8E8CCBEFA828BB2002454366 /* StorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44A0E5988340E6A0FBEF5A74 /* StorageService.swift */; };
+		8EC04729CDF844F16891B4F5 /* ProfileSetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7360313DE9A5289E938AB0BA /* ProfileSetupView.swift */; };
+		97713BAE907464F3CE4619DE /* ClubStatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86FCB2F1EB9E906122A0A85B /* ClubStatsView.swift */; };
+		99F304C6EFFE4232FF61F826 /* RoundFlowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FD02ECF53C9FB036C54079E /* RoundFlowView.swift */; };
+		A69016CBD6C627498FF98208 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB69B8152370A850BA675632 /* HomeView.swift */; };
+		AAA1810C9007F8608AB918C7 /* HistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA2D56CEBADF64B10ACF9F83 /* HistoryView.swift */; };
+		C2A94649D2D96702BB08F015 /* Enums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17C1863C7E613A15626833BE /* Enums.swift */; };
+		CFB69F0B6AB7E369FF3CDCA6 /* PracticePlan.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06D5195DEA0943301080806A /* PracticePlan.swift */; };
+		D39ACFEE918DC5D71C57C267 /* MainTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A71A23BB3B3962EE38BFE4A7 /* MainTabView.swift */; };
+		EB2A1F801DF0CB16A4CBF27E /* LocationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FE41291FA72E28DE9CFAA0 /* LocationService.swift */; };
+		FBBFB80E9BBC05B43AC2023D /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = B09B9E52C3CC6FD278A11C5C /* Theme.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		033289298741820BC938ED69 /* UserProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfile.swift; sourceTree = "<group>"; };
+		04B823DEBBD997D2C3369B51 /* StatsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsView.swift; sourceTree = "<group>"; };
+		06D5195DEA0943301080806A /* PracticePlan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PracticePlan.swift; sourceTree = "<group>"; };
+		17C1863C7E613A15626833BE /* Enums.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Enums.swift; sourceTree = "<group>"; };
+		227F8E5F22332EF29DA30A24 /* GolfTrackApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GolfTrackApp.swift; sourceTree = "<group>"; };
+		33E4E37604AB24CBB7163EF5 /* GolfTrack.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = GolfTrack.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		44A0E5988340E6A0FBEF5A74 /* StorageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageService.swift; sourceTree = "<group>"; };
+		5A868BC46B30B4D559023B47 /* RoundDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundDetailView.swift; sourceTree = "<group>"; };
+		5FD02ECF53C9FB036C54079E /* RoundFlowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundFlowView.swift; sourceTree = "<group>"; };
+		7360313DE9A5289E938AB0BA /* ProfileSetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileSetupView.swift; sourceTree = "<group>"; };
+		7379234CD4DB51B5F647411A /* RoundReflection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundReflection.swift; sourceTree = "<group>"; };
+		7A26A8652A6F67FA3E89CC5E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		800535A311534353911AE49E /* GolfRound.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GolfRound.swift; sourceTree = "<group>"; };
+		859124040CB3D73B891E6B42 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
+		864E23350F680EC4EAC5ACCA /* GolfCourse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GolfCourse.swift; sourceTree = "<group>"; };
+		86FCB2F1EB9E906122A0A85B /* ClubStatsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClubStatsView.swift; sourceTree = "<group>"; };
+		944496BD9844773E2CEDD1D7 /* StartRoundTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartRoundTabView.swift; sourceTree = "<group>"; };
+		9641D26C43567F41ED374B6A /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
+		A71A23BB3B3962EE38BFE4A7 /* MainTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabView.swift; sourceTree = "<group>"; };
+		B09B9E52C3CC6FD278A11C5C /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
+		B9FE41291FA72E28DE9CFAA0 /* LocationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationService.swift; sourceTree = "<group>"; };
+		BA60C46F82B5B53315311C2F /* ClubStats.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClubStats.swift; sourceTree = "<group>"; };
+		C982F7DC5037CE3E6E3E0685 /* RoundAdvice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundAdvice.swift; sourceTree = "<group>"; };
+		D63E4E8924977CE3DC0D5661 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		EB69B8152370A850BA675632 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		FA2D56CEBADF64B10ACF9F83 /* HistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryView.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		3932E1AA39C4D742AF2DFAB5 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				C952E6BF6435640A69255D97 /* Clubs */,
+				9CB48AAD06B5B07C76355F88 /* Components */,
+				4DBB27C46526C0377550E9BE /* History */,
+				4829F21BFC91037C379DA9B0 /* Home */,
+				3A51BFE0177528AC654C3C92 /* Profile */,
+				EC93AAD250EA2FD32E86148F /* Round */,
+				94C2887C84B1B03AB3E8E8F3 /* Stats */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		3A51BFE0177528AC654C3C92 /* Profile */ = {
+			isa = PBXGroup;
+			children = (
+				7360313DE9A5289E938AB0BA /* ProfileSetupView.swift */,
+				9641D26C43567F41ED374B6A /* ProfileView.swift */,
+			);
+			path = Profile;
+			sourceTree = "<group>";
+		};
+		4829F21BFC91037C379DA9B0 /* Home */ = {
+			isa = PBXGroup;
+			children = (
+				EB69B8152370A850BA675632 /* HomeView.swift */,
+			);
+			path = Home;
+			sourceTree = "<group>";
+		};
+		4D3DC683F1BBC1C02ED22A1E /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				BA60C46F82B5B53315311C2F /* ClubStats.swift */,
+				17C1863C7E613A15626833BE /* Enums.swift */,
+				864E23350F680EC4EAC5ACCA /* GolfCourse.swift */,
+				800535A311534353911AE49E /* GolfRound.swift */,
+				06D5195DEA0943301080806A /* PracticePlan.swift */,
+				C982F7DC5037CE3E6E3E0685 /* RoundAdvice.swift */,
+				7379234CD4DB51B5F647411A /* RoundReflection.swift */,
+				033289298741820BC938ED69 /* UserProfile.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		4DBB27C46526C0377550E9BE /* History */ = {
+			isa = PBXGroup;
+			children = (
+				FA2D56CEBADF64B10ACF9F83 /* HistoryView.swift */,
+				5A868BC46B30B4D559023B47 /* RoundDetailView.swift */,
+			);
+			path = History;
+			sourceTree = "<group>";
+		};
+		5D1294BADA5B6AF01815970D /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				7A26A8652A6F67FA3E89CC5E /* Assets.xcassets */,
+				D63E4E8924977CE3DC0D5661 /* Info.plist */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		5D4E10DC4613595B507FDE26 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				227F8E5F22332EF29DA30A24 /* GolfTrackApp.swift */,
+				A71A23BB3B3962EE38BFE4A7 /* MainTabView.swift */,
+				859124040CB3D73B891E6B42 /* RootView.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		7DE1595752F2E6C4915992F1 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				B9FE41291FA72E28DE9CFAA0 /* LocationService.swift */,
+				44A0E5988340E6A0FBEF5A74 /* StorageService.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		8CAA3CF400277E6AA4D825BC = {
+			isa = PBXGroup;
+			children = (
+				C6F24B607A25D7A84F7AA503 /* GolfTrack */,
+				F31EDC5B15A6C94BBED8C8FF /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		94C2887C84B1B03AB3E8E8F3 /* Stats */ = {
+			isa = PBXGroup;
+			children = (
+				04B823DEBBD997D2C3369B51 /* StatsView.swift */,
+			);
+			path = Stats;
+			sourceTree = "<group>";
+		};
+		9CB48AAD06B5B07C76355F88 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				B09B9E52C3CC6FD278A11C5C /* Theme.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		C6F24B607A25D7A84F7AA503 /* GolfTrack */ = {
+			isa = PBXGroup;
+			children = (
+				5D4E10DC4613595B507FDE26 /* App */,
+				4D3DC683F1BBC1C02ED22A1E /* Models */,
+				5D1294BADA5B6AF01815970D /* Resources */,
+				7DE1595752F2E6C4915992F1 /* Services */,
+				3932E1AA39C4D742AF2DFAB5 /* Views */,
+			);
+			path = GolfTrack;
+			sourceTree = "<group>";
+		};
+		C952E6BF6435640A69255D97 /* Clubs */ = {
+			isa = PBXGroup;
+			children = (
+				86FCB2F1EB9E906122A0A85B /* ClubStatsView.swift */,
+			);
+			path = Clubs;
+			sourceTree = "<group>";
+		};
+		EC93AAD250EA2FD32E86148F /* Round */ = {
+			isa = PBXGroup;
+			children = (
+				5FD02ECF53C9FB036C54079E /* RoundFlowView.swift */,
+				944496BD9844773E2CEDD1D7 /* StartRoundTabView.swift */,
+			);
+			path = Round;
+			sourceTree = "<group>";
+		};
+		F31EDC5B15A6C94BBED8C8FF /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				33E4E37604AB24CBB7163EF5 /* GolfTrack.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		611F6D75F3A9514BDE8A5B87 /* GolfTrack */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A81F21CD5BAFC8E4FBD1B5C6 /* Build configuration list for PBXNativeTarget "GolfTrack" */;
+			buildPhases = (
+				0A8C27BCE6A3B00FE695308A /* Sources */,
+				A0E151DABC0EC4CE38A291FC /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = GolfTrack;
+			packageProductDependencies = (
+			);
+			productName = GolfTrack;
+			productReference = 33E4E37604AB24CBB7163EF5 /* GolfTrack.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		D97016FF95882BE2BE5C6952 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					611F6D75F3A9514BDE8A5B87 = {
+						DevelopmentTeam = "";
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = 193573C284A72EFC25DBE2EA /* Build configuration list for PBXProject "GolfTrack" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 8CAA3CF400277E6AA4D825BC;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = F31EDC5B15A6C94BBED8C8FF /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				611F6D75F3A9514BDE8A5B87 /* GolfTrack */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		A0E151DABC0EC4CE38A291FC /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				492F27A028B15FE3418359D1 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		0A8C27BCE6A3B00FE695308A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				855B83161CA16D85AC4DD594 /* ClubStats.swift in Sources */,
+				97713BAE907464F3CE4619DE /* ClubStatsView.swift in Sources */,
+				C2A94649D2D96702BB08F015 /* Enums.swift in Sources */,
+				765B5910096889490E7D5A33 /* GolfCourse.swift in Sources */,
+				1E61533C846380634D02C1C1 /* GolfRound.swift in Sources */,
+				2586A1E0B75F85CD67417B11 /* GolfTrackApp.swift in Sources */,
+				AAA1810C9007F8608AB918C7 /* HistoryView.swift in Sources */,
+				A69016CBD6C627498FF98208 /* HomeView.swift in Sources */,
+				EB2A1F801DF0CB16A4CBF27E /* LocationService.swift in Sources */,
+				D39ACFEE918DC5D71C57C267 /* MainTabView.swift in Sources */,
+				CFB69F0B6AB7E369FF3CDCA6 /* PracticePlan.swift in Sources */,
+				8EC04729CDF844F16891B4F5 /* ProfileSetupView.swift in Sources */,
+				62A974035C425B8616A60078 /* ProfileView.swift in Sources */,
+				399A0BFE8EE2BDC4DC1A834F /* RootView.swift in Sources */,
+				4D12D3B356799A62BE567E6C /* RoundAdvice.swift in Sources */,
+				15979FB747F9D72FCD466C2E /* RoundDetailView.swift in Sources */,
+				99F304C6EFFE4232FF61F826 /* RoundFlowView.swift in Sources */,
+				2A61CF8E58E060D12D79015F /* RoundReflection.swift in Sources */,
+				3AE684ED25ACDE043CCB55A2 /* StartRoundTabView.swift in Sources */,
+				7C0098274A4D20E9D7D33DFB /* StatsView.swift in Sources */,
+				8E8CCBEFA828BB2002454366 /* StorageService.swift in Sources */,
+				FBBFB80E9BBC05B43AC2023D /* Theme.swift in Sources */,
+				39885B7AA25D4263D5294E77 /* UserProfile.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		17D52398410D7F349D68F7C2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				INFOPLIST_FILE = GolfTrack/Resources/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.golftrack.app;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		1B440F2F1C60040FE008A24A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = "";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		7F556C82DB74AA8C04DF6545 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				INFOPLIST_FILE = GolfTrack/Resources/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.golftrack.app;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		A80C9825E4BFC53F2A480C74 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		193573C284A72EFC25DBE2EA /* Build configuration list for PBXProject "GolfTrack" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A80C9825E4BFC53F2A480C74 /* Debug */,
+				1B440F2F1C60040FE008A24A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		A81F21CD5BAFC8E4FBD1B5C6 /* Build configuration list for PBXNativeTarget "GolfTrack" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7F556C82DB74AA8C04DF6545 /* Debug */,
+				17D52398410D7F349D68F7C2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = D97016FF95882BE2BE5C6952 /* Project object */;
+}
