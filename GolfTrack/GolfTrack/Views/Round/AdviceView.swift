@@ -8,7 +8,7 @@ struct AdviceView: View {
         VStack(spacing: 20) {
             ratingCard
 
-                section(title: "Strengths", icon: "checkmark.seal.fill", color: .brandRed, items: advice.strengths)
+                section(title: "Strengths", icon: "checkmark.seal.fill", color: .emerald, items: advice.strengths)
                 section(title: "Areas to Improve", icon: "arrow.up.forward.circle.fill", color: .warningAmber, items: advice.improvementAreas)
 
                 VStack(alignment: .leading, spacing: 10) {
@@ -63,7 +63,7 @@ struct AdviceView: View {
 
     private var ratingColor: Color {
         switch advice.rating {
-        case .great, .solid: return .brandRed
+        case .great, .solid: return .emerald
         case .closeToGoal, .average: return .warningAmber
         case .needsWork, .tough: return .slateGray
         }

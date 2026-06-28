@@ -2,74 +2,115 @@ import SwiftUI
 import UIKit
 
 extension Color {
-    static let brandRed = Color(red: 0.74, green: 0.09, blue: 0.15)
-    static let brandRedLight = Color(red: 0.92, green: 0.27, blue: 0.24)
-    /// Adaptive — near-black in light mode, light gray in dark mode. A fixed dark value here
-    /// reads as near-invisible text/pills once the system is in Dark Mode.
-    static let charcoal = Color(UIColor { traits in
-        traits.userInterfaceStyle == .dark
-            ? UIColor(white: 0.82, alpha: 1)
-            : UIColor(red: 0.16, green: 0.16, blue: 0.18, alpha: 1)
-    })
-    static let warningAmber = Color(red: 0.85, green: 0.55, blue: 0.15)
-    static let slateGray = Color(red: 0.45, green: 0.47, blue: 0.50)
+    // Backdrop — dark emerald fading to black, the app's signature gradient backdrop.
+    static let bgTop = Color(red: 0.035, green: 0.09, blue: 0.065)
+    static let bgBottom = Color(red: 0.01, green: 0.015, blue: 0.012)
+
+    // Brand accent — glowing mint/emerald green.
+    static let emerald = Color(red: 0.22, green: 0.86, blue: 0.55)
+    static let emeraldLight = Color(red: 0.58, green: 0.97, blue: 0.78)
+    static let emeraldDeep = Color(red: 0.05, green: 0.27, blue: 0.18)
+
+    // Card surface — sits just above the backdrop with a faint emerald-tinted fill.
+    static let cardFill = Color(red: 0.065, green: 0.105, blue: 0.085)
+    static let cardBorder = Color.emerald.opacity(0.22)
+    static let cardFillRaised = Color(red: 0.09, green: 0.14, blue: 0.115)
+
+    static let charcoal = Color.white.opacity(0.85)
+    static let warningAmber = Color(red: 0.93, green: 0.58, blue: 0.27)
+    static let alertCoral = Color(red: 0.92, green: 0.40, blue: 0.38)
+    static let slateGray = Color.white.opacity(0.45)
+
+    static let textPrimary = Color.white
+    static let textSecondary = Color.white.opacity(0.56)
+    static let textTertiary = Color.white.opacity(0.34)
 }
 
-/// The app's signature gradient — used on primary CTAs, hero cards, and selected chips.
+/// The app's signature gradients — backdrop, primary CTAs, hero cards, selected chips.
 extension LinearGradient {
-    static let brandRed = LinearGradient(colors: [.brandRed, .brandRedLight], startPoint: .topLeading, endPoint: .bottomTrailing)
+    static let emerald = LinearGradient(colors: [.emerald, .emeraldLight], startPoint: .topLeading, endPoint: .bottomTrailing)
+    static let emeraldGlow = LinearGradient(colors: [Color.emerald.opacity(0.95), Color.emeraldDeep], startPoint: .top, endPoint: .bottom)
+    static let appBackdrop = LinearGradient(colors: [.bgTop, .bgBottom, .black], startPoint: .top, endPoint: .bottom)
 }
 
 // Lets these resolve via leading-dot syntax in generic `some ShapeStyle` contexts
-// (e.g. .foregroundStyle(.brandRed)), not just where the parameter type is concretely `Color`.
+// (e.g. .foregroundStyle(.emerald)), not just where the parameter type is concretely `Color`.
 extension ShapeStyle where Self == Color {
-    static var brandRed: Color { Color.brandRed }
-    static var brandRedLight: Color { Color.brandRedLight }
+    static var emerald: Color { Color.emerald }
+    static var emeraldLight: Color { Color.emeraldLight }
+    static var emeraldDeep: Color { Color.emeraldDeep }
     static var charcoal: Color { Color.charcoal }
     static var warningAmber: Color { Color.warningAmber }
+    static var alertCoral: Color { Color.alertCoral }
     static var slateGray: Color { Color.slateGray }
+    static var textPrimary: Color { Color.textPrimary }
+    static var textSecondary: Color { Color.textSecondary }
+    static var textTertiary: Color { Color.textTertiary }
+}
+
+/// Full-bleed dark emerald backdrop — every screen sits on this instead of a system background.
+struct AppBackdrop: View {
+    var body: some View {
+        LinearGradient.appBackdrop.ignoresSafeArea()
+    }
+}
+extension View {
+    /// Applies the standard dark emerald screen backdrop behind a scrollable/static screen body.
+    func appBackground() -> some View {
+        background(AppBackdrop())
+    }
 }
 
 struct CardBackground: ViewModifier {
     var padding: CGFloat = 16
     var cornerRadius: CGFloat = 20
+    var raised: Bool = false
     func body(content: Content) -> some View {
         content
             .padding(padding)
-            .background(Color(.systemBackground), in: RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
-            .shadow(color: .black.opacity(0.07), radius: 10, x: 0, y: 4)
+            .background(
+                RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+                    .fill(raised ? Color.cardFillRaised : Color.cardFill)
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+                    .strokeBorder(Color.cardBorder, lineWidth: 1)
+            )
+            .shadow(color: Color.emerald.opacity(0.10), radius: 18, x: 0, y: 10)
+            .shadow(color: .black.opacity(0.4), radius: 10, x: 0, y: 6)
     }
 }
 extension View {
-    func cardStyle(padding: CGFloat = 16, cornerRadius: CGFloat = 20) -> some View {
-        modifier(CardBackground(padding: padding, cornerRadius: cornerRadius))
+    func cardStyle(padding: CGFloat = 16, cornerRadius: CGFloat = 20, raised: Bool = false) -> some View {
+        modifier(CardBackground(padding: padding, cornerRadius: cornerRadius, raised: raised))
     }
 }
 
 /// Small rounded tag used for skill level, goals, and hole-count badges.
 struct Pill: View {
     let text: String
-    var color: Color = .brandRed
+    var color: Color = .emerald
+    var filled: Bool = false
     var body: some View {
         Text(text)
             .font(.caption.weight(.semibold))
             .padding(.horizontal, 10)
             .padding(.vertical, 5)
-            .background(color.opacity(0.14), in: Capsule())
-            .foregroundStyle(color)
+            .background(filled ? color.opacity(0.9) : color.opacity(0.16), in: Capsule())
+            .foregroundStyle(filled ? Color.black : color)
+            .overlay(Capsule().strokeBorder(color.opacity(filled ? 0 : 0.35), lineWidth: 1))
     }
 }
 
-/// Circular score-relative-to-par indicator. Follows real golf-leaderboard convention —
-/// red marks an under-par (good) score — with amber/charcoal carrying the "needs work" signal
-/// instead of red, so red stays a positive, brand-consistent color rather than an alarm color.
+/// Circular score-relative-to-par indicator. Emerald marks an under-par (good) score, matching
+/// the app's brand accent and standard green-is-good UI convention; warm tones signal "needs work."
 struct ScoreBadge: View {
     let scoreToPar: Int
     var size: CGFloat = 44
 
     var body: some View {
         Circle()
-            .fill(color.opacity(0.15))
+            .fill(color.opacity(0.16))
             .overlay(Circle().strokeBorder(color, lineWidth: 1.5))
             .frame(width: size, height: size)
             .overlay(
@@ -82,10 +123,10 @@ struct ScoreBadge: View {
 
     private var color: Color {
         switch scoreToPar {
-        case ..<0: return .brandRed
-        case 0: return .charcoal
+        case ..<0: return .emerald
+        case 0: return .textPrimary
         case 1...4: return .warningAmber
-        default: return .slateGray
+        default: return .alertCoral
         }
     }
 }
@@ -104,14 +145,17 @@ struct SectionHeader: View {
             if let icon {
                 Image(systemName: icon)
                     .font(.subheadline.weight(.semibold))
-                    .foregroundStyle(.brandRed)
+                    .foregroundStyle(.emerald)
                     .frame(width: 30, height: 30)
-                    .background(Color.brandRed.opacity(0.12), in: Circle())
+                    .background(Color.emerald.opacity(0.14), in: Circle())
             }
             VStack(alignment: .leading, spacing: 2) {
-                Text(title).font(.headline)
+                Text(title.uppercased())
+                    .font(.caption.weight(.bold))
+                    .foregroundStyle(.textSecondary)
+                    .tracking(0.6)
                 if let subtitle {
-                    Text(subtitle).font(.subheadline).foregroundStyle(.secondary)
+                    Text(subtitle).font(.subheadline).foregroundStyle(.textPrimary)
                 }
             }
         }
@@ -130,19 +174,23 @@ struct SelectableRow: View {
         Button(action: action) {
             HStack {
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(label).foregroundStyle(.primary)
+                    Text(label).foregroundStyle(.textPrimary)
                     if let subtitle {
-                        Text(subtitle).font(.caption).foregroundStyle(.secondary)
+                        Text(subtitle).font(.caption).foregroundStyle(.textSecondary)
                     }
                 }
                 Spacer()
                 Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
                     .font(.title3)
-                    .foregroundStyle(isSelected ? .brandRed : Color.secondary.opacity(0.5))
+                    .foregroundStyle(isSelected ? .emerald : Color.white.opacity(0.25))
             }
             .padding(.vertical, 12)
             .padding(.horizontal, 14)
-            .background(isSelected ? Color.brandRed.opacity(0.08) : Color.secondary.opacity(0.06), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+            .background(isSelected ? Color.emerald.opacity(0.14) : Color.white.opacity(0.05), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+            .overlay(
+                RoundedRectangle(cornerRadius: 12, style: .continuous)
+                    .strokeBorder(isSelected ? Color.emerald.opacity(0.4) : Color.clear, lineWidth: 1)
+            )
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
@@ -157,9 +205,15 @@ struct InputField: View {
     var body: some View {
         TextField(placeholder, text: $text)
             .keyboardType(keyboardType)
+            .foregroundStyle(.textPrimary)
+            .tint(.emerald)
             .padding(.horizontal, 14)
             .padding(.vertical, 12)
-            .background(Color.secondary.opacity(0.08), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+            .background(Color.white.opacity(0.06), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+            .overlay(
+                RoundedRectangle(cornerRadius: 12, style: .continuous)
+                    .strokeBorder(Color.white.opacity(0.08), lineWidth: 1)
+            )
     }
 }
 
@@ -167,10 +221,10 @@ struct InputField: View {
 struct StatRow: View {
     let label: String
     let value: String
-    var valueColor: Color = .primary
+    var valueColor: Color = .textPrimary
     var body: some View {
         HStack {
-            Text(label).font(.subheadline).foregroundStyle(.secondary)
+            Text(label).font(.subheadline).foregroundStyle(.textSecondary)
             Spacer()
             Text(value).font(.subheadline.weight(.semibold)).foregroundStyle(valueColor)
         }
@@ -182,14 +236,14 @@ struct MetricTile: View {
     let title: String
     let value: String
     var icon: String? = nil
-    var tint: Color = .brandRed
+    var tint: Color = .emerald
     var body: some View {
         VStack(spacing: 6) {
             if let icon {
                 Image(systemName: icon).font(.subheadline).foregroundStyle(tint)
             }
-            Text(value).font(.title3.weight(.bold))
-            Text(title).font(.caption).foregroundStyle(.secondary).multilineTextAlignment(.center)
+            Text(value).font(.title3.weight(.bold)).foregroundStyle(.textPrimary)
+            Text(title).font(.caption).foregroundStyle(.textSecondary).multilineTextAlignment(.center)
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 12)
@@ -198,14 +252,15 @@ struct MetricTile: View {
 }
 
 struct PrimaryButtonStyle: ButtonStyle {
-    var gradient: LinearGradient = .brandRed
+    var gradient: LinearGradient = .emerald
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .font(.headline)
             .frame(maxWidth: .infinity)
             .padding(.vertical, 14)
-            .foregroundStyle(.white)
+            .foregroundStyle(.black)
             .background(gradient.opacity(configuration.isPressed ? 0.8 : 1), in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+            .shadow(color: Color.emerald.opacity(0.35), radius: 14, x: 0, y: 6)
             .scaleEffect(configuration.isPressed ? 0.98 : 1)
             .animation(.easeOut(duration: 0.15), value: configuration.isPressed)
     }
@@ -228,13 +283,17 @@ struct ChoiceChip: View {
                 .frame(minWidth: 44, minHeight: 44)
                 .background {
                     if isSelected {
-                        LinearGradient.brandRed
+                        LinearGradient.emerald
                     } else {
-                        Color.secondary.opacity(0.15)
+                        Color.white.opacity(0.07)
                     }
                 }
-                .foregroundStyle(isSelected ? .white : .primary)
+                .foregroundStyle(isSelected ? .black : .textPrimary)
                 .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 12, style: .continuous)
+                        .strokeBorder(isSelected ? Color.clear : Color.white.opacity(0.08), lineWidth: 1)
+                )
         }
         .buttonStyle(.plain)
     }
@@ -248,19 +307,20 @@ struct BigStepperBox: View {
 
     var body: some View {
         VStack(spacing: 6) {
-            Text(title).font(.caption.weight(.medium)).foregroundStyle(.secondary)
+            Text(title).font(.caption.weight(.medium)).foregroundStyle(.textSecondary)
             HStack(spacing: 10) {
                 Button { value = max(range.lowerBound, value - 1) } label: {
                     Image(systemName: "minus.circle.fill").font(.title2)
                 }
                 Text("\(value)")
                     .font(.system(.title2, design: .rounded).bold())
+                    .foregroundStyle(.textPrimary)
                     .frame(minWidth: 30)
                 Button { value = min(range.upperBound, value + 1) } label: {
                     Image(systemName: "plus.circle.fill").font(.title2)
                 }
             }
-            .foregroundStyle(.brandRed)
+            .foregroundStyle(.emerald)
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 12)
@@ -314,11 +374,11 @@ struct ExpandableSection<Content: View>: View {
                 withAnimation(.easeInOut(duration: 0.2)) { isExpanded.toggle() }
             } label: {
                 HStack {
-                    Text(title).font(.subheadline.weight(.semibold)).foregroundStyle(.primary)
+                    Text(title).font(.subheadline.weight(.semibold)).foregroundStyle(.textPrimary)
                     Spacer()
                     Image(systemName: "chevron.down")
                         .font(.caption.weight(.semibold))
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(.textSecondary)
                         .rotationEffect(.degrees(isExpanded ? 180 : 0))
                 }
             }

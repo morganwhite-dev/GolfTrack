@@ -2,7 +2,7 @@ import Foundation
 import SwiftData
 
 @Model
-final class ClubStats {
+final class ClubStats: Hashable {
     var id: UUID = UUID()
     var clubRaw: String = ClubType.driver.rawValue
     var timesUsed: Int = 0
@@ -42,4 +42,7 @@ final class ClubStats {
         guard let top = misses.max(by: { $0.1 < $1.1 }), top.1 > 0 else { return nil }
         return top.0
     }
+
+    static func == (lhs: ClubStats, rhs: ClubStats) -> Bool { lhs.id == rhs.id }
+    func hash(into hasher: inout Hasher) { hasher.combine(id) }
 }

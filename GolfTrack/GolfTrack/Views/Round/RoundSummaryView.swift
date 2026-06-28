@@ -45,7 +45,7 @@ struct RoundSummaryView: View {
                      ? "You beat your target by \(abs(comparison))"
                      : "\(comparison) over your target score")
                     .font(.subheadline.weight(.medium))
-                    .foregroundStyle(comparison <= 0 ? .brandRed : .secondary)
+                    .foregroundStyle(comparison <= 0 ? .emerald : .secondary)
             }
         }
         .frame(maxWidth: .infinity)
@@ -84,7 +84,7 @@ struct RoundSummaryView: View {
         if let best = stats.bestHole, let worst = stats.worstHole {
             VStack(alignment: .leading, spacing: 10) {
                 SectionHeader(title: "Notable Holes", icon: "star.fill")
-                StatRow(label: "Best Hole", value: "Hole \(best.holeNumber) — \(scoreToParText(best.scoreToPar))", valueColor: .brandRed)
+                StatRow(label: "Best Hole", value: "Hole \(best.holeNumber) — \(scoreToParText(best.scoreToPar))", valueColor: .emerald)
                 StatRow(label: "Worst Hole", value: "Hole \(worst.holeNumber) — \(scoreToParText(worst.scoreToPar))")
             }
             .cardStyle()
@@ -107,7 +107,7 @@ struct RoundSummaryView: View {
             VStack(alignment: .leading, spacing: 10) {
                 SectionHeader(title: "Club Performance", icon: "figure.golf")
                 StatRow(label: "Most Used Club", value: stats.mostUsedClub?.displayName ?? "—")
-                StatRow(label: "Best Performing Club", value: stats.bestPerformingClub?.displayName ?? "—", valueColor: .brandRed)
+                StatRow(label: "Best Performing Club", value: stats.bestPerformingClub?.displayName ?? "—", valueColor: .emerald)
                 StatRow(label: "Most Problematic Club", value: stats.mostProblematicClub?.displayName ?? "—")
             }
             .cardStyle()

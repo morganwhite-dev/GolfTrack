@@ -33,7 +33,7 @@ struct RoundReflectionView: View {
 
                 VStack(alignment: .leading, spacing: 12) {
                     Toggle("Any mental mistakes or blow-up holes?", isOn: $reflection.hadMentalMistakes)
-                        .tint(.brandRed)
+                        .tint(.emerald)
                         .font(.subheadline.weight(.semibold))
                     if reflection.hadMentalMistakes {
                         InputField(placeholder: "What happened?", text: $reflection.mentalMistakesNote)

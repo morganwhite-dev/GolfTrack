@@ -15,8 +15,8 @@ struct ProfileSetupView: View {
             VStack(spacing: 20) {
                 VStack(spacing: 8) {
                     ZStack {
-                        Circle().fill(Color.brandRed.opacity(0.12)).frame(width: 64, height: 64)
-                        Image(systemName: "flag.fill").font(.title2).foregroundStyle(.brandRed)
+                        Circle().fill(Color.emerald.opacity(0.12)).frame(width: 64, height: 64)
+                        Image(systemName: "flag.fill").font(.title2).foregroundStyle(.emerald)
                     }
                     Text("Welcome to GolfTrack").font(.title2.weight(.bold))
                     Text("Let's set up your profile so advice and stats are tailored to you.")

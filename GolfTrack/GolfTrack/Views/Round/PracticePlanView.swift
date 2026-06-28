@@ -12,8 +12,8 @@ struct PracticePlanView: View {
         VStack(spacing: 20) {
                 VStack(spacing: 8) {
                     ZStack {
-                        Circle().fill(Color.brandRed.opacity(0.12)).frame(width: 64, height: 64)
-                        Image(systemName: "figure.golf").font(.title2).foregroundStyle(.brandRed)
+                        Circle().fill(Color.emerald.opacity(0.12)).frame(width: 64, height: 64)
+                        Image(systemName: "figure.golf").font(.title2).foregroundStyle(.emerald)
                     }
                     Text("Practice Plan").font(.title2.weight(.bold))
                     Text("\(plan.estimatedPracticeTime) minutes total").font(.subheadline).foregroundStyle(.secondary)
@@ -24,7 +24,7 @@ struct PracticePlanView: View {
 
                 VStack(alignment: .leading, spacing: 10) {
                     SectionHeader(title: "Focus Areas", icon: "scope")
-                    StatRow(label: "Main Focus", value: plan.mainFocus, valueColor: .brandRed)
+                    StatRow(label: "Main Focus", value: plan.mainFocus, valueColor: .emerald)
                     StatRow(label: "Secondary Focus", value: plan.secondaryFocus)
                 }
                 .cardStyle()

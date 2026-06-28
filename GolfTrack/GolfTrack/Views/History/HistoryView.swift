@@ -62,7 +62,7 @@ struct HistoryView: View {
 
     private var emptyState: some View {
         VStack(spacing: 12) {
-            Image(systemName: "clock.fill").font(.system(size: 40)).foregroundStyle(.brandRed)
+            Image(systemName: "clock.fill").font(.system(size: 40)).foregroundStyle(.emerald)
             Text("No completed rounds yet.").font(.subheadline).foregroundStyle(.secondary)
         }
         .frame(maxWidth: .infinity)

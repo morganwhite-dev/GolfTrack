@@ -9,7 +9,7 @@ struct ClubDetailView: View {
         ScrollView {
             VStack(spacing: 20) {
                 VStack(spacing: 6) {
-                    Image(systemName: "figure.golf").font(.title).foregroundStyle(.brandRed)
+                    Image(systemName: "figure.golf").font(.title).foregroundStyle(.emerald)
                     Text(stats.club.displayName).font(.title2.weight(.bold))
                     Text("\(stats.timesUsed) shots tracked").font(.subheadline).foregroundStyle(.secondary)
                 }
@@ -19,7 +19,7 @@ struct ClubDetailView: View {
 
                 VStack(alignment: .leading, spacing: 10) {
                     SectionHeader(title: "Performance", icon: "chart.bar.fill")
-                    StatRow(label: "Good Shots", value: "\(stats.goodShots)", valueColor: .brandRed)
+                    StatRow(label: "Good Shots", value: "\(stats.goodShots)", valueColor: .emerald)
                     StatRow(label: "Bad Shots", value: "\(stats.badShots)")
                     StatRow(label: "Good Shot Rate", value: "\(Int(stats.goodShotRate * 100))%")
                     StatRow(label: "Average Confidence", value: stats.averageConfidence > 0 ? String(format: "%.1f / 3", stats.averageConfidence) : "—")

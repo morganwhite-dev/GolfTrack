@@ -65,11 +65,11 @@ struct RoundProgressView: View {
                         VStack(spacing: 3) {
                             Text("\(hole.holeNumber)").font(.caption.weight(.semibold))
                             Circle()
-                                .fill(hole.strokes > 0 ? Color.brandRed : Color.secondary.opacity(0.3))
+                                .fill(hole.strokes > 0 ? Color.emerald : Color.secondary.opacity(0.3))
                                 .frame(width: 6, height: 6)
                         }
                         .frame(width: 36, height: 36)
-                        .background(index == currentIndex ? Color.brandRed.opacity(0.15) : Color.clear, in: Circle())
+                        .background(index == currentIndex ? Color.emerald.opacity(0.15) : Color.clear, in: Circle())
                     }
                     .buttonStyle(.plain)
                 }
@@ -95,7 +95,7 @@ struct RoundProgressView: View {
                 Button("Finish Round") { finishRound() }
                     .font(.subheadline.weight(.bold))
                     .padding(.horizontal, 20).padding(.vertical, 10)
-                    .background(LinearGradient.brandRed, in: Capsule())
+                    .background(LinearGradient.emerald, in: Capsule())
                     .foregroundStyle(.white)
             } else {
                 Button {

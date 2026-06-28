@@ -2,7 +2,7 @@ import Foundation
 import SwiftData
 
 @Model
-final class GolfCourse {
+final class GolfCourse: Hashable {
     var id: UUID = UUID()
     var name: String = ""
     var location: String = ""
@@ -43,6 +43,9 @@ final class GolfCourse {
     var totalPar: Int {
         sortedHoles.reduce(0) { $0 + $1.par }
     }
+
+    static func == (lhs: GolfCourse, rhs: GolfCourse) -> Bool { lhs.id == rhs.id }
+    func hash(into hasher: inout Hasher) { hasher.combine(id) }
 }
 
 @Model

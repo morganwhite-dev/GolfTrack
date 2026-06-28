@@ -13,6 +13,7 @@ struct GolfTrackApp: App {
     var body: some Scene {
         WindowGroup {
             RootView()
+                .preferredColorScheme(.dark)
         }
         .modelContainer(container)
     }

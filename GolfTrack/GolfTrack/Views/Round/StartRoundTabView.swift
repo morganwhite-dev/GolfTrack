@@ -18,7 +18,7 @@ struct StartRoundTabView: View {
                         .buttonStyle(.plain)
                         Button("Choose a Different Course") { showCourseSearch = true }
                             .font(.subheadline.weight(.semibold))
-                            .foregroundStyle(.brandRed)
+                            .foregroundStyle(.emerald)
                     }
                     .cardStyle()
 
@@ -27,8 +27,8 @@ struct StartRoundTabView: View {
                 } else {
                     VStack(spacing: 12) {
                         ZStack {
-                            Circle().fill(Color.brandRed.opacity(0.12)).frame(width: 64, height: 64)
-                            Image(systemName: "flag.fill").font(.title2).foregroundStyle(.brandRed)
+                            Circle().fill(Color.emerald.opacity(0.12)).frame(width: 64, height: 64)
+                            Image(systemName: "flag.fill").font(.title2).foregroundStyle(.emerald)
                         }
                         Text("Pick a course to begin").font(.headline)
                         Button("Choose Course") { showCourseSearch = true }

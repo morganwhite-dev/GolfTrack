@@ -66,7 +66,7 @@ struct StatsView: View {
 
     private var emptyState: some View {
         VStack(spacing: 12) {
-            Image(systemName: "chart.bar.fill").font(.system(size: 40)).foregroundStyle(.brandRed)
+            Image(systemName: "chart.bar.fill").font(.system(size: 40)).foregroundStyle(.emerald)
             Text("Play a few rounds to see your stats here.").font(.subheadline).foregroundStyle(.secondary)
         }
         .frame(maxWidth: .infinity)
@@ -126,7 +126,7 @@ struct StatsView: View {
         VStack(alignment: .leading, spacing: 10) {
             SectionHeader(title: "Club Performance", icon: "figure.golf")
             StatRow(label: "Most Used Club", value: allClubTallies.max(by: { $0.value.uses < $1.value.uses })?.key.displayName ?? "—")
-            StatRow(label: "Best Performing Club", value: bestClub?.displayName ?? "—", valueColor: .brandRed)
+            StatRow(label: "Best Performing Club", value: bestClub?.displayName ?? "—", valueColor: .emerald)
             StatRow(label: "Worst Performing Club", value: worstClub?.displayName ?? "—")
         }
         .cardStyle()
@@ -144,7 +144,7 @@ struct StatsView: View {
 private struct TrendChart: View {
     let title: String
     let values: [Int]
-    var color: Color = .brandRed
+    var color: Color = .emerald
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {

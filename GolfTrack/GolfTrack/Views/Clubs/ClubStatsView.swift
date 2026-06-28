@@ -42,7 +42,7 @@ struct ClubStatsView: View {
 
     private var emptyState: some View {
         VStack(spacing: 12) {
-            Image(systemName: "figure.golf").font(.system(size: 40)).foregroundStyle(.brandRed)
+            Image(systemName: "figure.golf").font(.system(size: 40)).foregroundStyle(.emerald)
             Text("Play a round to start building club stats.").font(.subheadline).foregroundStyle(.secondary)
         }
         .frame(maxWidth: .infinity)
@@ -53,7 +53,7 @@ struct ClubStatsView: View {
         VStack(alignment: .leading, spacing: 10) {
             SectionHeader(title: "Overview", icon: "figure.golf")
             StatRow(label: "Most Used Club", value: usedStats.first?.club.displayName ?? "—")
-            StatRow(label: "Best Performing Club", value: bestPerforming?.club.displayName ?? "—", valueColor: .brandRed)
+            StatRow(label: "Best Performing Club", value: bestPerforming?.club.displayName ?? "—", valueColor: .emerald)
             StatRow(label: "Most Problematic Club", value: mostProblematic?.club.displayName ?? "—")
         }
         .cardStyle()

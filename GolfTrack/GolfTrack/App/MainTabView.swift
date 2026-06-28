@@ -32,6 +32,6 @@ struct MainTabView: View {
                 .tabItem { Label("Profile", systemImage: "person.fill") }
                 .tag(Tab.profile)
         }
-        .tint(.brandRed)
+        .tint(.emerald)
     }
 }

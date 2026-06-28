@@ -94,7 +94,7 @@ struct CourseSearchView: View {
                                 Text(result.address).font(.caption).foregroundStyle(.secondary)
                             }
                             Spacer()
-                            Image(systemName: "plus.circle.fill").foregroundStyle(.brandRed)
+                            Image(systemName: "plus.circle.fill").foregroundStyle(.emerald)
                         }
                         .padding(.vertical, 4)
                     }
@@ -107,7 +107,7 @@ struct CourseSearchView: View {
             }
             Button("Find Nearby Courses") { searchNearby() }
                 .font(.subheadline.weight(.semibold))
-                .foregroundStyle(.brandRed)
+                .foregroundStyle(.emerald)
         }
     }
 
