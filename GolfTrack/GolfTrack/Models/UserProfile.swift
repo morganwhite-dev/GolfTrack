@@ -7,8 +7,10 @@ final class UserProfile {
     var name: String = ""
     var skillLevelRaw: String = SkillLevel.beginner.rawValue
     var estimatedHandicap: Double?
-    var average18ScoreRangeRaw: String?
-    var average9ScoreRangeRaw: String?
+    /// Self-reported average score relative to par (score minus par), not absolute strokes —
+    /// works the same whether the holes played are a standard par-36 nine or a par-3 nine.
+    var average18RelativeToPar: Int?
+    var average9RelativeToPar: Int?
     var goalRawValues: [String] = []
     var customGoalText: String?
     var createdDate: Date = Date()
@@ -23,16 +25,6 @@ final class UserProfile {
     var skillLevel: SkillLevel {
         get { SkillLevel(rawValue: skillLevelRaw) ?? .beginner }
         set { skillLevelRaw = newValue.rawValue }
-    }
-
-    var average18ScoreRange: Average18ScoreRange? {
-        get { average18ScoreRangeRaw.flatMap { Average18ScoreRange(rawValue: $0) } }
-        set { average18ScoreRangeRaw = newValue?.rawValue }
-    }
-
-    var average9ScoreRange: Average9ScoreRange? {
-        get { average9ScoreRangeRaw.flatMap { Average9ScoreRange(rawValue: $0) } }
-        set { average9ScoreRangeRaw = newValue?.rawValue }
     }
 
     var goals: [GolfGoal] {

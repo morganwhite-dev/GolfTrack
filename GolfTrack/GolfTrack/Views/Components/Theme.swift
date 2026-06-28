@@ -91,14 +91,113 @@ func scoreToParText(_ value: Int) -> String {
 struct SectionHeader: View {
     let title: String
     var subtitle: String? = nil
+    var icon: String? = nil
     var body: some View {
-        VStack(alignment: .leading, spacing: 2) {
-            Text(title).font(.headline)
-            if let subtitle {
-                Text(subtitle).font(.subheadline).foregroundStyle(.secondary)
+        HStack(spacing: 10) {
+            if let icon {
+                Image(systemName: icon)
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(.brandRed)
+                    .frame(width: 30, height: 30)
+                    .background(Color.brandRed.opacity(0.12), in: Circle())
+            }
+            VStack(alignment: .leading, spacing: 2) {
+                Text(title).font(.headline)
+                if let subtitle {
+                    Text(subtitle).font(.subheadline).foregroundStyle(.secondary)
+                }
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
+    }
+}
+
+/// Single-row selectable item with a trailing checkmark — used for both single-select
+/// (skill level) and multi-select (goals) lists so selection always looks/feels the same.
+struct SelectableRow: View {
+    let label: String
+    let isSelected: Bool
+    let action: () -> Void
+    var body: some View {
+        Button(action: action) {
+            HStack {
+                Text(label).foregroundStyle(.primary)
+                Spacer()
+                Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
+                    .font(.title3)
+                    .foregroundStyle(isSelected ? .brandRed : Color.secondary.opacity(0.5))
+            }
+            .padding(.vertical, 12)
+            .padding(.horizontal, 14)
+            .background(isSelected ? Color.brandRed.opacity(0.08) : Color.secondary.opacity(0.06), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+    }
+}
+
+/// Rounded text field with a soft fill background, used in place of the plain system Form fields.
+struct InputField: View {
+    let placeholder: String
+    @Binding var text: String
+    var keyboardType: UIKeyboardType = .default
+    var body: some View {
+        TextField(placeholder, text: $text)
+            .keyboardType(keyboardType)
+            .padding(.horizontal, 14)
+            .padding(.vertical, 12)
+            .background(Color.secondary.opacity(0.08), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+    }
+}
+
+/// Par + typical-score steppers that compute "relative to par" live, so the user never has
+/// to do the subtraction themselves — just enter the par for their holes and what they shoot.
+struct RelativeToParInput: View {
+    let title: String
+    let helpText: String
+    @Binding var isEnabled: Bool
+    @Binding var par: Int
+    @Binding var score: Int
+    var parRange: ClosedRange<Int>
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Toggle(isOn: $isEnabled.animation()) {
+                Text(title).font(.subheadline.weight(.semibold))
+            }
+            .tint(.brandRed)
+
+            if isEnabled {
+                Text(helpText)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+
+                Stepper(value: $par, in: parRange) {
+                    HStack {
+                        Text("Par for those holes")
+                        Spacer()
+                        Text("\(par)").foregroundStyle(.secondary)
+                    }
+                }
+                Stepper(value: $score, in: par...(par + 80)) {
+                    HStack {
+                        Text("What you typically shoot")
+                        Spacer()
+                        Text("\(score)").foregroundStyle(.secondary)
+                    }
+                }
+
+                HStack(spacing: 6) {
+                    Text("That's").font(.subheadline).foregroundStyle(.secondary)
+                    Pill(text: scoreToParText(score - par))
+                    Text("relative to par").font(.subheadline).foregroundStyle(.secondary)
+                }
+                .padding(.top, 2)
+            }
+        }
+        .onChange(of: par) { _, newPar in
+            if score < newPar { score = newPar }
+        }
     }
 }
 

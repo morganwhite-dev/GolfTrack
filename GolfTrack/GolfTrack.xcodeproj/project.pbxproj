@@ -39,7 +39,7 @@
 		06D5195DEA0943301080806A /* PracticePlan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PracticePlan.swift; sourceTree = "<group>"; };
 		17C1863C7E613A15626833BE /* Enums.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Enums.swift; sourceTree = "<group>"; };
 		227F8E5F22332EF29DA30A24 /* GolfTrackApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GolfTrackApp.swift; sourceTree = "<group>"; };
-		33E4E37604AB24CBB7163EF5 /* GolfTrack.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GolfTrack.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		33E4E37604AB24CBB7163EF5 /* GolfTrack.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = GolfTrack.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		44A0E5988340E6A0FBEF5A74 /* StorageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageService.swift; sourceTree = "<group>"; };
 		5A868BC46B30B4D559023B47 /* RoundDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundDetailView.swift; sourceTree = "<group>"; };
 		5FD02ECF53C9FB036C54079E /* RoundFlowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundFlowView.swift; sourceTree = "<group>"; };
@@ -238,6 +238,7 @@
 				LastUpgradeCheck = 1430;
 				TargetAttributes = {
 					611F6D75F3A9514BDE8A5B87 = {
+						DevelopmentTeam = "";
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -312,7 +313,6 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				DEVELOPMENT_TEAM = Q2LR7B96SK;
 				INFOPLIST_FILE = GolfTrack/Resources/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -389,7 +389,6 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				DEVELOPMENT_TEAM = Q2LR7B96SK;
 				INFOPLIST_FILE = GolfTrack/Resources/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (

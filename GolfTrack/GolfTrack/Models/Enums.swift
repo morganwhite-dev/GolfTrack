@@ -20,37 +20,6 @@ enum SkillLevel: String, DisplayNamed {
     }
 }
 
-/// Relative-to-par buckets rather than absolute strokes, so the same answer is meaningful
-/// whether the round was played on a par-72 standard course or any other par total.
-enum Average18ScoreRange: String, DisplayNamed {
-    case evenOrBetter, plus1to10, plus11to20, plus21to30, plus31to40, plus40Plus
-    var displayName: String {
-        switch self {
-        case .evenOrBetter: return "Even or better"
-        case .plus1to10: return "+1 to +10"
-        case .plus11to20: return "+11 to +20"
-        case .plus21to30: return "+21 to +30"
-        case .plus31to40: return "+31 to +40"
-        case .plus40Plus: return "+40 or more"
-        }
-    }
-}
-
-/// Relative-to-par buckets — works the same for a par-36 standard nine or a par-27 par-3 nine.
-enum Average9ScoreRange: String, DisplayNamed {
-    case evenOrBetter, plus1to5, plus6to10, plus11to15, plus16to20, plus20Plus
-    var displayName: String {
-        switch self {
-        case .evenOrBetter: return "Even or better"
-        case .plus1to5: return "+1 to +5"
-        case .plus6to10: return "+6 to +10"
-        case .plus11to15: return "+11 to +15"
-        case .plus16to20: return "+16 to +20"
-        case .plus20Plus: return "+20 or more"
-        }
-    }
-}
-
 enum GolfGoal: String, DisplayNamed {
     case betterContact, learnClubDistances, reducePenalties, improvePutting
     case break50On9, break45On9, break40On9, break36On9
