@@ -8,16 +8,78 @@ extension Color {
     static let dangerRed = Color(red: 0.78, green: 0.22, blue: 0.22)
 }
 
+// Lets these resolve via leading-dot syntax in generic `some ShapeStyle` contexts
+// (e.g. .foregroundStyle(.golfGreen)), not just where the parameter type is concretely `Color`.
+extension ShapeStyle where Self == Color {
+    static var golfGreen: Color { Color.golfGreen }
+    static var fairwayGreen: Color { Color.fairwayGreen }
+    static var sandTan: Color { Color.sandTan }
+    static var warningAmber: Color { Color.warningAmber }
+    static var dangerRed: Color { Color.dangerRed }
+}
+
 struct CardBackground: ViewModifier {
     var padding: CGFloat = 16
+    var cornerRadius: CGFloat = 20
     func body(content: Content) -> some View {
         content
             .padding(padding)
-            .background(Color(.secondarySystemBackground), in: RoundedRectangle(cornerRadius: 18, style: .continuous))
+            .background(Color(.secondarySystemBackground), in: RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
+            .shadow(color: .black.opacity(0.06), radius: 10, x: 0, y: 4)
     }
 }
 extension View {
-    func cardStyle(padding: CGFloat = 16) -> some View { modifier(CardBackground(padding: padding)) }
+    func cardStyle(padding: CGFloat = 16, cornerRadius: CGFloat = 20) -> some View {
+        modifier(CardBackground(padding: padding, cornerRadius: cornerRadius))
+    }
+}
+
+/// Small rounded tag used for skill level, goals, and hole-count badges.
+struct Pill: View {
+    let text: String
+    var color: Color = .golfGreen
+    var body: some View {
+        Text(text)
+            .font(.caption.weight(.semibold))
+            .padding(.horizontal, 10)
+            .padding(.vertical, 5)
+            .background(color.opacity(0.14), in: Capsule())
+            .foregroundStyle(color)
+    }
+}
+
+/// Circular score-relative-to-par indicator, color coded: under par (green), even (blue),
+/// a little over (amber), well over (red). Used anywhere a round or hole score is summarized.
+struct ScoreBadge: View {
+    let scoreToPar: Int
+    var size: CGFloat = 44
+
+    var body: some View {
+        Circle()
+            .fill(color.opacity(0.15))
+            .overlay(Circle().strokeBorder(color, lineWidth: 1.5))
+            .frame(width: size, height: size)
+            .overlay(
+                Text(scoreToParText(scoreToPar))
+                    .font(.system(size: size * 0.32, weight: .bold, design: .rounded))
+                    .foregroundStyle(color)
+                    .minimumScaleFactor(0.7)
+            )
+    }
+
+    private var color: Color {
+        switch scoreToPar {
+        case ..<0: return .golfGreen
+        case 0: return .blue
+        case 1...4: return .warningAmber
+        default: return .dangerRed
+        }
+    }
+}
+
+func scoreToParText(_ value: Int) -> String {
+    if value == 0 { return "E" }
+    return value > 0 ? "+\(value)" : "\(value)"
 }
 
 struct SectionHeader: View {

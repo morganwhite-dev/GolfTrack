@@ -28,17 +28,17 @@ final class PracticeDrill {
     var id: UUID = UUID()
     var title: String = ""
     var categoryRaw: String = DrillCategory.contact.rawValue
-    var description: String = ""
+    var details: String = ""
     var timeMinutes: Int = 10
     var relatedSkill: String = ""
     var relatedClubRaw: String?
     var practicePlan: PracticePlan?
 
-    init(title: String, category: DrillCategory, description: String, timeMinutes: Int, relatedSkill: String, relatedClub: ClubType? = nil) {
+    init(title: String, category: DrillCategory, details: String, timeMinutes: Int, relatedSkill: String, relatedClub: ClubType? = nil) {
         self.id = UUID()
         self.title = title
         self.categoryRaw = category.rawValue
-        self.description = description
+        self.details = details
         self.timeMinutes = timeMinutes
         self.relatedSkill = relatedSkill
         self.relatedClubRaw = relatedClub?.rawValue
