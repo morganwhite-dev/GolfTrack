@@ -60,6 +60,7 @@ struct RoundFlowView: View {
                     .transition(.opacity)
             }
         }
+        .buttonStyle(.bouncy)
     }
 
     private func generateAdviceAndPlan() {

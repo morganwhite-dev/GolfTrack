@@ -13,6 +13,7 @@ struct HomeView: View {
 
     @State private var resumeRound: GolfRound?
     @State private var showNotifications = false
+    @State private var cascadeTrigger = 0
 
     private var greeting: String {
         switch Calendar.current.component(.hour, from: Date()) {
@@ -33,14 +34,14 @@ struct HomeView: View {
                 greetingRow
 
                 if let round = inProgressRounds.first {
-                    inProgressCard(round).staggeredAppear(0)
+                    inProgressCard(round).staggeredAppear(0, trigger: cascadeTrigger)
                 }
 
-                todaysFocusCard.staggeredAppear(1)
-                practicePlanCard.staggeredAppear(2)
-                recentWeaknessCard.staggeredAppear(3)
-                suggestedDrillsCard.staggeredAppear(4)
-                logRoundButton.staggeredAppear(5)
+                todaysFocusCard.staggeredAppear(1, trigger: cascadeTrigger)
+                practicePlanCard.staggeredAppear(2, trigger: cascadeTrigger)
+                recentWeaknessCard.staggeredAppear(3, trigger: cascadeTrigger)
+                suggestedDrillsCard.staggeredAppear(4, trigger: cascadeTrigger)
+                logRoundButton.staggeredAppear(5, trigger: cascadeTrigger)
             }
             .padding(.horizontal)
             .padding(.top, 8)
@@ -53,6 +54,9 @@ struct HomeView: View {
         }
         .sheet(isPresented: $showNotifications) {
             NotificationsSheet(inProgressRound: inProgressRounds.first, mostRecentRound: mostRecentRound)
+        }
+        .onChange(of: selection) { _, newValue in
+            if newValue == .home { cascadeTrigger += 1 }
         }
     }
 
@@ -374,6 +378,7 @@ private struct RoundInsightDestination: View {
         .appBackground()
         .navigationTitle("Round Insight")
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar(.visible, for: .navigationBar)
     }
 }
 
@@ -388,6 +393,7 @@ private struct PracticePlanDestination: View {
         .appBackground()
         .navigationTitle("Practice Plan")
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar(.visible, for: .navigationBar)
     }
 }
 
@@ -445,6 +451,7 @@ private struct NotificationsSheet: View {
             }
         }
         .tint(.emerald)
+        .buttonStyle(.bouncy)
     }
 }
 

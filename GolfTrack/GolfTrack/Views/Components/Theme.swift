@@ -62,24 +62,33 @@ extension View {
 }
 
 /// Fades + slides a view in on appear, with a delay proportional to its index — used to make a
-/// stack of cards cascade in one after another instead of all popping in at once.
+/// stack of cards cascade in one after another instead of all popping in at once. `trigger`
+/// lets a caller force a replay (e.g. when a tab becomes active again) since TabView doesn't
+/// reliably re-fire onAppear/onDisappear when switching tabs.
 private struct StaggeredAppear: ViewModifier {
     let index: Int
+    var trigger: Int = 0
     @State private var appeared = false
     func body(content: Content) -> some View {
         content
             .opacity(appeared ? 1 : 0)
             .offset(y: appeared ? 0 : 18)
-            .onAppear {
-                withAnimation(.spring(response: 0.5, dampingFraction: 0.75).delay(Double(index) * 0.07)) {
-                    appeared = true
-                }
+            .onAppear { animateIn() }
+            .onDisappear { appeared = false }
+            .onChange(of: trigger) { _, _ in
+                appeared = false
+                animateIn()
             }
+    }
+    private func animateIn() {
+        withAnimation(.spring(response: 0.5, dampingFraction: 0.75).delay(Double(index) * 0.07)) {
+            appeared = true
+        }
     }
 }
 extension View {
-    func staggeredAppear(_ index: Int) -> some View {
-        modifier(StaggeredAppear(index: index))
+    func staggeredAppear(_ index: Int, trigger: Int = 0) -> some View {
+        modifier(StaggeredAppear(index: index, trigger: trigger))
     }
 }
 

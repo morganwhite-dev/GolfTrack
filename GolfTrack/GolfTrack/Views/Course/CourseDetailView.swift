@@ -67,6 +67,7 @@ struct CourseDetailView: View {
         .appBackground()
         .navigationTitle("Course Detail")
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar(.visible, for: .navigationBar)
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
                 Button("Edit") { showEdit = true }

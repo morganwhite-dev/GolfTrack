@@ -156,6 +156,13 @@ private struct TrendChart: View {
     var color: Color = .emerald
     @State private var revealedCount = 0
 
+    private var yDomain: ClosedRange<Int> {
+        let minV = values.min() ?? 0
+        let maxV = values.max() ?? 1
+        let pad = max(1, (maxV - minV) / 4)
+        return (minV - pad)...(maxV + pad)
+    }
+
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text(title).font(.subheadline.weight(.semibold)).foregroundStyle(.textPrimary)
@@ -170,6 +177,7 @@ private struct TrendChart: View {
                 }
                 .foregroundStyle(color)
                 .chartXScale(domain: 0...max(values.count - 1, 1))
+                .chartYScale(domain: yDomain)
                 .chartXAxis {
                     AxisMarks { _ in
                         AxisGridLine().foregroundStyle(Color.white.opacity(0.1))
@@ -185,20 +193,12 @@ private struct TrendChart: View {
                 .frame(height: 120)
                 .onAppear {
                     revealedCount = 0
-                    revealNext()
+                    withAnimation(.easeOut(duration: 1.0)) {
+                        revealedCount = values.count
+                    }
                 }
             }
         }
         .cardStyle()
-    }
-
-    private func revealNext() {
-        guard revealedCount < values.count else { return }
-        withAnimation(.easeOut(duration: 0.25)) {
-            revealedCount += 1
-        }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.08) {
-            revealNext()
-        }
     }
 }

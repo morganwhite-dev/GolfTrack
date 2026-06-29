@@ -111,6 +111,7 @@ struct ManualCourseCreateView: View {
             }
         }
         .tint(.emerald)
+        .buttonStyle(.bouncy)
         .onAppear { loadExistingIfNeeded() }
     }
 

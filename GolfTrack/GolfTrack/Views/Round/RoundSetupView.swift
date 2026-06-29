@@ -90,6 +90,7 @@ struct RoundSetupView: View {
         .appBackground()
         .navigationTitle("Round Setup")
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar(.visible, for: .navigationBar)
         .fullScreenCover(item: $createdRound, onDismiss: { dismiss() }) { round in
             RoundFlowView(round: round)
         }

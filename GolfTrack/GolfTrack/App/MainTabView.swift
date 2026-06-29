@@ -29,5 +29,6 @@ struct MainTabView: View {
                 .tag(Tab.profile)
         }
         .tint(.emerald)
+        .buttonStyle(.bouncy)
     }
 }

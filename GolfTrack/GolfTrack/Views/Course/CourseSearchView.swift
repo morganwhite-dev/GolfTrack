@@ -79,6 +79,7 @@ struct CourseSearchView: View {
             }
         }
         .tint(.emerald)
+        .buttonStyle(.bouncy)
     }
 
     @ViewBuilder
