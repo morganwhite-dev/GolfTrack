@@ -155,10 +155,10 @@ struct HomeView: View {
             }
             .frame(maxWidth: .infinity, alignment: .leading)
 
-            Image(systemName: "flag.fill")
-                .font(.system(size: 60))
-                .foregroundStyle(Color.emerald.opacity(0.10))
-                .padding(14)
+            GolfFlagGraphic(size: 78)
+                .opacity(0.85)
+                .padding(.trailing, 4)
+                .padding(.bottom, -8)
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
         }
         .cardStyle(raised: true)

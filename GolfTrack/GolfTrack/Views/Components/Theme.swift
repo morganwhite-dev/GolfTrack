@@ -76,6 +76,51 @@ struct GlowBlob: View {
     }
 }
 
+/// Triangular flag pennant shape used by GolfFlagGraphic.
+private struct FlagPennant: Shape {
+    func path(in rect: CGRect) -> Path {
+        var path = Path()
+        path.move(to: CGPoint(x: rect.minX, y: rect.minY))
+        path.addLine(to: CGPoint(x: rect.maxX, y: rect.height * 0.42))
+        path.addLine(to: CGPoint(x: rect.minX, y: rect.height * 0.84))
+        path.closeSubpath()
+        return path
+    }
+}
+
+/// Small custom-drawn golf flag-on-green graphic — pole, pennant, green mound, and a ball —
+/// used as a decorative motif instead of a single flat SF Symbol watermark. No image assets.
+struct GolfFlagGraphic: View {
+    var size: CGFloat = 90
+    var body: some View {
+        ZStack {
+            Ellipse()
+                .fill(LinearGradient(colors: [Color.emerald.opacity(0.4), Color.emeraldDeep.opacity(0.3)], startPoint: .top, endPoint: .bottom))
+                .frame(width: size * 1.3, height: size * 0.32)
+                .offset(y: size * 0.42)
+
+            Capsule()
+                .fill(Color.white.opacity(0.4))
+                .frame(width: size * 0.04, height: size * 0.82)
+                .offset(y: -size * 0.04)
+
+            FlagPennant()
+                .fill(LinearGradient.emerald)
+                .frame(width: size * 0.46, height: size * 0.3)
+                .offset(x: size * 0.23, y: -size * 0.34)
+                .shadow(color: Color.emerald.opacity(0.5), radius: 6, x: 0, y: 2)
+
+            Circle()
+                .fill(
+                    RadialGradient(colors: [Color.white.opacity(0.9), Color.white.opacity(0.5)], center: .topLeading, startRadius: 0, endRadius: size * 0.16)
+                )
+                .frame(width: size * 0.14, height: size * 0.14)
+                .offset(x: -size * 0.34, y: size * 0.33)
+        }
+        .frame(width: size, height: size)
+    }
+}
+
 /// Layered gradient icon badge — replaces flat single-tone "circle + SF Symbol" treatment
 /// with a richer, more dimensional look (gradient fill, ring, soft glow shadow).
 struct IconBadge: View {
