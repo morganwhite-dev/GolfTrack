@@ -42,13 +42,15 @@ struct RoundSetupView: View {
                 VStack(alignment: .leading, spacing: 12) {
                     SectionHeader(title: course.name, subtitle: course.location.isEmpty ? nil : course.location, icon: "flag.fill")
                     DatePicker("Date", selection: $date, displayedComponents: .date)
+                        .tint(.emerald)
+                        .foregroundStyle(.textPrimary)
                 }
                 .cardStyle()
 
                 VStack(alignment: .leading, spacing: 12) {
                     SectionHeader(title: "Holes to Play", icon: "number.circle.fill")
                     if course.numberOfHoles == 9 {
-                        Text("This course has 9 holes.").font(.subheadline).foregroundStyle(.secondary)
+                        Text("This course has 9 holes.").font(.subheadline).foregroundStyle(.textSecondary)
                     } else {
                         HStack(spacing: 10) {
                             ChoiceChip(label: "18 Holes", isSelected: playFullEighteen) { playFullEighteen = true }
@@ -62,7 +64,7 @@ struct RoundSetupView: View {
                         }
                     }
                     Text("Par for these holes: \(totalParForSelection)")
-                        .font(.caption).foregroundStyle(.secondary)
+                        .font(.caption).foregroundStyle(.textSecondary)
                 }
                 .cardStyle()
 
@@ -72,7 +74,7 @@ struct RoundSetupView: View {
                     InputField(placeholder: "Target score for this round", text: $targetScoreText, keyboardType: .numberPad)
                     InputField(placeholder: "Weather / wind notes", text: $weatherNotes)
 
-                    Text("Walking or Cart").font(.subheadline.weight(.semibold))
+                    Text("Walking or Cart").font(.subheadline.weight(.semibold)).foregroundStyle(.textPrimary)
                     HStack(spacing: 10) {
                         ChoiceChip(label: "Walking", isSelected: walkOrCart == .walking) { toggle(.walking) }
                         ChoiceChip(label: "Cart", isSelected: walkOrCart == .cart) { toggle(.cart) }
@@ -85,7 +87,7 @@ struct RoundSetupView: View {
             }
             .padding()
         }
-        .background(Color(.systemGroupedBackground))
+        .appBackground()
         .navigationTitle("Round Setup")
         .navigationBarTitleDisplayMode(.inline)
         .fullScreenCover(item: $createdRound, onDismiss: { dismiss() }) { round in

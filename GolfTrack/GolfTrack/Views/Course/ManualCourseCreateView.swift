@@ -45,7 +45,7 @@ struct ManualCourseCreateView: View {
 
                         Divider()
 
-                        Text("Number of Holes").font(.subheadline.weight(.semibold))
+                        Text("Number of Holes").font(.subheadline.weight(.semibold)).foregroundStyle(.textPrimary)
                         HStack(spacing: 10) {
                             ChoiceChip(label: "9 holes", isSelected: holeCount == 9) { setHoleCount(9) }
                             ChoiceChip(label: "18 holes", isSelected: holeCount == 18) { setHoleCount(18) }
@@ -62,6 +62,7 @@ struct ManualCourseCreateView: View {
                                 applyDefaultPars()
                             }
                             .font(.caption)
+                            .foregroundStyle(.emerald)
                         }
                         VStack(spacing: 10) {
                             ForEach(0..<holeCount, id: \.self) { index in
@@ -100,7 +101,7 @@ struct ManualCourseCreateView: View {
                 }
                 .padding()
             }
-            .background(Color(.systemGroupedBackground))
+            .appBackground()
             .navigationTitle(existingCourse == nil ? "New Course" : "Edit Course")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -109,6 +110,7 @@ struct ManualCourseCreateView: View {
                 }
             }
         }
+        .tint(.emerald)
         .onAppear { loadExistingIfNeeded() }
     }
 
@@ -201,19 +203,23 @@ private struct HoleParRow: View {
         HStack(spacing: 12) {
             Text("Hole \(holeNumber)")
                 .font(.subheadline.weight(.medium))
+                .foregroundStyle(.textPrimary)
                 .frame(width: 64, alignment: .leading)
 
             Stepper(value: $par, in: 3...6) {
-                Text("Par \(par)")
+                Text("Par \(par)").foregroundStyle(.textPrimary)
             }
+            .tint(.emerald)
 
             TextField("yds", text: $yardageText)
                 .keyboardType(.numberPad)
                 .multilineTextAlignment(.trailing)
+                .foregroundStyle(.textPrimary)
+                .tint(.emerald)
                 .frame(width: 56)
                 .padding(.vertical, 6)
                 .padding(.horizontal, 8)
-                .background(Color.secondary.opacity(0.08), in: RoundedRectangle(cornerRadius: 8, style: .continuous))
+                .background(Color.white.opacity(0.06), in: RoundedRectangle(cornerRadius: 8, style: .continuous))
         }
     }
 }

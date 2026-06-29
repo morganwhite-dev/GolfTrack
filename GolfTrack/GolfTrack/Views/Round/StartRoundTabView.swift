@@ -25,23 +25,23 @@ struct StartRoundTabView: View {
                     Button("Continue to Round Setup") { showRoundSetup = true }
                         .buttonStyle(.primaryGolf)
                 } else {
-                    VStack(spacing: 12) {
+                    VStack(spacing: 14) {
                         ZStack {
-                            Circle().fill(Color.emerald.opacity(0.12)).frame(width: 64, height: 64)
+                            Circle().fill(Color.emerald.opacity(0.16)).frame(width: 64, height: 64)
                             Image(systemName: "flag.fill").font(.title2).foregroundStyle(.emerald)
                         }
-                        Text("Pick a course to begin").font(.headline)
+                        Text("Pick a course to begin").font(.headline).foregroundStyle(.textPrimary)
                         Button("Choose Course") { showCourseSearch = true }
                             .buttonStyle(.primaryGolf)
                     }
                     .frame(maxWidth: .infinity)
-                    .padding(.vertical, 20)
-                    .cardStyle()
+                    .padding(.vertical, 24)
+                    .cardStyle(raised: true)
                 }
             }
             .padding()
         }
-        .background(Color(.systemGroupedBackground))
+        .appBackground()
         .navigationTitle("Start Round")
         .navigationDestination(for: GolfCourse.self) { course in
             CourseDetailView(course: course)

@@ -12,9 +12,9 @@ struct CourseDetailView: View {
         ScrollView {
             VStack(spacing: 20) {
                 VStack(alignment: .leading, spacing: 12) {
-                    Text(course.name).font(.title2.weight(.bold))
+                    Text(course.name).font(.title2.weight(.bold)).foregroundStyle(.textPrimary)
                     if !course.location.isEmpty {
-                        Text(course.location).font(.subheadline).foregroundStyle(.secondary)
+                        Text(course.location).font(.subheadline).foregroundStyle(.textSecondary)
                     }
                     HStack(spacing: 8) {
                         Pill(text: course.courseType.displayName)
@@ -23,7 +23,7 @@ struct CourseDetailView: View {
                     }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .cardStyle()
+                .cardStyle(raised: true)
 
                 VStack(alignment: .leading, spacing: 10) {
                     SectionHeader(title: "Details", icon: "info.circle.fill")
@@ -38,11 +38,11 @@ struct CourseDetailView: View {
                     VStack(spacing: 6) {
                         ForEach(course.sortedHoles) { hole in
                             HStack {
-                                Text("Hole \(hole.holeNumber)").font(.subheadline)
+                                Text("Hole \(hole.holeNumber)").font(.subheadline).foregroundStyle(.textPrimary)
                                 Spacer()
-                                Text("Par \(hole.par)").font(.subheadline.weight(.medium))
+                                Text("Par \(hole.par)").font(.subheadline.weight(.medium)).foregroundStyle(.textPrimary)
                                 if let yardage = hole.yardage {
-                                    Text("\(yardage) yds").font(.caption).foregroundStyle(.secondary).frame(width: 64, alignment: .trailing)
+                                    Text("\(yardage) yds").font(.caption).foregroundStyle(.textSecondary).frame(width: 64, alignment: .trailing)
                                 }
                             }
                             .padding(.vertical, 4)
@@ -64,7 +64,7 @@ struct CourseDetailView: View {
             }
             .padding()
         }
-        .background(Color(.systemGroupedBackground))
+        .appBackground()
         .navigationTitle("Course Detail")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
@@ -83,9 +83,9 @@ private struct DetailRow: View {
     let value: String
     var body: some View {
         HStack {
-            Text(label).font(.subheadline).foregroundStyle(.secondary)
+            Text(label).font(.subheadline).foregroundStyle(.textSecondary)
             Spacer()
-            Text(value).font(.subheadline.weight(.medium))
+            Text(value).font(.subheadline.weight(.medium)).foregroundStyle(.textPrimary)
         }
     }
 }

@@ -30,7 +30,7 @@ struct CourseSearchView: View {
                         SectionHeader(title: "Saved Courses", icon: "bookmark.fill")
                         if filteredSaved.isEmpty {
                             Text("No saved courses yet.")
-                                .font(.subheadline).foregroundStyle(.secondary)
+                                .font(.subheadline).foregroundStyle(.textSecondary)
                         } else {
                             VStack(spacing: 4) {
                                 ForEach(filteredSaved) { course in
@@ -55,7 +55,7 @@ struct CourseSearchView: View {
                 }
                 .padding()
             }
-            .background(Color(.systemGroupedBackground))
+            .appBackground()
             .navigationTitle("Select Course")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -78,6 +78,7 @@ struct CourseSearchView: View {
                 isSearchingNearby = false
             }
         }
+        .tint(.emerald)
     }
 
     @ViewBuilder
@@ -90,8 +91,8 @@ struct CourseSearchView: View {
                     Button { addNearby(result) } label: {
                         HStack {
                             VStack(alignment: .leading, spacing: 2) {
-                                Text(result.name).font(.subheadline.weight(.semibold))
-                                Text(result.address).font(.caption).foregroundStyle(.secondary)
+                                Text(result.name).font(.subheadline.weight(.semibold)).foregroundStyle(.textPrimary)
+                                Text(result.address).font(.caption).foregroundStyle(.textSecondary)
                             }
                             Spacer()
                             Image(systemName: "plus.circle.fill").foregroundStyle(.emerald)
@@ -103,7 +104,7 @@ struct CourseSearchView: View {
             }
         } else {
             if let nearbyMessage {
-                Text(nearbyMessage).font(.caption).foregroundStyle(.secondary)
+                Text(nearbyMessage).font(.caption).foregroundStyle(.textSecondary)
             }
             Button("Find Nearby Courses") { searchNearby() }
                 .font(.subheadline.weight(.semibold))
@@ -153,11 +154,11 @@ struct CourseRow: View {
     var body: some View {
         HStack {
             VStack(alignment: .leading, spacing: 2) {
-                Text(course.name).font(.subheadline.weight(.semibold))
-                Text(subtitle).font(.caption).foregroundStyle(.secondary)
+                Text(course.name).font(.subheadline.weight(.semibold)).foregroundStyle(.textPrimary)
+                Text(subtitle).font(.caption).foregroundStyle(.textSecondary)
             }
             Spacer()
-            Image(systemName: "chevron.right").font(.caption).foregroundStyle(Color(.tertiaryLabel))
+            Image(systemName: "chevron.right").font(.caption).foregroundStyle(.textTertiary)
         }
         .padding(.vertical, 6)
         .contentShape(Rectangle())
