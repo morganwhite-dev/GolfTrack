@@ -33,7 +33,7 @@ struct ClubStatsView: View {
                 .padding()
             }
         }
-        .background(Color(.systemGroupedBackground))
+        .appBackground()
         .navigationTitle("Clubs")
         .navigationDestination(for: ClubStats.self) { stat in
             ClubDetailView(stats: stat)
@@ -43,7 +43,7 @@ struct ClubStatsView: View {
     private var emptyState: some View {
         VStack(spacing: 12) {
             Image(systemName: "figure.golf").font(.system(size: 40)).foregroundStyle(.emerald)
-            Text("Play a round to start building club stats.").font(.subheadline).foregroundStyle(.secondary)
+            Text("Play a round to start building club stats.").font(.subheadline).foregroundStyle(.textSecondary)
         }
         .frame(maxWidth: .infinity)
         .padding(.top, 80)
@@ -95,12 +95,12 @@ private struct ClubStatsRow: View {
     var body: some View {
         HStack {
             VStack(alignment: .leading, spacing: 2) {
-                Text(stats.club.displayName).font(.subheadline.weight(.semibold))
+                Text(stats.club.displayName).font(.subheadline.weight(.semibold)).foregroundStyle(.textPrimary)
                 Text("\(stats.timesUsed) shots • \(Int(stats.goodShotRate * 100))% good" + (stats.dominantMiss.map { " • mostly \($0)" } ?? ""))
-                    .font(.caption).foregroundStyle(.secondary)
+                    .font(.caption).foregroundStyle(.textSecondary)
             }
             Spacer()
-            Image(systemName: "chevron.right").font(.caption).foregroundStyle(Color(.tertiaryLabel))
+            Image(systemName: "chevron.right").font(.caption).foregroundStyle(.textTertiary)
         }
         .padding(.vertical, 4)
         .contentShape(Rectangle())

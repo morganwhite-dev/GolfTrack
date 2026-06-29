@@ -10,12 +10,12 @@ struct ClubDetailView: View {
             VStack(spacing: 20) {
                 VStack(spacing: 6) {
                     Image(systemName: "figure.golf").font(.title).foregroundStyle(.emerald)
-                    Text(stats.club.displayName).font(.title2.weight(.bold))
-                    Text("\(stats.timesUsed) shots tracked").font(.subheadline).foregroundStyle(.secondary)
+                    Text(stats.club.displayName).font(.title2.weight(.bold)).foregroundStyle(.textPrimary)
+                    Text("\(stats.timesUsed) shots tracked").font(.subheadline).foregroundStyle(.textSecondary)
                 }
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 8)
-                .cardStyle()
+                .cardStyle(raised: true)
 
                 VStack(alignment: .leading, spacing: 10) {
                     SectionHeader(title: "Performance", icon: "chart.bar.fill")
@@ -48,7 +48,7 @@ struct ClubDetailView: View {
             }
             .padding()
         }
-        .background(Color(.systemGroupedBackground))
+        .appBackground()
         .navigationTitle("Club Detail")
         .navigationBarTitleDisplayMode(.inline)
     }
