@@ -12,15 +12,15 @@ struct PracticePlanView: View {
         VStack(spacing: 20) {
                 VStack(spacing: 8) {
                     ZStack {
-                        Circle().fill(Color.emerald.opacity(0.12)).frame(width: 64, height: 64)
+                        Circle().fill(Color.emerald.opacity(0.16)).frame(width: 64, height: 64)
                         Image(systemName: "figure.golf").font(.title2).foregroundStyle(.emerald)
                     }
-                    Text("Practice Plan").font(.title2.weight(.bold))
-                    Text("\(plan.estimatedPracticeTime) minutes total").font(.subheadline).foregroundStyle(.secondary)
+                    Text("Practice Plan").font(.title2.weight(.bold)).foregroundStyle(.textPrimary)
+                    Text("\(plan.estimatedPracticeTime) minutes total").font(.subheadline).foregroundStyle(.textSecondary)
                 }
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 8)
-                .cardStyle()
+                .cardStyle(raised: true)
 
                 VStack(alignment: .leading, spacing: 10) {
                     SectionHeader(title: "Focus Areas", icon: "scope")
@@ -52,11 +52,11 @@ private struct DrillRow: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
             HStack {
-                Text(drill.title).font(.subheadline.weight(.semibold))
+                Text(drill.title).font(.subheadline.weight(.semibold)).foregroundStyle(.textPrimary)
                 Spacer()
                 Pill(text: "\(drill.timeMinutes) min", color: .charcoal)
             }
-            Text(drill.details).font(.caption).foregroundStyle(.secondary)
+            Text(drill.details).font(.caption).foregroundStyle(.textSecondary)
             Pill(text: drill.category.displayName)
         }
         .padding(.vertical, 6)

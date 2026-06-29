@@ -25,7 +25,7 @@ struct RoundSummaryView: View {
 
     private var header: some View {
         VStack(alignment: .leading, spacing: 6) {
-            Text("Round Summary").font(.title2.weight(.bold))
+            Text("Round Summary").font(.title2.weight(.bold)).foregroundStyle(.textPrimary)
             HStack(spacing: 8) {
                 Pill(text: stats.courseName)
                 Pill(text: "\(stats.holesPlayed) holes", color: .charcoal)
@@ -38,19 +38,19 @@ struct RoundSummaryView: View {
     private var scoreCard: some View {
         VStack(spacing: 10) {
             ScoreBadge(scoreToPar: stats.scoreToPar, size: 76)
-            Text("\(stats.totalStrokes) strokes").font(.title3.weight(.semibold))
-            Text("Par \(stats.totalPar)").font(.subheadline).foregroundStyle(.secondary)
+            Text("\(stats.totalStrokes) strokes").font(.title3.weight(.semibold)).foregroundStyle(.textPrimary)
+            Text("Par \(stats.totalPar)").font(.subheadline).foregroundStyle(.textSecondary)
             if let comparison = stats.targetComparison {
                 Text(comparison <= 0
                      ? "You beat your target by \(abs(comparison))"
                      : "\(comparison) over your target score")
                     .font(.subheadline.weight(.medium))
-                    .foregroundStyle(comparison <= 0 ? .emerald : .secondary)
+                    .foregroundStyle(comparison <= 0 ? .emerald : .textSecondary)
             }
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 8)
-        .cardStyle()
+        .cardStyle(raised: true)
     }
 
     private var quickStatsGrid: some View {

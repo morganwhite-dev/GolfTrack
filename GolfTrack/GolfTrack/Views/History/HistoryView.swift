@@ -35,7 +35,7 @@ struct HistoryView: View {
                 .scrollContentBackground(.hidden)
             }
         }
-        .background(Color(.systemGroupedBackground))
+        .appBackground()
         .navigationTitle("History")
         .navigationDestination(item: $selectedRound) { round in
             RoundDetailView(round: round)
@@ -63,7 +63,7 @@ struct HistoryView: View {
     private var emptyState: some View {
         VStack(spacing: 12) {
             Image(systemName: "clock.fill").font(.system(size: 40)).foregroundStyle(.emerald)
-            Text("No completed rounds yet.").font(.subheadline).foregroundStyle(.secondary)
+            Text("No completed rounds yet.").font(.subheadline).foregroundStyle(.textSecondary)
         }
         .frame(maxWidth: .infinity)
         .padding(.top, 80)
@@ -78,12 +78,12 @@ private struct HistoryRoundCard: View {
         HStack(spacing: 14) {
             ScoreBadge(scoreToPar: stats.scoreToPar, size: 50)
             VStack(alignment: .leading, spacing: 4) {
-                Text(stats.courseName).font(.subheadline.weight(.semibold))
+                Text(stats.courseName).font(.subheadline.weight(.semibold)).foregroundStyle(.textPrimary)
                 Text("\(stats.date.formatted(date: .abbreviated, time: .omitted)) • \(stats.holesPlayed) holes")
-                    .font(.caption).foregroundStyle(.secondary)
+                    .font(.caption).foregroundStyle(.textSecondary)
                 HStack(spacing: 10) {
-                    Text("\(stats.totalPutts) putts").font(.caption2).foregroundStyle(.secondary)
-                    Text("\(stats.totalPenalties) penalties").font(.caption2).foregroundStyle(.secondary)
+                    Text("\(stats.totalPutts) putts").font(.caption2).foregroundStyle(.textSecondary)
+                    Text("\(stats.totalPenalties) penalties").font(.caption2).foregroundStyle(.textSecondary)
                 }
                 if let rating = round.advice?.rating {
                     Pill(text: rating.displayName, color: .charcoal)
@@ -91,10 +91,10 @@ private struct HistoryRoundCard: View {
             }
             Spacer()
             VStack(alignment: .trailing, spacing: 2) {
-                Text("\(stats.totalStrokes)").font(.title3.weight(.bold))
+                Text("\(stats.totalStrokes)").font(.title3.weight(.bold)).foregroundStyle(.textPrimary)
                 if let target = stats.targetComparison {
                     Text(target <= 0 ? "Beat target" : "+\(target) vs target")
-                        .font(.caption2).foregroundStyle(.secondary)
+                        .font(.caption2).foregroundStyle(.textSecondary)
                 }
             }
         }

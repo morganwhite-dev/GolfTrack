@@ -13,20 +13,18 @@ struct RoundDetailView: View {
                 }
 
                 if let advice = round.advice {
-                    Divider()
-                    Text("Advice").font(.title3.weight(.bold)).frame(maxWidth: .infinity, alignment: .leading)
+                    SectionHeader(title: "Advice", icon: "lightbulb.fill")
                     AdviceView(advice: advice)
                 }
 
                 if let plan = round.practicePlan {
-                    Divider()
-                    Text("Practice Plan").font(.title3.weight(.bold)).frame(maxWidth: .infinity, alignment: .leading)
+                    SectionHeader(title: "Practice Plan", icon: "figure.golf")
                     PracticePlanView(plan: plan)
                 }
             }
             .padding()
         }
-        .background(Color(.systemGroupedBackground))
+        .appBackground()
         .navigationTitle("Round Detail")
         .navigationBarTitleDisplayMode(.inline)
     }
@@ -37,8 +35,7 @@ private struct ReflectionReadOnlyView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Divider()
-            Text("Reflection").font(.title3.weight(.bold)).frame(maxWidth: .infinity, alignment: .leading)
+            SectionHeader(title: "Reflection", icon: "text.bubble.fill")
 
             VStack(alignment: .leading, spacing: 10) {
                 feelRow("Tee Shots", reflection.teeShotFeel)
@@ -71,8 +68,8 @@ private struct ReflectionReadOnlyView: View {
 
     private func freeTextCard(title: String, text: String) -> some View {
         VStack(alignment: .leading, spacing: 6) {
-            Text(title).font(.subheadline.weight(.semibold))
-            Text(text).font(.subheadline).foregroundStyle(.secondary)
+            Text(title).font(.subheadline.weight(.semibold)).foregroundStyle(.textPrimary)
+            Text(text).font(.subheadline).foregroundStyle(.textSecondary)
         }
         .cardStyle()
     }

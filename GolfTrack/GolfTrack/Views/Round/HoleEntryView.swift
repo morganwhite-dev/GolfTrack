@@ -83,7 +83,7 @@ struct HoleEntryView: View {
                             }
                         }
                         VStack(alignment: .leading, spacing: 6) {
-                            Text("Notes").font(.subheadline.weight(.semibold))
+                            Text("Notes").font(.subheadline.weight(.semibold)).foregroundStyle(.textPrimary)
                             InputField(placeholder: "Optional notes", text: $holeScore.notes)
                         }
                     }
@@ -91,14 +91,13 @@ struct HoleEntryView: View {
             }
             .padding()
         }
-        .background(Color(.systemGroupedBackground))
     }
 
     private var header: some View {
         HStack {
             VStack(alignment: .leading, spacing: 2) {
-                Text("Hole \(holeScore.holeNumber)").font(.title2.weight(.bold))
-                Text("Par \(holeScore.par)").font(.subheadline).foregroundStyle(.secondary)
+                Text("Hole \(holeScore.holeNumber)").font(.title2.weight(.bold)).foregroundStyle(.textPrimary)
+                Text("Par \(holeScore.par)").font(.subheadline).foregroundStyle(.textSecondary)
             }
             Spacer()
             if holeScore.strokes > 0 {
@@ -110,7 +109,7 @@ struct HoleEntryView: View {
     @ViewBuilder
     private func fieldSection<Content: View>(title: String, padded: Bool = true, @ViewBuilder content: () -> Content) -> some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text(title).font(.subheadline.weight(.semibold))
+            Text(title).font(.subheadline.weight(.semibold)).foregroundStyle(.textPrimary)
             content()
         }
         .modifier(ConditionalCard(applyCard: padded))

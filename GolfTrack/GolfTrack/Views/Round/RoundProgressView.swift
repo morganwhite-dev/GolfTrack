@@ -24,6 +24,7 @@ struct RoundProgressView: View {
             Divider()
             bottomBar
         }
+        .appBackground()
         .onAppear { currentIndex = firstIncompleteIndex() }
         .confirmationDialog("End Round Early?", isPresented: $showEndConfirm, titleVisibility: .visible) {
             Button("End Round", role: .destructive) { finishRound() }
@@ -42,16 +43,16 @@ struct RoundProgressView: View {
     private var topBar: some View {
         HStack {
             VStack(alignment: .leading, spacing: 2) {
-                Text(round.course?.name ?? "Round").font(.subheadline.weight(.semibold))
+                Text(round.course?.name ?? "Round").font(.subheadline.weight(.semibold)).foregroundStyle(.textPrimary)
                 Text("\(round.totalStrokes) strokes • \(scoreToParText(round.scoreToPar))")
-                    .font(.caption).foregroundStyle(.secondary)
+                    .font(.caption).foregroundStyle(.textSecondary)
             }
             Spacer()
             Menu {
                 Button("End Round Early", role: .destructive) { showEndConfirm = true }
                 Button("Discard Round", role: .destructive) { showDiscardConfirm = true }
             } label: {
-                Image(systemName: "ellipsis.circle").font(.title3).foregroundStyle(.primary)
+                Image(systemName: "ellipsis.circle").font(.title3).foregroundStyle(.textPrimary)
             }
         }
         .padding()
@@ -63,9 +64,9 @@ struct RoundProgressView: View {
                 ForEach(Array(holes.enumerated()), id: \.element.id) { index, hole in
                     Button { currentIndex = index } label: {
                         VStack(spacing: 3) {
-                            Text("\(hole.holeNumber)").font(.caption.weight(.semibold))
+                            Text("\(hole.holeNumber)").font(.caption.weight(.semibold)).foregroundStyle(.textPrimary)
                             Circle()
-                                .fill(hole.strokes > 0 ? Color.emerald : Color.secondary.opacity(0.3))
+                                .fill(hole.strokes > 0 ? Color.emerald : Color.white.opacity(0.2))
                                 .frame(width: 6, height: 6)
                         }
                         .frame(width: 36, height: 36)
@@ -86,6 +87,7 @@ struct RoundProgressView: View {
             } label: {
                 Label("Previous", systemImage: "chevron.left").font(.subheadline.weight(.semibold))
             }
+            .foregroundStyle(.textPrimary)
             .disabled(currentIndex == 0)
             .opacity(currentIndex == 0 ? 0.4 : 1)
 
@@ -96,17 +98,18 @@ struct RoundProgressView: View {
                     .font(.subheadline.weight(.bold))
                     .padding(.horizontal, 20).padding(.vertical, 10)
                     .background(LinearGradient.emerald, in: Capsule())
-                    .foregroundStyle(.white)
+                    .foregroundStyle(.black)
             } else {
                 Button {
                     currentIndex = min(holes.count - 1, currentIndex + 1)
                 } label: {
                     Label("Next", systemImage: "chevron.right").font(.subheadline.weight(.semibold))
                 }
+                .foregroundStyle(.textPrimary)
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color.cardFill)
     }
 
     private func firstIncompleteIndex() -> Int {

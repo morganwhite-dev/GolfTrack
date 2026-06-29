@@ -13,22 +13,22 @@ struct AdviceView: View {
 
                 VStack(alignment: .leading, spacing: 10) {
                     SectionHeader(title: "Main Issue", icon: "exclamationmark.circle.fill")
-                    Text(advice.mainIssue).font(.subheadline)
+                    Text(advice.mainIssue).font(.subheadline).foregroundStyle(.textPrimary)
                     Divider()
                     SectionHeader(title: "Secondary Issue", icon: "exclamationmark.circle")
-                    Text(advice.secondaryIssue).font(.subheadline)
+                    Text(advice.secondaryIssue).font(.subheadline).foregroundStyle(.textPrimary)
                 }
                 .cardStyle()
 
                 VStack(alignment: .leading, spacing: 8) {
                     SectionHeader(title: "Best Part of Your Round", icon: "star.fill")
-                    Text(advice.bestPart).font(.subheadline)
+                    Text(advice.bestPart).font(.subheadline).foregroundStyle(.textPrimary)
                 }
                 .cardStyle()
 
                 VStack(alignment: .leading, spacing: 8) {
                     SectionHeader(title: "Next Round Goal", icon: "flag.checkered")
-                    Text(advice.nextRoundGoal).font(.subheadline.weight(.semibold))
+                    Text(advice.nextRoundGoal).font(.subheadline.weight(.semibold)).foregroundStyle(.textPrimary)
                 }
                 .cardStyle()
 
@@ -42,12 +42,12 @@ struct AdviceView: View {
     private var ratingCard: some View {
         VStack(spacing: 8) {
             Image(systemName: ratingIcon).font(.largeTitle).foregroundStyle(ratingColor)
-            Text(advice.rating.displayName).font(.title2.weight(.bold))
-            Text(ratingBlurb).font(.subheadline).foregroundStyle(.secondary).multilineTextAlignment(.center)
+            Text(advice.rating.displayName).font(.title2.weight(.bold)).foregroundStyle(.textPrimary)
+            Text(ratingBlurb).font(.subheadline).foregroundStyle(.textSecondary).multilineTextAlignment(.center)
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 12)
-        .cardStyle()
+        .cardStyle(raised: true)
     }
 
     private var ratingIcon: String {
@@ -87,7 +87,7 @@ struct AdviceView: View {
                 ForEach(items, id: \.self) { item in
                     HStack(alignment: .top, spacing: 8) {
                         Circle().fill(color).frame(width: 6, height: 6).padding(.top, 6)
-                        Text(item).font(.subheadline)
+                        Text(item).font(.subheadline).foregroundStyle(.textPrimary)
                     }
                 }
             }

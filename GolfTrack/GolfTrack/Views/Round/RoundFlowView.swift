@@ -23,7 +23,7 @@ struct RoundFlowView: View {
                     RoundSummaryView(round: round, onContinue: { withAnimation { stage = .reflection } })
                         .padding()
                 }
-                .background(Color(.systemGroupedBackground))
+                .appBackground()
             case .reflection:
                 RoundReflectionView(round: round, onContinue: {
                     generateAdviceAndPlan()
@@ -35,7 +35,7 @@ struct RoundFlowView: View {
                         AdviceView(advice: advice, onContinue: { withAnimation { stage = .practicePlan } })
                             .padding()
                     }
-                    .background(Color(.systemGroupedBackground))
+                    .appBackground()
                 }
             case .practicePlan:
                 if let plan = round.practicePlan {
@@ -43,7 +43,7 @@ struct RoundFlowView: View {
                         PracticePlanView(plan: plan, onDone: { dismiss() })
                             .padding()
                     }
-                    .background(Color(.systemGroupedBackground))
+                    .appBackground()
                 }
             }
         }

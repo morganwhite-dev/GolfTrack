@@ -26,7 +26,7 @@ struct RoundReflectionView: View {
                 feelQuestion(title: "How was your putting?", reflection.puttingFeel) { reflection.puttingFeel = $0 }
 
                 VStack(alignment: .leading, spacing: 10) {
-                    Text("What was your biggest miss today?").font(.subheadline.weight(.semibold))
+                    Text("What was your biggest miss today?").font(.subheadline.weight(.semibold)).foregroundStyle(.textPrimary)
                     ChipScrollRow(items: BiggestMiss.allCases, selected: reflection.biggestMiss) { reflection.biggestMiss = $0 }
                 }
                 .cardStyle()
@@ -35,6 +35,7 @@ struct RoundReflectionView: View {
                     Toggle("Any mental mistakes or blow-up holes?", isOn: $reflection.hadMentalMistakes)
                         .tint(.emerald)
                         .font(.subheadline.weight(.semibold))
+                        .foregroundStyle(.textPrimary)
                     if reflection.hadMentalMistakes {
                         InputField(placeholder: "What happened?", text: $reflection.mentalMistakesNote)
                     }
@@ -50,21 +51,21 @@ struct RoundReflectionView: View {
             }
             .padding()
         }
-        .background(Color(.systemGroupedBackground))
+        .appBackground()
     }
 
     private var header: some View {
         VStack(alignment: .leading, spacing: 4) {
-            Text("How Did It Go?").font(.title2.weight(.bold))
+            Text("How Did It Go?").font(.title2.weight(.bold)).foregroundStyle(.textPrimary)
             Text("A few quick questions to help tailor your advice.")
-                .font(.subheadline).foregroundStyle(.secondary)
+                .font(.subheadline).foregroundStyle(.textSecondary)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
     }
 
     private func feelQuestion(title: String, _ selected: FeelRating?, onSelect: @escaping (FeelRating?) -> Void) -> some View {
         VStack(alignment: .leading, spacing: 10) {
-            Text(title).font(.subheadline.weight(.semibold))
+            Text(title).font(.subheadline.weight(.semibold)).foregroundStyle(.textPrimary)
             ChipScrollRow(items: FeelRating.allCases, selected: selected, onSelect: onSelect)
         }
         .cardStyle()
@@ -72,7 +73,7 @@ struct RoundReflectionView: View {
 
     private func freeTextQuestion(title: String, text: Binding<String>) -> some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text(title).font(.subheadline.weight(.semibold))
+            Text(title).font(.subheadline.weight(.semibold)).foregroundStyle(.textPrimary)
             InputField(placeholder: "Optional", text: text)
         }
         .cardStyle()
