@@ -1,4 +1,5 @@
 import SwiftUI
+import SwiftData
 
 struct StartRoundTabView: View {
     @Bindable var profile: UserProfile
@@ -6,43 +7,40 @@ struct StartRoundTabView: View {
     @State private var selectedCourse: GolfCourse?
     @State private var showRoundSetup = false
 
+    @Query(sort: \GolfRound.date, order: .reverse) private var allRounds: [GolfRound]
+
+    private var recentCourses: [GolfCourse] {
+        var seen = Set<UUID>()
+        var result: [GolfCourse] = []
+        for round in allRounds {
+            guard let course = round.course, !seen.contains(course.id) else { continue }
+            seen.insert(course.id)
+            result.append(course)
+            if result.count >= 4 { break }
+        }
+        return result
+    }
+
     var body: some View {
         ScrollView {
             VStack(spacing: 20) {
-                if let course = selectedCourse {
-                    VStack(alignment: .leading, spacing: 12) {
-                        SectionHeader(title: "Selected Course", icon: "flag.fill")
-                        NavigationLink(value: course) {
-                            CourseRow(course: course)
-                        }
-                        .buttonStyle(.plain)
-                        Button("Choose a Different Course") { showCourseSearch = true }
-                            .font(.subheadline.weight(.semibold))
-                            .foregroundStyle(.emerald)
-                    }
-                    .cardStyle()
+                topBar
 
+                if let course = selectedCourse {
+                    selectedCourseCard(course)
                     Button("Continue to Round Setup") { showRoundSetup = true }
                         .buttonStyle(.primaryGolf)
                 } else {
-                    VStack(spacing: 14) {
-                        ZStack {
-                            Circle().fill(Color.emerald.opacity(0.16)).frame(width: 64, height: 64)
-                            Image(systemName: "flag.fill").font(.title2).foregroundStyle(.emerald)
-                        }
-                        Text("Pick a course to begin").font(.headline).foregroundStyle(.textPrimary)
-                        Button("Choose Course") { showCourseSearch = true }
-                            .buttonStyle(.primaryGolf)
+                    heroCard
+                    if !recentCourses.isEmpty {
+                        recentCoursesSection
                     }
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 24)
-                    .cardStyle(raised: true)
                 }
             }
             .padding()
         }
         .appBackground()
-        .navigationTitle("Start Round")
+        .toolbar(.hidden, for: .navigationBar)
         .navigationDestination(for: GolfCourse.self) { course in
             CourseDetailView(course: course)
         }
@@ -55,6 +53,96 @@ struct StartRoundTabView: View {
             CourseSearchView { course in
                 selectedCourse = course
             }
+        }
+    }
+
+    private var topBar: some View {
+        Text("Start Round")
+            .font(.title3.weight(.bold))
+            .foregroundStyle(.textPrimary)
+            .frame(maxWidth: .infinity)
+            .padding(.top, 6)
+    }
+
+    private var heroCard: some View {
+        ZStack(alignment: .topLeading) {
+            GlowBlob(color: .emerald, size: 160)
+                .offset(x: -40, y: -40)
+
+            VStack(spacing: 14) {
+                GolfFlagGraphic(size: 84)
+                Text("Ready to play?").font(.title2.weight(.bold)).foregroundStyle(.textPrimary)
+                Text("Pick a course to start tracking this round.")
+                    .font(.subheadline).foregroundStyle(.textSecondary)
+                    .multilineTextAlignment(.center)
+                Button("Choose Course") { showCourseSearch = true }
+                    .buttonStyle(.primaryGolf)
+                    .padding(.horizontal, 24)
+            }
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 28)
+        }
+        .cardStyle(raised: true)
+        .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
+    }
+
+    private func selectedCourseCard(_ course: GolfCourse) -> some View {
+        VStack(alignment: .leading, spacing: 14) {
+            HStack(spacing: 12) {
+                IconBadge(icon: courseIcon(course.courseType), color: .emerald, size: 48)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(course.name).font(.headline).foregroundStyle(.textPrimary)
+                    if !course.location.isEmpty {
+                        Text(course.location).font(.caption).foregroundStyle(.textSecondary)
+                    }
+                }
+                Spacer()
+            }
+            HStack(spacing: 10) {
+                Pill(text: course.courseType.displayName)
+                Pill(text: "\(course.numberOfHoles) holes", color: .charcoal)
+                Pill(text: "Par \(course.totalPar)", color: .charcoal)
+            }
+            NavigationLink(value: course) {
+                Text("View Course Details").font(.caption.weight(.semibold)).foregroundStyle(.emerald)
+            }
+            .buttonStyle(.plain)
+            Button("Choose a Different Course") { showCourseSearch = true }
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(.textSecondary)
+        }
+        .cardStyle(raised: true)
+    }
+
+    private var recentCoursesSection: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            SectionHeader(title: "Recent Courses", icon: "clock.fill")
+            VStack(spacing: 8) {
+                ForEach(recentCourses) { course in
+                    Button { selectedCourse = course } label: {
+                        HStack(spacing: 12) {
+                            IconBadge(icon: courseIcon(course.courseType), color: .emerald, size: 38)
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text(course.name).font(.subheadline.weight(.semibold)).foregroundStyle(.textPrimary)
+                                Text("\(course.courseType.displayName) • \(course.numberOfHoles) holes").font(.caption).foregroundStyle(.textSecondary)
+                            }
+                            Spacer()
+                            Image(systemName: "arrow.right.circle.fill").foregroundStyle(.emerald)
+                        }
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
+        }
+        .cardStyle()
+    }
+
+    private func courseIcon(_ type: CourseType) -> String {
+        switch type {
+        case .standard: return "flag.fill"
+        case .par3: return "3.circle.fill"
+        case .executive: return "briefcase.fill"
+        case .other: return "questionmark.circle.fill"
         }
     }
 }
