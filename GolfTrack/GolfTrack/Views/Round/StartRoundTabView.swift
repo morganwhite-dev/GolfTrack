@@ -106,7 +106,7 @@ struct StartRoundTabView: View {
             NavigationLink(value: course) {
                 Text("View Course Details").font(.caption.weight(.semibold)).foregroundStyle(.emerald)
             }
-            .buttonStyle(.plain)
+            .buttonStyle(.bouncy)
             Button("Choose a Different Course") { showCourseSearch = true }
                 .font(.subheadline.weight(.semibold))
                 .foregroundStyle(.textSecondary)
@@ -130,7 +130,7 @@ struct StartRoundTabView: View {
                             Image(systemName: "arrow.right.circle.fill").foregroundStyle(.emerald)
                         }
                     }
-                    .buttonStyle(.plain)
+                    .buttonStyle(.bouncy)
                 }
             }
         }

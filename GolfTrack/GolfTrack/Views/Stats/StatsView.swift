@@ -138,7 +138,7 @@ struct StatsView: View {
             }
             .cardStyle()
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.bouncy)
     }
 
     private var bestClub: ClubType? {

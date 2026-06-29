@@ -300,7 +300,7 @@ struct SelectableRow: View {
             )
             .contentShape(Rectangle())
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.bouncy)
     }
 }
 
@@ -368,12 +368,32 @@ struct PrimaryButtonStyle: ButtonStyle {
             .foregroundStyle(.black)
             .background(gradient.opacity(configuration.isPressed ? 0.8 : 1), in: RoundedRectangle(cornerRadius: 14, style: .continuous))
             .shadow(color: Color.emerald.opacity(0.35), radius: 14, x: 0, y: 6)
-            .scaleEffect(configuration.isPressed ? 0.98 : 1)
-            .animation(.easeOut(duration: 0.15), value: configuration.isPressed)
+            .scaleEffect(configuration.isPressed ? 0.95 : 1)
+            .animation(.spring(response: 0.3, dampingFraction: 0.55), value: configuration.isPressed)
+            .sensoryFeedback(trigger: configuration.isPressed) { _, isPressed in
+                isPressed ? .impact(weight: .medium) : nil
+            }
     }
 }
 extension ButtonStyle where Self == PrimaryButtonStyle {
     static var primaryGolf: PrimaryButtonStyle { PrimaryButtonStyle() }
+}
+
+/// Generic spring-bounce press feedback for card taps, nav links, and icon buttons —
+/// makes every tap in the app feel physically responsive instead of just changing state.
+struct BouncyButtonStyle: ButtonStyle {
+    var scale: CGFloat = 0.96
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .scaleEffect(configuration.isPressed ? scale : 1)
+            .animation(.spring(response: 0.3, dampingFraction: 0.6), value: configuration.isPressed)
+            .sensoryFeedback(trigger: configuration.isPressed) { _, isPressed in
+                isPressed ? .impact(weight: .light) : nil
+            }
+    }
+}
+extension ButtonStyle where Self == BouncyButtonStyle {
+    static var bouncy: BouncyButtonStyle { BouncyButtonStyle() }
 }
 
 /// Large tappable score chip used throughout hole entry for fast, low-typing input.
@@ -402,7 +422,8 @@ struct ChoiceChip: View {
                         .strokeBorder(isSelected ? Color.clear : Color.white.opacity(0.08), lineWidth: 1)
                 )
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.bouncy)
+        .sensoryFeedback(.selection, trigger: isSelected)
     }
 }
 
@@ -411,27 +432,38 @@ struct BigStepperBox: View {
     let title: String
     @Binding var value: Int
     var range: ClosedRange<Int> = 0...20
+    @State private var bump = false
 
     var body: some View {
         VStack(spacing: 6) {
             Text(title).font(.caption.weight(.medium)).foregroundStyle(.textSecondary)
             HStack(spacing: 10) {
-                Button { value = max(range.lowerBound, value - 1) } label: {
+                Button { step(-1) } label: {
                     Image(systemName: "minus.circle.fill").font(.title2)
                 }
+                .buttonStyle(.bouncy)
                 Text("\(value)")
                     .font(.system(.title2, design: .rounded).bold())
                     .foregroundStyle(.textPrimary)
                     .frame(minWidth: 30)
-                Button { value = min(range.upperBound, value + 1) } label: {
+                    .scaleEffect(bump ? 1.25 : 1)
+                    .animation(.spring(response: 0.25, dampingFraction: 0.4), value: bump)
+                Button { step(1) } label: {
                     Image(systemName: "plus.circle.fill").font(.title2)
                 }
+                .buttonStyle(.bouncy)
             }
             .foregroundStyle(.emerald)
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 12)
         .cardStyle(padding: 8, cornerRadius: 14)
+    }
+
+    private func step(_ delta: Int) {
+        value = min(range.upperBound, max(range.lowerBound, value + delta))
+        bump = true
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.12) { bump = false }
     }
 }
 
@@ -495,7 +527,7 @@ struct ExpandableSection<Content: View>: View {
                         .rotationEffect(.degrees(isExpanded ? 180 : 0))
                 }
             }
-            .buttonStyle(.plain)
+            .buttonStyle(.bouncy)
 
             if isExpanded {
                 content

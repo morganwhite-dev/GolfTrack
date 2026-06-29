@@ -70,7 +70,7 @@ struct HomeView: View {
                         .frame(width: 34, height: 34)
                         .background(Color.white.opacity(0.05), in: Circle())
                 }
-                .buttonStyle(.plain)
+                .buttonStyle(.bouncy)
             }
         }
         .padding(.top, 6)
@@ -113,7 +113,7 @@ struct HomeView: View {
                     .strokeBorder(Color.warningAmber.opacity(0.35), lineWidth: 1.5)
             )
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.bouncy)
     }
 
     // MARK: - Today's Focus
@@ -146,7 +146,7 @@ struct HomeView: View {
                             .padding(.horizontal, 16).padding(.vertical, 9)
                             .background(Color.textPrimary, in: Capsule())
                     }
-                    .buttonStyle(.plain)
+                    .buttonStyle(.bouncy)
                 } else {
                     Text("Play your first round").font(.title3.weight(.bold)).foregroundStyle(.textPrimary)
                     Text("We'll build a personalized focus area from your round data.")
@@ -190,7 +190,7 @@ struct HomeView: View {
                         .font(.caption.weight(.semibold))
                         .foregroundStyle(.emerald)
                 }
-                .buttonStyle(.plain)
+                .buttonStyle(.bouncy)
             } else {
                 Text("No plan yet — finish a round to get one.")
                     .font(.caption).foregroundStyle(.textSecondary)

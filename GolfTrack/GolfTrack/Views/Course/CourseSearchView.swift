@@ -37,7 +37,7 @@ struct CourseSearchView: View {
                                     Button { select(course) } label: {
                                         CourseRow(course: course)
                                     }
-                                    .buttonStyle(.plain)
+                                    .buttonStyle(.bouncy)
                                 }
                             }
                         }
@@ -99,7 +99,7 @@ struct CourseSearchView: View {
                         }
                         .padding(.vertical, 4)
                     }
-                    .buttonStyle(.plain)
+                    .buttonStyle(.bouncy)
                 }
             }
         } else {

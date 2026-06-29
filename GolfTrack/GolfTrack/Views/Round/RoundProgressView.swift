@@ -72,7 +72,7 @@ struct RoundProgressView: View {
                         .frame(width: 36, height: 36)
                         .background(index == currentIndex ? Color.emerald.opacity(0.15) : Color.clear, in: Circle())
                     }
-                    .buttonStyle(.plain)
+                    .buttonStyle(.bouncy)
                 }
             }
             .padding(.horizontal)

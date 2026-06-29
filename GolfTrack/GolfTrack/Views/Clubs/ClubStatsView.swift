@@ -67,7 +67,7 @@ struct ClubStatsView: View {
                     NavigationLink(value: stat) {
                         ClubStatsRow(stats: stat)
                     }
-                    .buttonStyle(.plain)
+                    .buttonStyle(.bouncy)
                 }
             }
         }
@@ -82,7 +82,7 @@ struct ClubStatsView: View {
                     NavigationLink(value: stat) {
                         ClubStatsRow(stats: stat)
                     }
-                    .buttonStyle(.plain)
+                    .buttonStyle(.bouncy)
                 }
             }
         }
