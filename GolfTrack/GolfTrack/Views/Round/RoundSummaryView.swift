@@ -38,7 +38,10 @@ struct RoundSummaryView: View {
     private var scoreCard: some View {
         VStack(spacing: 10) {
             ScoreBadge(scoreToPar: stats.scoreToPar, size: 76)
-            Text("\(stats.totalStrokes) strokes").font(.title3.weight(.semibold)).foregroundStyle(.textPrimary)
+            HStack(spacing: 4) {
+                CountUpNumber(value: stats.totalStrokes, font: .title3.weight(.semibold), color: .textPrimary)
+                Text("strokes").font(.title3.weight(.semibold)).foregroundStyle(.textPrimary)
+            }
             Text("Par \(stats.totalPar)").font(.subheadline).foregroundStyle(.textSecondary)
             if let comparison = stats.targetComparison {
                 Text(comparison <= 0

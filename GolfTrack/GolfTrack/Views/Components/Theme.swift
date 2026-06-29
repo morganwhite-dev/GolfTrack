@@ -211,9 +211,11 @@ struct Pill: View {
 
 /// Circular score-relative-to-par indicator. Emerald marks an under-par (good) score, matching
 /// the app's brand accent and standard green-is-good UI convention; warm tones signal "needs work."
+/// Pops in with a spring on appear and rolls its digits in via CountUpNumber.
 struct ScoreBadge: View {
     let scoreToPar: Int
     var size: CGFloat = 44
+    @State private var appeared = false
 
     var body: some View {
         Circle()
@@ -221,11 +223,14 @@ struct ScoreBadge: View {
             .overlay(Circle().strokeBorder(color, lineWidth: 1.5))
             .frame(width: size, height: size)
             .overlay(
-                Text(scoreToParText(scoreToPar))
-                    .font(.system(size: size * 0.32, weight: .bold, design: .rounded))
-                    .foregroundStyle(color)
+                CountUpNumber(value: scoreToPar, font: .system(size: size * 0.32, weight: .bold, design: .rounded), color: color, formatter: scoreToParText)
                     .minimumScaleFactor(0.7)
             )
+            .scaleEffect(appeared ? 1 : 0.4)
+            .opacity(appeared ? 1 : 0)
+            .onAppear {
+                withAnimation(.spring(response: 0.45, dampingFraction: 0.65)) { appeared = true }
+            }
     }
 
     private var color: Color {
@@ -241,6 +246,29 @@ struct ScoreBadge: View {
 func scoreToParText(_ value: Int) -> String {
     if value == 0 { return "E" }
     return value > 0 ? "+\(value)" : "\(value)"
+}
+
+/// Animated number that rolls its digits in via the iOS 17 numeric text transition instead of
+/// just appearing — used anywhere a headline number is the focal point of a screen.
+struct CountUpNumber: View {
+    let value: Int
+    var font: Font = .title2.weight(.bold)
+    var color: Color = .textPrimary
+    var formatter: (Int) -> String = { "\($0)" }
+    @State private var displayed: Int = 0
+
+    var body: some View {
+        Text(formatter(displayed))
+            .font(font)
+            .foregroundStyle(color)
+            .contentTransition(.numericText())
+            .onAppear {
+                withAnimation(.easeOut(duration: 0.7)) { displayed = value }
+            }
+            .onChange(of: value) { _, newValue in
+                withAnimation(.easeOut(duration: 0.5)) { displayed = newValue }
+            }
+    }
 }
 
 struct SectionHeader: View {
@@ -344,17 +372,25 @@ struct MetricTile: View {
     let value: String
     var icon: String? = nil
     var tint: Color = .emerald
+    @State private var appeared = false
+
     var body: some View {
         VStack(spacing: 6) {
             if let icon {
                 Image(systemName: icon).font(.subheadline).foregroundStyle(tint)
             }
             Text(value).font(.title3.weight(.bold)).foregroundStyle(.textPrimary)
+                .contentTransition(.numericText())
             Text(title).font(.caption).foregroundStyle(.textSecondary).multilineTextAlignment(.center)
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 12)
         .cardStyle(padding: 8, cornerRadius: 14)
+        .scaleEffect(appeared ? 1 : 0.7)
+        .opacity(appeared ? 1 : 0)
+        .onAppear {
+            withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) { appeared = true }
+        }
     }
 }
 
