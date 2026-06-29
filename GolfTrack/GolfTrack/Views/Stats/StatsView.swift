@@ -52,6 +52,7 @@ struct StatsView: View {
                 emptyState
             } else {
                 VStack(spacing: 20) {
+                    SectionHeader(title: "Overview", icon: "chart.bar.fill")
                     headlineGrid
                     trendsSection
                     patternsSection
@@ -60,14 +61,14 @@ struct StatsView: View {
                 .padding()
             }
         }
-        .background(Color(.systemGroupedBackground))
+        .appBackground()
         .navigationTitle("Stats")
     }
 
     private var emptyState: some View {
         VStack(spacing: 12) {
             Image(systemName: "chart.bar.fill").font(.system(size: 40)).foregroundStyle(.emerald)
-            Text("Play a few rounds to see your stats here.").font(.subheadline).foregroundStyle(.secondary)
+            Text("Play a few rounds to see your stats here.").font(.subheadline).foregroundStyle(.textSecondary)
         }
         .frame(maxWidth: .infinity)
         .padding(.top, 80)
@@ -148,9 +149,9 @@ private struct TrendChart: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text(title).font(.subheadline.weight(.semibold))
+            Text(title).font(.subheadline.weight(.semibold)).foregroundStyle(.textPrimary)
             if values.count < 2 {
-                Text("Play a few more rounds to see a trend.").font(.caption).foregroundStyle(.secondary)
+                Text("Play a few more rounds to see a trend.").font(.caption).foregroundStyle(.textSecondary)
             } else {
                 Chart {
                     ForEach(Array(values.enumerated()), id: \.offset) { index, value in
@@ -159,6 +160,18 @@ private struct TrendChart: View {
                     }
                 }
                 .foregroundStyle(color)
+                .chartXAxis {
+                    AxisMarks { _ in
+                        AxisGridLine().foregroundStyle(Color.white.opacity(0.1))
+                        AxisValueLabel().foregroundStyle(Color.white.opacity(0.5))
+                    }
+                }
+                .chartYAxis {
+                    AxisMarks { _ in
+                        AxisGridLine().foregroundStyle(Color.white.opacity(0.1))
+                        AxisValueLabel().foregroundStyle(Color.white.opacity(0.5))
+                    }
+                }
                 .frame(height: 120)
             }
         }
