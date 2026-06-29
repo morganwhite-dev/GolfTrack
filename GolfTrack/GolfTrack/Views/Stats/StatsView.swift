@@ -154,6 +154,7 @@ private struct TrendChart: View {
     let title: String
     let values: [Int]
     var color: Color = .emerald
+    @State private var revealedCount = 0
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -162,12 +163,13 @@ private struct TrendChart: View {
                 Text("Play a few more rounds to see a trend.").font(.caption).foregroundStyle(.textSecondary)
             } else {
                 Chart {
-                    ForEach(Array(values.enumerated()), id: \.offset) { index, value in
+                    ForEach(Array(values.enumerated().prefix(revealedCount)), id: \.offset) { index, value in
                         LineMark(x: .value("Round", index), y: .value("Value", value))
                         PointMark(x: .value("Round", index), y: .value("Value", value))
                     }
                 }
                 .foregroundStyle(color)
+                .chartXScale(domain: 0...max(values.count - 1, 1))
                 .chartXAxis {
                     AxisMarks { _ in
                         AxisGridLine().foregroundStyle(Color.white.opacity(0.1))
@@ -181,8 +183,22 @@ private struct TrendChart: View {
                     }
                 }
                 .frame(height: 120)
+                .onAppear {
+                    revealedCount = 0
+                    revealNext()
+                }
             }
         }
         .cardStyle()
+    }
+
+    private func revealNext() {
+        guard revealedCount < values.count else { return }
+        withAnimation(.easeOut(duration: 0.25)) {
+            revealedCount += 1
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.08) {
+            revealNext()
+        }
     }
 }
