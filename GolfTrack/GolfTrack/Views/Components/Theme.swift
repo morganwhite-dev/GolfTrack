@@ -61,6 +61,68 @@ extension View {
     }
 }
 
+/// Soft blurred glow shape for decorative depth behind hero cards — no image assets needed,
+/// just a blurred gradient circle. Use sparingly (1-2 per screen) behind a card's leading/trailing edge.
+struct GlowBlob: View {
+    var color: Color = .emerald
+    var size: CGFloat = 180
+    var body: some View {
+        Circle()
+            .fill(color)
+            .frame(width: size, height: size)
+            .blur(radius: size * 0.35)
+            .opacity(0.35)
+            .allowsHitTesting(false)
+    }
+}
+
+/// Layered gradient icon badge — replaces flat single-tone "circle + SF Symbol" treatment
+/// with a richer, more dimensional look (gradient fill, ring, soft glow shadow).
+struct IconBadge: View {
+    let icon: String
+    var color: Color = .emerald
+    var size: CGFloat = 40
+    var body: some View {
+        ZStack {
+            Circle()
+                .fill(LinearGradient(colors: [color.opacity(0.4), color.opacity(0.12)], startPoint: .topLeading, endPoint: .bottomTrailing))
+            Circle()
+                .strokeBorder(color.opacity(0.45), lineWidth: 1)
+            Image(systemName: icon)
+                .font(.system(size: size * 0.42, weight: .semibold))
+                .foregroundStyle(color)
+        }
+        .frame(width: size, height: size)
+        .shadow(color: color.opacity(0.3), radius: 6, x: 0, y: 3)
+    }
+}
+
+/// Circular ring progress indicator (Apple-Activity-style) — used in place of flat ProgressView
+/// bars wherever a single completion fraction is the headline metric.
+struct RingProgress<Content: View>: View {
+    var progress: Double
+    var lineWidth: CGFloat = 7
+    var size: CGFloat = 60
+    var color: Color = .emerald
+    @ViewBuilder var content: Content
+
+    var body: some View {
+        ZStack {
+            Circle().stroke(Color.white.opacity(0.1), lineWidth: lineWidth)
+            Circle()
+                .trim(from: 0, to: min(max(progress, 0.001), 1))
+                .stroke(
+                    AngularGradient(colors: [color.opacity(0.45), color], center: .center),
+                    style: StrokeStyle(lineWidth: lineWidth, lineCap: .round)
+                )
+                .rotationEffect(.degrees(-90))
+            content
+        }
+        .frame(width: size, height: size)
+        .animation(.easeOut(duration: 0.4), value: progress)
+    }
+}
+
 struct CardBackground: ViewModifier {
     var padding: CGFloat = 16
     var cornerRadius: CGFloat = 20

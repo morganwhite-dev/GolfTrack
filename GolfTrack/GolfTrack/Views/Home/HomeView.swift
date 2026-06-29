@@ -78,10 +78,7 @@ struct HomeView: View {
 
     private var greetingRow: some View {
         HStack(spacing: 12) {
-            ZStack {
-                Circle().fill(Color.emerald.opacity(0.16)).frame(width: 46, height: 46)
-                Image(systemName: "person.crop.circle.fill").font(.title2).foregroundStyle(.emerald)
-            }
+            IconBadge(icon: "person.crop.circle.fill", color: .emerald, size: 46)
             VStack(alignment: .leading, spacing: 2) {
                 Text("\(greeting), \(profile.name.isEmpty ? "Golfer" : profile.name)")
                     .font(.title3.weight(.bold)).foregroundStyle(.textPrimary)
@@ -96,18 +93,16 @@ struct HomeView: View {
 
     private func inProgressCard(_ round: GolfRound) -> some View {
         let holesEntered = round.sortedHoleScores.filter { $0.strokes > 0 }.count
+        let total = max(round.holesPlayed, 1)
         return Button { resumeRound = round } label: {
             HStack(spacing: 14) {
-                ZStack {
-                    Circle().fill(Color.warningAmber.opacity(0.16)).frame(width: 46, height: 46)
-                    Image(systemName: "arrow.clockwise").foregroundStyle(.warningAmber).font(.title3)
+                RingProgress(progress: Double(holesEntered) / Double(total), size: 50, color: .warningAmber) {
+                    Text("\(holesEntered)/\(total)").font(.system(size: 11, weight: .bold, design: .rounded)).foregroundStyle(.textPrimary)
                 }
-                VStack(alignment: .leading, spacing: 5) {
+                VStack(alignment: .leading, spacing: 3) {
                     Text("Round in Progress").font(.subheadline.weight(.semibold)).foregroundStyle(.textPrimary)
                     Text(round.course?.name ?? "Course")
                         .font(.caption).foregroundStyle(.textSecondary)
-                    ProgressView(value: Double(holesEntered), total: Double(max(round.holesPlayed, 1)))
-                        .tint(.warningAmber)
                 }
                 Spacer()
                 Image(systemName: "chevron.right").font(.caption.weight(.semibold)).foregroundStyle(.textSecondary)
@@ -124,44 +119,50 @@ struct HomeView: View {
     // MARK: - Today's Focus
 
     private var todaysFocusCard: some View {
-        VStack(alignment: .leading, spacing: 14) {
-            HStack {
-                SectionHeader(title: "Today's Focus")
-                Spacer()
-                if let plan = latestPlan, let category = plan.recommendedDrills?.first?.category {
-                    Pill(text: category.displayName, color: .emerald)
-                }
-            }
+        ZStack(alignment: .topTrailing) {
+            GlowBlob(color: .emerald, size: 150)
+                .offset(x: 50, y: -50)
 
-            if let plan = latestPlan, let round = mostRecentRound {
-                Text(plan.mainFocus)
-                    .font(.title2.weight(.bold)).foregroundStyle(.textPrimary)
-                if let hook = plan.recommendedDrills?.first?.relatedSkill, !hook.isEmpty {
-                    Text(hook).font(.subheadline).foregroundStyle(.textSecondary)
+            VStack(alignment: .leading, spacing: 14) {
+                HStack {
+                    SectionHeader(title: "Today's Focus")
+                    Spacer()
+                    if let plan = latestPlan, let category = plan.recommendedDrills?.first?.category {
+                        Pill(text: category.displayName, color: .emerald)
+                    }
                 }
 
-                NavigationLink(destination: RoundInsightDestination(round: round)) {
-                    Text("View Insight")
-                        .font(.subheadline.weight(.semibold))
-                        .foregroundStyle(.black)
-                        .padding(.horizontal, 16).padding(.vertical, 9)
-                        .background(Color.textPrimary, in: Capsule())
+                if let plan = latestPlan, let round = mostRecentRound {
+                    Text(plan.mainFocus)
+                        .font(.title2.weight(.bold)).foregroundStyle(.textPrimary)
+                    if let hook = plan.recommendedDrills?.first?.relatedSkill, !hook.isEmpty {
+                        Text(hook).font(.subheadline).foregroundStyle(.textSecondary)
+                    }
+
+                    NavigationLink(destination: RoundInsightDestination(round: round)) {
+                        Text("View Insight")
+                            .font(.subheadline.weight(.semibold))
+                            .foregroundStyle(.black)
+                            .padding(.horizontal, 16).padding(.vertical, 9)
+                            .background(Color.textPrimary, in: Capsule())
+                    }
+                    .buttonStyle(.plain)
+                } else {
+                    Text("Play your first round").font(.title3.weight(.bold)).foregroundStyle(.textPrimary)
+                    Text("We'll build a personalized focus area from your round data.")
+                        .font(.subheadline).foregroundStyle(.textSecondary)
                 }
-                .buttonStyle(.plain)
-            } else {
-                Text("Play your first round").font(.title3.weight(.bold)).foregroundStyle(.textPrimary)
-                Text("We'll build a personalized focus area from your round data.")
-                    .font(.subheadline).foregroundStyle(.textSecondary)
             }
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .cardStyle(raised: true)
-        .overlay(alignment: .bottomTrailing) {
+            .frame(maxWidth: .infinity, alignment: .leading)
+
             Image(systemName: "flag.fill")
                 .font(.system(size: 60))
-                .foregroundStyle(Color.emerald.opacity(0.08))
+                .foregroundStyle(Color.emerald.opacity(0.10))
                 .padding(14)
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
         }
+        .cardStyle(raised: true)
+        .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
     }
 
     // MARK: - Practice Plan (this week)
@@ -196,6 +197,22 @@ struct HomeView: View {
             }
         }
         .cardStyle()
+    }
+
+    private func drillIcon(for category: DrillCategory) -> String {
+        switch category {
+        case .putting: return "smallcircle.filled.circle"
+        case .chipping: return "figure.golf"
+        case .wedges: return "wind"
+        case .irons: return "arrow.up.right"
+        case .driver: return "bolt.fill"
+        case .teeShots: return "flag.fill"
+        case .contact: return "scope"
+        case .alignment: return "arrow.left.and.right"
+        case .distanceControl: return "ruler.fill"
+        case .mentalGame: return "brain.head.profile"
+        case .courseManagement: return "map.fill"
+        }
     }
 
     private func planStat(title: String, value: String) -> some View {
@@ -316,10 +333,7 @@ struct HomeView: View {
                 VStack(spacing: 10) {
                     ForEach(Array(drills.prefix(3)), id: \.id) { drill in
                         HStack(spacing: 12) {
-                            ZStack {
-                                Circle().fill(Color.emerald.opacity(0.16)).frame(width: 36, height: 36)
-                                Image(systemName: "flag.fill").font(.caption).foregroundStyle(.emerald)
-                            }
+                            IconBadge(icon: drillIcon(for: drill.category), color: .emerald, size: 36)
                             VStack(alignment: .leading, spacing: 2) {
                                 Text(drill.title).font(.subheadline.weight(.semibold)).foregroundStyle(.textPrimary)
                                 Text(drill.relatedSkill).font(.caption).foregroundStyle(.textSecondary)
@@ -449,10 +463,7 @@ private struct NotificationRow: View {
 
     var body: some View {
         HStack(spacing: 12) {
-            ZStack {
-                Circle().fill(tint.opacity(0.16)).frame(width: 40, height: 40)
-                Image(systemName: icon).font(.subheadline).foregroundStyle(tint)
-            }
+            IconBadge(icon: icon, color: tint, size: 40)
             VStack(alignment: .leading, spacing: 2) {
                 Text(title).font(.subheadline.weight(.semibold)).foregroundStyle(.textPrimary)
                 Text(message).font(.caption).foregroundStyle(.textSecondary)
