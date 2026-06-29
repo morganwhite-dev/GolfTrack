@@ -15,12 +15,12 @@ struct ProfileSetupView: View {
             VStack(spacing: 20) {
                 VStack(spacing: 8) {
                     ZStack {
-                        Circle().fill(Color.emerald.opacity(0.12)).frame(width: 64, height: 64)
+                        Circle().fill(Color.emerald.opacity(0.16)).frame(width: 64, height: 64)
                         Image(systemName: "flag.fill").font(.title2).foregroundStyle(.emerald)
                     }
-                    Text("Welcome to GolfTrack").font(.title2.weight(.bold))
+                    Text("Welcome to GolfTrack").font(.title2.weight(.bold)).foregroundStyle(.textPrimary)
                     Text("Let's set up your profile so advice and stats are tailored to you.")
-                        .font(.subheadline).foregroundStyle(.secondary)
+                        .font(.subheadline).foregroundStyle(.textSecondary)
                         .multilineTextAlignment(.center)
                 }
                 .padding(.top, 8)
@@ -70,7 +70,7 @@ struct ProfileSetupView: View {
             }
             .padding()
         }
-        .background(Color(.systemGroupedBackground))
+        .appBackground()
         .scrollDismissesKeyboard(.interactively)
     }
 
