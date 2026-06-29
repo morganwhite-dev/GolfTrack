@@ -33,14 +33,14 @@ struct HomeView: View {
                 greetingRow
 
                 if let round = inProgressRounds.first {
-                    inProgressCard(round)
+                    inProgressCard(round).staggeredAppear(0)
                 }
 
-                todaysFocusCard
-                practicePlanCard
-                recentWeaknessCard
-                suggestedDrillsCard
-                logRoundButton
+                todaysFocusCard.staggeredAppear(1)
+                practicePlanCard.staggeredAppear(2)
+                recentWeaknessCard.staggeredAppear(3)
+                suggestedDrillsCard.staggeredAppear(4)
+                logRoundButton.staggeredAppear(5)
             }
             .padding(.horizontal)
             .padding(.top, 8)

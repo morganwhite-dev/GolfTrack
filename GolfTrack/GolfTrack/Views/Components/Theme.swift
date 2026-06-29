@@ -61,6 +61,28 @@ extension View {
     }
 }
 
+/// Fades + slides a view in on appear, with a delay proportional to its index — used to make a
+/// stack of cards cascade in one after another instead of all popping in at once.
+private struct StaggeredAppear: ViewModifier {
+    let index: Int
+    @State private var appeared = false
+    func body(content: Content) -> some View {
+        content
+            .opacity(appeared ? 1 : 0)
+            .offset(y: appeared ? 0 : 18)
+            .onAppear {
+                withAnimation(.spring(response: 0.5, dampingFraction: 0.75).delay(Double(index) * 0.07)) {
+                    appeared = true
+                }
+            }
+    }
+}
+extension View {
+    func staggeredAppear(_ index: Int) -> some View {
+        modifier(StaggeredAppear(index: index))
+    }
+}
+
 /// Soft blurred glow shape for decorative depth behind hero cards — no image assets needed,
 /// just a blurred gradient circle. Use sparingly (1-2 per screen) behind a card's leading/trailing edge.
 struct GlowBlob: View {
