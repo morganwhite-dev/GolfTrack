@@ -419,8 +419,8 @@ private struct NotificationsSheet: View {
                         NotificationRow(
                             icon: "lightbulb.fill",
                             tint: .emerald,
-                            message: "New insight ready for your round at \(round.course?.name ?? "your course").",
-                            title: "New insight"
+                            title: "New insight",
+                            message: "New insight ready for your round at \(round.course?.name ?? "your course")."
                         )
                     }
                     if inProgressRound == nil && !isRecentInsight {
@@ -451,15 +451,8 @@ private struct NotificationsSheet: View {
 private struct NotificationRow: View {
     let icon: String
     let tint: Color
-    let message: String
     let title: String
-
-    init(icon: String, tint: Color, title: String, message: String) {
-        self.icon = icon
-        self.tint = tint
-        self.title = title
-        self.message = message
-    }
+    let message: String
 
     var body: some View {
         HStack(spacing: 12) {
