@@ -65,6 +65,12 @@ struct ProfileView: View {
                     Button("Clear All Round Data", role: .destructive) { showClearDataConfirm = true }
                         .font(.subheadline.weight(.semibold))
                         .foregroundStyle(.alertCoral)
+                        .confirmationDialog("Clear All Round Data?", isPresented: $showClearDataConfirm, titleVisibility: .visible) {
+                            Button("Clear Everything", role: .destructive) { clearAllRoundData() }
+                            Button("Cancel", role: .cancel) {}
+                        } message: {
+                            Text("This permanently deletes every round, hole score, reflection, advice, and practice plan. Your profile and saved courses are kept. This can't be undone.")
+                        }
                 }
                 .cardStyle()
 
@@ -88,12 +94,6 @@ struct ProfileView: View {
         }
         .alert("Profile Saved", isPresented: $showSavedToast) {
             Button("OK", role: .cancel) {}
-        }
-        .confirmationDialog("Clear All Round Data?", isPresented: $showClearDataConfirm, titleVisibility: .visible) {
-            Button("Clear Everything", role: .destructive) { clearAllRoundData() }
-            Button("Cancel", role: .cancel) {}
-        } message: {
-            Text("This permanently deletes every round, hole score, reflection, advice, and practice plan. Your profile and saved courses are kept. This can't be undone.")
         }
     }
 

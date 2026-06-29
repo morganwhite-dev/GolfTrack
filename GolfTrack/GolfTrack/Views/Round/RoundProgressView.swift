@@ -26,18 +26,6 @@ struct RoundProgressView: View {
         }
         .appBackground()
         .onAppear { currentIndex = firstIncompleteIndex() }
-        .confirmationDialog("End Round Early?", isPresented: $showEndConfirm, titleVisibility: .visible) {
-            Button("End Round", role: .destructive) { finishRound() }
-            Button("Cancel", role: .cancel) {}
-        } message: {
-            Text("Any holes you haven't entered will be left at 0 strokes.")
-        }
-        .confirmationDialog("Discard This Round?", isPresented: $showDiscardConfirm, titleVisibility: .visible) {
-            Button("Discard Round", role: .destructive) { discardRound() }
-            Button("Cancel", role: .cancel) {}
-        } message: {
-            Text("This permanently deletes this round. This can't be undone.")
-        }
     }
 
     private var topBar: some View {
@@ -53,6 +41,18 @@ struct RoundProgressView: View {
                 Button("Discard Round", role: .destructive) { showDiscardConfirm = true }
             } label: {
                 Image(systemName: "ellipsis.circle").font(.title3).foregroundStyle(.textPrimary)
+            }
+            .confirmationDialog("End Round Early?", isPresented: $showEndConfirm, titleVisibility: .visible) {
+                Button("End Round", role: .destructive) { finishRound() }
+                Button("Cancel", role: .cancel) {}
+            } message: {
+                Text("Any holes you haven't entered will be left at 0 strokes.")
+            }
+            .confirmationDialog("Discard This Round?", isPresented: $showDiscardConfirm, titleVisibility: .visible) {
+                Button("Discard Round", role: .destructive) { discardRound() }
+                Button("Cancel", role: .cancel) {}
+            } message: {
+                Text("This permanently deletes this round. This can't be undone.")
             }
         }
         .padding()

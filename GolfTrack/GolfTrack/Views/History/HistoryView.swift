@@ -29,6 +29,18 @@ struct HistoryView: View {
                                     Label("Delete", systemImage: "trash")
                                 }
                             }
+                            .confirmationDialog("Delete This Round?", isPresented: Binding(
+                                get: { roundPendingDelete?.id == round.id },
+                                set: { if !$0 { roundPendingDelete = nil } }
+                            ), titleVisibility: .visible) {
+                                Button("Delete Round", role: .destructive) {
+                                    deleteRound(round)
+                                    roundPendingDelete = nil
+                                }
+                                Button("Cancel", role: .cancel) { roundPendingDelete = nil }
+                            } message: {
+                                Text("This permanently deletes this round and its stats. This can't be undone.")
+                            }
                     }
                 }
                 .listStyle(.plain)
@@ -39,18 +51,6 @@ struct HistoryView: View {
         .navigationTitle("History")
         .navigationDestination(item: $selectedRound) { round in
             RoundDetailView(round: round)
-        }
-        .confirmationDialog("Delete This Round?", isPresented: Binding(
-            get: { roundPendingDelete != nil },
-            set: { if !$0 { roundPendingDelete = nil } }
-        ), titleVisibility: .visible) {
-            Button("Delete Round", role: .destructive) {
-                if let round = roundPendingDelete { deleteRound(round) }
-                roundPendingDelete = nil
-            }
-            Button("Cancel", role: .cancel) { roundPendingDelete = nil }
-        } message: {
-            Text("This permanently deletes this round and its stats. This can't be undone.")
         }
     }
 
