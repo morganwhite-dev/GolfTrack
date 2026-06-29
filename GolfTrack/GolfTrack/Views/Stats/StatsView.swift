@@ -124,13 +124,21 @@ struct StatsView: View {
     }
 
     private var clubSection: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            SectionHeader(title: "Club Performance", icon: "figure.golf")
-            StatRow(label: "Most Used Club", value: allClubTallies.max(by: { $0.value.uses < $1.value.uses })?.key.displayName ?? "—")
-            StatRow(label: "Best Performing Club", value: bestClub?.displayName ?? "—", valueColor: .emerald)
-            StatRow(label: "Worst Performing Club", value: worstClub?.displayName ?? "—")
+        NavigationLink(destination: ClubStatsView()) {
+            VStack(alignment: .leading, spacing: 10) {
+                HStack {
+                    SectionHeader(title: "Club Performance", icon: "figure.golf")
+                    Spacer()
+                    Image(systemName: "chevron.right").font(.caption.weight(.semibold)).foregroundStyle(.textTertiary)
+                }
+                StatRow(label: "Most Used Club", value: allClubTallies.max(by: { $0.value.uses < $1.value.uses })?.key.displayName ?? "—")
+                StatRow(label: "Best Performing Club", value: bestClub?.displayName ?? "—", valueColor: .emerald)
+                StatRow(label: "Worst Performing Club", value: worstClub?.displayName ?? "—")
+                Text("View all clubs →").font(.caption.weight(.semibold)).foregroundStyle(.emerald)
+            }
+            .cardStyle()
         }
-        .cardStyle()
+        .buttonStyle(.plain)
     }
 
     private var bestClub: ClubType? {

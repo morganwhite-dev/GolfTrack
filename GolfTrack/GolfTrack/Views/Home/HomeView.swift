@@ -12,6 +12,7 @@ struct HomeView: View {
     private var completedRounds: [GolfRound]
 
     @State private var resumeRound: GolfRound?
+    @State private var showNotifications = false
 
     private var greeting: String {
         switch Calendar.current.component(.hour, from: Date()) {
@@ -50,6 +51,9 @@ struct HomeView: View {
         .fullScreenCover(item: $resumeRound) { round in
             RoundFlowView(round: round)
         }
+        .sheet(isPresented: $showNotifications) {
+            NotificationsSheet(inProgressRound: inProgressRounds.first, mostRecentRound: mostRecentRound)
+        }
     }
 
     // MARK: - Top bar
@@ -59,11 +63,14 @@ struct HomeView: View {
             Text("GolfTrack").font(.title3.weight(.bold)).foregroundStyle(.textPrimary)
             HStack {
                 Spacer()
-                Image(systemName: "bell")
-                    .font(.subheadline)
-                    .foregroundStyle(.textSecondary)
-                    .frame(width: 34, height: 34)
-                    .background(Color.white.opacity(0.05), in: Circle())
+                Button { showNotifications = true } label: {
+                    Image(systemName: "bell")
+                        .font(.subheadline)
+                        .foregroundStyle(.textSecondary)
+                        .frame(width: 34, height: 34)
+                        .background(Color.white.opacity(0.05), in: Circle())
+                }
+                .buttonStyle(.plain)
             }
         }
         .padding(.top, 6)
@@ -170,29 +177,33 @@ struct HomeView: View {
 
             weekStrip
 
-            if let drill = latestPlan?.recommendedDrills?.first, let round = mostRecentRound {
+            if let plan = latestPlan, let round = mostRecentRound {
+                Divider().background(Color.white.opacity(0.08))
+                HStack(spacing: 0) {
+                    planStat(title: "Main Focus", value: plan.mainFocus)
+                    planStat(title: "Secondary", value: plan.secondaryFocus)
+                    planStat(title: "Time", value: "\(plan.estimatedPracticeTime) min")
+                }
                 NavigationLink(destination: PracticePlanDestination(round: round)) {
-                    HStack(spacing: 12) {
-                        ZStack {
-                            Circle().fill(Color.emerald.opacity(0.16)).frame(width: 40, height: 40)
-                            Image(systemName: "flag.fill").font(.subheadline).foregroundStyle(.emerald)
-                        }
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text(drill.title).font(.subheadline.weight(.semibold)).foregroundStyle(.textPrimary)
-                            Text("\(drill.timeMinutes) min • Focus: \(drill.relatedSkill)")
-                                .font(.caption).foregroundStyle(.textSecondary)
-                        }
-                        Spacer()
-                        Image(systemName: "chevron.right").font(.caption.weight(.semibold)).foregroundStyle(.textTertiary)
-                    }
+                    Text("View Full Plan")
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(.emerald)
                 }
                 .buttonStyle(.plain)
             } else {
-                Text("No drills yet — finish a round to get a practice plan.")
+                Text("No plan yet — finish a round to get one.")
                     .font(.caption).foregroundStyle(.textSecondary)
             }
         }
         .cardStyle()
+    }
+
+    private func planStat(title: String, value: String) -> some View {
+        VStack(spacing: 2) {
+            Text(value).font(.caption.weight(.bold)).foregroundStyle(.textPrimary).lineLimit(1).minimumScaleFactor(0.8)
+            Text(title).font(.caption2).foregroundStyle(.textSecondary)
+        }
+        .frame(maxWidth: .infinity)
     }
 
     private var weekStrip: some View {
@@ -208,18 +219,21 @@ struct HomeView: View {
                 let day = calendar.date(byAdding: .day, value: offset, to: startOfWeek) ?? startOfWeek
                 let isToday = calendar.isDate(day, inSameDayAs: today)
                 let hasActivity = roundDates.contains(day)
+                let dayNumber = calendar.component(.day, from: day)
                 VStack(spacing: 6) {
                     Text(weekdaySymbols[offset]).font(.caption2.weight(.semibold)).foregroundStyle(.textSecondary)
-                    Circle()
-                        .fill(hasActivity ? Color.emerald : Color.white.opacity(0.15))
-                        .frame(width: 6, height: 6)
+                    ZStack {
+                        Circle()
+                            .fill(hasActivity ? LinearGradient.emerald : LinearGradient(colors: [Color.white.opacity(0.07), Color.white.opacity(0.07)], startPoint: .top, endPoint: .bottom))
+                        Circle()
+                            .strokeBorder(isToday ? Color.emerald : Color.clear, lineWidth: 1.5)
+                        Text("\(dayNumber)")
+                            .font(.caption2.weight(.bold))
+                            .foregroundStyle(hasActivity ? .black : (isToday ? .emerald : .textSecondary))
+                    }
+                    .frame(width: 30, height: 30)
                 }
                 .frame(maxWidth: .infinity)
-                .padding(.vertical, 8)
-                .background(
-                    Circle().strokeBorder(isToday ? Color.emerald : Color.clear, lineWidth: 1.5)
-                        .padding(4)
-                )
             }
         }
     }
@@ -360,5 +374,91 @@ private struct PracticePlanDestination: View {
         .appBackground()
         .navigationTitle("Practice Plan")
         .navigationBarTitleDisplayMode(.inline)
+    }
+}
+
+/// Real, data-derived notifications (not a placeholder feed) — surfaces whatever's actually
+/// actionable right now (an in-progress round, a freshly-generated insight) instead of nothing.
+private struct NotificationsSheet: View {
+    let inProgressRound: GolfRound?
+    let mostRecentRound: GolfRound?
+    @Environment(\.dismiss) private var dismiss
+
+    private var isRecentInsight: Bool {
+        guard let date = mostRecentRound?.advice?.createdDate else { return false }
+        return Date().timeIntervalSince(date) < 60 * 60 * 48
+    }
+
+    var body: some View {
+        NavigationStack {
+            ScrollView {
+                VStack(spacing: 12) {
+                    if let round = inProgressRound {
+                        NotificationRow(
+                            icon: "arrow.clockwise",
+                            tint: .warningAmber,
+                            title: "Round in progress",
+                            message: "You still have a round at \(round.course?.name ?? "your course") to finish."
+                        )
+                    }
+                    if isRecentInsight, let round = mostRecentRound {
+                        NotificationRow(
+                            icon: "lightbulb.fill",
+                            tint: .emerald,
+                            message: "New insight ready for your round at \(round.course?.name ?? "your course").",
+                            title: "New insight"
+                        )
+                    }
+                    if inProgressRound == nil && !isRecentInsight {
+                        VStack(spacing: 8) {
+                            Image(systemName: "checkmark.circle.fill").font(.largeTitle).foregroundStyle(.emerald)
+                            Text("You're all caught up").font(.subheadline.weight(.semibold)).foregroundStyle(.textPrimary)
+                            Text("No new notifications right now.").font(.caption).foregroundStyle(.textSecondary)
+                        }
+                        .frame(maxWidth: .infinity)
+                        .padding(.top, 60)
+                    }
+                }
+                .padding()
+            }
+            .appBackground()
+            .navigationTitle("Notifications")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Done") { dismiss() }
+                }
+            }
+        }
+        .tint(.emerald)
+    }
+}
+
+private struct NotificationRow: View {
+    let icon: String
+    let tint: Color
+    let message: String
+    let title: String
+
+    init(icon: String, tint: Color, title: String, message: String) {
+        self.icon = icon
+        self.tint = tint
+        self.title = title
+        self.message = message
+    }
+
+    var body: some View {
+        HStack(spacing: 12) {
+            ZStack {
+                Circle().fill(tint.opacity(0.16)).frame(width: 40, height: 40)
+                Image(systemName: icon).font(.subheadline).foregroundStyle(tint)
+            }
+            VStack(alignment: .leading, spacing: 2) {
+                Text(title).font(.subheadline.weight(.semibold)).foregroundStyle(.textPrimary)
+                Text(message).font(.caption).foregroundStyle(.textSecondary)
+            }
+            Spacer()
+        }
+        .cardStyle()
     }
 }

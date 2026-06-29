@@ -4,7 +4,7 @@ struct MainTabView: View {
     @Bindable var profile: UserProfile
     @State private var selection: Tab = .home
 
-    enum Tab { case home, startRound, history, stats, clubs, profile }
+    enum Tab { case home, startRound, history, stats, profile }
 
     var body: some View {
         TabView(selection: $selection) {
@@ -23,10 +23,6 @@ struct MainTabView: View {
             NavigationStack { StatsView() }
                 .tabItem { Label("Stats", systemImage: "chart.bar.fill") }
                 .tag(Tab.stats)
-
-            NavigationStack { ClubStatsView() }
-                .tabItem { Label("Clubs", systemImage: "figure.golf") }
-                .tag(Tab.clubs)
 
             NavigationStack { ProfileView(profile: profile) }
                 .tabItem { Label("Profile", systemImage: "person.fill") }
