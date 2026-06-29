@@ -142,6 +142,92 @@ struct IconBadge: View {
     }
 }
 
+private struct ConfettiPiece: Identifiable {
+    let id = UUID()
+    let color: Color
+    let xOffset: CGFloat
+    let yOffset: CGFloat
+    let rotation: Double
+    let delay: Double
+    let size: CGFloat
+}
+
+/// Confetti burst used by RoundCompleteOverlay — a one-shot particle effect, not a reusable
+/// animation loop. Generates randomized pieces on appear and animates them outward/down/fading.
+private struct ConfettiView: View {
+    @State private var pieces: [ConfettiPiece] = []
+    @State private var animated = false
+    private static let colors: [Color] = [.emerald, .emeraldLight, .warningAmber, .white]
+
+    var body: some View {
+        ZStack {
+            ForEach(pieces) { piece in
+                RoundedRectangle(cornerRadius: 2)
+                    .fill(piece.color)
+                    .frame(width: piece.size, height: piece.size * 0.4)
+                    .rotationEffect(.degrees(animated ? piece.rotation : 0))
+                    .offset(x: animated ? piece.xOffset : 0, y: animated ? piece.yOffset : 0)
+                    .opacity(animated ? 0 : 1)
+                    .animation(.easeOut(duration: 1.1).delay(piece.delay), value: animated)
+            }
+        }
+        .onAppear {
+            pieces = (0..<24).map { _ in
+                ConfettiPiece(
+                    color: Self.colors.randomElement() ?? .emerald,
+                    xOffset: CGFloat.random(in: -160...160),
+                    yOffset: CGFloat.random(in: -80...260),
+                    rotation: Double.random(in: -540...540),
+                    delay: Double.random(in: 0...0.15),
+                    size: CGFloat.random(in: 6...11)
+                )
+            }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) { animated = true }
+        }
+    }
+}
+
+/// Full-screen celebration shown briefly when a round is completed — checkmark burst, confetti,
+/// and a success haptic. Designed to cover the transition into Round Summary, then fade away.
+struct RoundCompleteOverlay: View {
+    @State private var checkScale: CGFloat = 0.3
+    @State private var checkOpacity: Double = 0
+    @State private var fired = false
+
+    var body: some View {
+        ZStack {
+            Color.black.opacity(0.6).ignoresSafeArea()
+            ConfettiView()
+            VStack(spacing: 16) {
+                ZStack {
+                    Circle()
+                        .fill(LinearGradient.emerald)
+                        .frame(width: 100, height: 100)
+                        .shadow(color: Color.emerald.opacity(0.6), radius: 24, x: 0, y: 0)
+                    Image(systemName: "checkmark")
+                        .font(.system(size: 44, weight: .bold))
+                        .foregroundStyle(.black)
+                }
+                .scaleEffect(checkScale)
+                .opacity(checkOpacity)
+
+                Text("Round Complete!")
+                    .font(.title2.weight(.bold))
+                    .foregroundStyle(.white)
+                    .opacity(checkOpacity)
+            }
+        }
+        .onAppear {
+            withAnimation(.spring(response: 0.5, dampingFraction: 0.6)) {
+                checkScale = 1
+                checkOpacity = 1
+            }
+            fired = true
+        }
+        .sensoryFeedback(.success, trigger: fired)
+    }
+}
+
 /// Circular ring progress indicator (Apple-Activity-style) — used in place of flat ProgressView
 /// bars wherever a single completion fraction is the headline metric.
 struct RingProgress<Content: View>: View {

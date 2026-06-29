@@ -6,6 +6,7 @@ struct RoundFlowView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var context
     @State private var stage: Stage = .play
+    @State private var showCelebration = false
 
     enum Stage { case play, summary, reflection, advice, practicePlan }
 
@@ -15,7 +16,13 @@ struct RoundFlowView: View {
             case .play:
                 RoundProgressView(
                     round: round,
-                    onFinish: { withAnimation { stage = .summary } },
+                    onFinish: {
+                        stage = .summary
+                        showCelebration = true
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 1.6) {
+                            withAnimation(.easeOut(duration: 0.4)) { showCelebration = false }
+                        }
+                    },
                     onDiscard: { dismiss() }
                 )
             case .summary:
@@ -45,6 +52,12 @@ struct RoundFlowView: View {
                     }
                     .appBackground()
                 }
+            }
+        }
+        .overlay {
+            if showCelebration {
+                RoundCompleteOverlay()
+                    .transition(.opacity)
             }
         }
     }
