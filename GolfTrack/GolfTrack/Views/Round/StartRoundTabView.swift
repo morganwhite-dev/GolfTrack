@@ -70,7 +70,10 @@ struct StartRoundTabView: View {
                 .offset(x: -40, y: -40)
 
             VStack(spacing: 14) {
-                GolfFlagGraphic(size: 84)
+                HStack(spacing: -8) {
+                    GolfClubGraphic(size: 64)
+                    GolfFlagGraphic(size: 84)
+                }
                 Text("Ready to play?").font(.title2.weight(.bold)).foregroundStyle(.textPrimary)
                 Text("Pick a course to start tracking this round.")
                     .font(.subheadline).foregroundStyle(.textSecondary)

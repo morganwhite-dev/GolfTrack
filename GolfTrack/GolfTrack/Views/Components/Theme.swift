@@ -152,6 +152,43 @@ struct GolfFlagGraphic: View {
     }
 }
 
+/// Angled club-head shape used by GolfClubGraphic.
+private struct ClubHeadShape: Shape {
+    func path(in rect: CGRect) -> Path {
+        Path(roundedRect: rect, cornerSize: CGSize(width: rect.width * 0.3, height: rect.height * 0.55), style: .continuous)
+    }
+}
+
+/// Small custom-drawn golf club (shaft + angled head) that gently swings back and forth on
+/// appear — a continuous, looping ambient animation rather than a one-shot reveal. No image assets.
+struct GolfClubGraphic: View {
+    var size: CGFloat = 90
+    @State private var swinging = false
+
+    var body: some View {
+        ZStack(alignment: .bottom) {
+            Capsule()
+                .fill(LinearGradient(colors: [Color.white.opacity(0.65), Color.white.opacity(0.25)], startPoint: .top, endPoint: .bottom))
+                .frame(width: size * 0.045, height: size * 0.85)
+                .offset(y: -size * 0.04)
+
+            ClubHeadShape()
+                .fill(LinearGradient.emerald)
+                .frame(width: size * 0.34, height: size * 0.22)
+                .rotationEffect(.degrees(20))
+                .offset(x: size * 0.14, y: -size * 0.01)
+                .shadow(color: Color.emerald.opacity(0.5), radius: 5, x: 0, y: 2)
+        }
+        .frame(width: size, height: size)
+        .rotationEffect(.degrees(swinging ? -16 : 10), anchor: .bottom)
+        .onAppear {
+            withAnimation(.easeInOut(duration: 1.3).repeatForever(autoreverses: true)) {
+                swinging = true
+            }
+        }
+    }
+}
+
 /// Layered gradient icon badge — replaces flat single-tone "circle + SF Symbol" treatment
 /// with a richer, more dimensional look (gradient fill, ring, soft glow shadow).
 struct IconBadge: View {

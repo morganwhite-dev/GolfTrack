@@ -2,31 +2,80 @@ import SwiftUI
 
 struct RoundDetailView: View {
     let round: GolfRound
+    @State private var page = 0
+
+    /// Tag/title pairs for whichever sections actually exist on this round — tags are fixed
+    /// (0=Summary, 1=Reflection, 2=Advice, 3=Practice Plan) so they always line up with the
+    /// TabView's .tag() values below regardless of which sections are missing.
+    private var pages: [(tag: Int, title: String)] {
+        var result = [(0, "Summary")]
+        if round.reflection != nil { result.append((1, "Reflection")) }
+        if round.advice != nil { result.append((2, "Advice")) }
+        if round.practicePlan != nil { result.append((3, "Practice Plan")) }
+        return result
+    }
 
     var body: some View {
-        ScrollView {
-            VStack(spacing: 24) {
-                RoundSummaryView(round: round)
+        VStack(spacing: 0) {
+            pageHeader
+
+            TabView(selection: $page) {
+                ScrollView {
+                    RoundSummaryView(round: round).padding()
+                }
+                .tag(0)
 
                 if let reflection = round.reflection {
-                    ReflectionReadOnlyView(reflection: reflection)
+                    ScrollView {
+                        ReflectionReadOnlyView(reflection: reflection).padding()
+                    }
+                    .tag(1)
                 }
 
                 if let advice = round.advice {
-                    SectionHeader(title: "Advice", icon: "lightbulb.fill")
-                    AdviceView(advice: advice)
+                    ScrollView {
+                        AdviceView(advice: advice).padding()
+                    }
+                    .tag(2)
                 }
 
                 if let plan = round.practicePlan {
-                    SectionHeader(title: "Practice Plan", icon: "figure.golf")
-                    PracticePlanView(plan: plan)
+                    ScrollView {
+                        PracticePlanView(plan: plan).padding()
+                    }
+                    .tag(3)
                 }
             }
-            .padding()
+            .tabViewStyle(.page(indexDisplayMode: .never))
         }
         .appBackground()
         .navigationTitle("Round Detail")
         .navigationBarTitleDisplayMode(.inline)
+    }
+
+    private var pageHeader: some View {
+        VStack(spacing: 10) {
+            HStack(spacing: 6) {
+                ForEach(pages, id: \.tag) { item in
+                    Text(item.title)
+                        .font(.caption.weight(.semibold))
+                        .padding(.horizontal, 12).padding(.vertical, 6)
+                        .background(page == item.tag ? Color.emerald.opacity(0.18) : Color.white.opacity(0.05), in: Capsule())
+                        .foregroundStyle(page == item.tag ? .emerald : .textSecondary)
+                        .onTapGesture { withAnimation { page = item.tag } }
+                }
+            }
+            HStack(spacing: 6) {
+                ForEach(pages, id: \.tag) { item in
+                    Capsule()
+                        .fill(page == item.tag ? Color.emerald : Color.white.opacity(0.15))
+                        .frame(width: page == item.tag ? 18 : 6, height: 6)
+                        .animation(.spring(response: 0.3, dampingFraction: 0.7), value: page)
+                }
+            }
+        }
+        .padding(.top, 12)
+        .padding(.bottom, 8)
     }
 }
 
