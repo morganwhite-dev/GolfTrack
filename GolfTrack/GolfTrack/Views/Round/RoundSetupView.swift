@@ -7,6 +7,7 @@ private enum NineHoleSelection {
 
 struct RoundSetupView: View {
     let course: GolfCourse
+    let profile: UserProfile
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
 
@@ -19,8 +20,9 @@ struct RoundSetupView: View {
     @State private var walkOrCart: WalkOrCart?
     @State private var createdRound: GolfRound?
 
-    init(course: GolfCourse) {
+    init(course: GolfCourse, profile: UserProfile) {
         self.course = course
+        self.profile = profile
         _playFullEighteen = State(initialValue: course.numberOfHoles == 18)
         _teeBoxName = State(initialValue: course.teeBoxName ?? "")
     }
@@ -37,6 +39,20 @@ struct RoundSetupView: View {
     }
 
     var body: some View {
+        VStack(spacing: 0) {
+            PushedScreenHeader("Round Setup")
+                .padding(.horizontal)
+
+            setupContent
+        }
+        .appBackground()
+        .toolbar(.hidden, for: .navigationBar)
+        .fullScreenCover(item: $createdRound, onDismiss: { dismiss() }) { round in
+            RoundFlowView(round: round)
+        }
+    }
+
+    private var setupContent: some View {
         ScrollView {
             VStack(spacing: 20) {
                 VStack(alignment: .leading, spacing: 12) {
@@ -69,7 +85,7 @@ struct RoundSetupView: View {
                 .cardStyle()
 
                 VStack(alignment: .leading, spacing: 12) {
-                    SectionHeader(title: "Optional Details", icon: "ellipsis.circle")
+                    SectionHeader(title: "Optional Details", icon: "plus.circle")
                     InputField(placeholder: "Tee box (e.g. White, Blue)", text: $teeBoxName)
                     InputField(placeholder: "Target score for this round", text: $targetScoreText, keyboardType: .numberPad)
                     InputField(placeholder: "Weather / wind notes", text: $weatherNotes)
@@ -87,13 +103,7 @@ struct RoundSetupView: View {
             }
             .padding()
         }
-        .appBackground()
-        .navigationTitle("Round Setup")
-        .navigationBarTitleDisplayMode(.inline)
-        .toolbar(.visible, for: .navigationBar)
-        .fullScreenCover(item: $createdRound, onDismiss: { dismiss() }) { round in
-            RoundFlowView(round: round)
-        }
+        .scrollDismissesKeyboard(.interactively)
     }
 
     private func toggle(_ value: WalkOrCart) {
@@ -102,6 +112,7 @@ struct RoundSetupView: View {
 
     private func startRound() {
         let round = GolfRound(course: course, date: date, holesPlayed: holeNumbers.count)
+        round.profile = profile
         round.teeBoxName = teeBoxName.isEmpty ? nil : teeBoxName
         round.targetScore = Int(targetScoreText)
         round.weatherNotes = weatherNotes.isEmpty ? nil : weatherNotes

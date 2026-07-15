@@ -3,6 +3,8 @@ import SwiftData
 
 struct ProfileSetupView: View {
     @Environment(\.modelContext) private var context
+    @Environment(\.dismiss) private var dismiss
+    @AppStorage("activeProfileID") private var activeProfileIDString: String = ""
 
     @State private var name = ""
     @State private var skillLevel: SkillLevel = .beginner
@@ -26,13 +28,25 @@ struct ProfileSetupView: View {
                 .padding(.top, 8)
 
                 VStack(alignment: .leading, spacing: 12) {
+                    SectionHeader(title: "How GolfTrack Helps", icon: "sparkles")
+                    onboardingValueRow(icon: "lock.fill", title: "Score without opening the app", text: "Log strokes and putts from the Lock Screen during a round.")
+                    onboardingValueRow(icon: "lightbulb.fill", title: "Understand what cost you strokes", text: "After each round, GolfTrack turns your numbers into plain-language insights.")
+                    onboardingValueRow(icon: "checkmark.seal.fill", title: "Practice with a purpose", text: "Your plan focuses on the few drills most likely to help your next round.")
+                }
+                .cardStyle()
+
+                VStack(alignment: .leading, spacing: 12) {
                     SectionHeader(title: "Your Name", icon: "person.fill")
                     InputField(placeholder: "Name", text: $name)
                 }
                 .cardStyle()
 
                 VStack(alignment: .leading, spacing: 12) {
-                    SectionHeader(title: "Skill Level", icon: "chart.bar.fill")
+                    SectionHeader(
+                        title: "Skill Level",
+                        icon: "chart.bar.fill",
+                        info: "This tunes the tone of your advice. You can change it later as your scores improve."
+                    )
                     VStack(spacing: 8) {
                         ForEach(SkillLevel.allCases) { level in
                             SelectableRow(label: level.displayName, isSelected: skillLevel == level) {
@@ -50,7 +64,11 @@ struct ProfileSetupView: View {
                 .cardStyle()
 
                 VStack(alignment: .leading, spacing: 12) {
-                    SectionHeader(title: "Main Goals", icon: "checkmark.seal.fill")
+                    SectionHeader(
+                        title: "Main Goals",
+                        icon: "checkmark.seal.fill",
+                        info: "Score goals are adjusted to the par of the course you actually play."
+                    )
                     VStack(spacing: 8) {
                         ForEach(GolfGoal.allCases) { goal in
                             SelectableRow(label: goal.displayName, subtitle: goal.parOffsetSubtitle, isSelected: selectedGoals.contains(goal)) {
@@ -85,5 +103,18 @@ struct ProfileSetupView: View {
         profile.customGoalText = selectedGoals.contains(.other) ? customGoalText : nil
         context.insert(profile)
         try? context.save()
+        activeProfileIDString = profile.id.uuidString
+        dismiss()
+    }
+
+    private func onboardingValueRow(icon: String, title: String, text: String) -> some View {
+        HStack(alignment: .top, spacing: 10) {
+            IconBadge(icon: icon, color: .emerald, size: 30)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(title).font(.subheadline.weight(.semibold)).foregroundStyle(.textPrimary)
+                Text(text).font(.caption).foregroundStyle(.textSecondary)
+            }
+            Spacer()
+        }
     }
 }

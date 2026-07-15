@@ -2,42 +2,46 @@ import SwiftUI
 import SwiftData
 
 struct ClubStatsView: View {
+    let profile: UserProfile
+
     @Query private var allStats: [ClubStats]
 
     private var usedStats: [ClubStats] {
-        allStats.filter { $0.timesUsed > 0 }.sorted { $0.timesUsed > $1.timesUsed }
+        allStats.filter { $0.profile?.id == profile.id && $0.timesUsed > 0 }.sorted { $0.timesUsed > $1.timesUsed }
     }
 
     private var bestPerforming: ClubStats? {
         usedStats.filter { $0.timesUsed >= 2 }.max(by: { $0.goodShotRate < $1.goodShotRate })
     }
     private var mostProblematic: ClubStats? {
-        usedStats.max(by: { $0.badShots < $1.badShots })
+        usedStats.filter { $0.timesUsed >= 2 }.min(by: { $0.goodShotRate < $1.goodShotRate })
     }
     private var clubsToPractice: [ClubStats] {
         usedStats.filter { $0.timesUsed >= 2 && $0.goodShotRate < 0.5 }.sorted { $0.goodShotRate < $1.goodShotRate }
     }
 
     var body: some View {
-        ScrollView {
-            if usedStats.isEmpty {
-                emptyState
-            } else {
-                VStack(spacing: 20) {
-                    overviewSection
-                    if !clubsToPractice.isEmpty {
-                        practiceSection
+        VStack(spacing: 0) {
+            PushedScreenHeader("Clubs")
+                .padding(.horizontal)
+
+            ScrollView {
+                if usedStats.isEmpty {
+                    emptyState
+                } else {
+                    VStack(spacing: 20) {
+                        overviewSection
+                        if !clubsToPractice.isEmpty {
+                            practiceSection
+                        }
+                        allClubsSection
                     }
-                    allClubsSection
+                    .padding()
                 }
-                .padding()
             }
         }
         .appBackground()
-        .navigationTitle("Clubs")
-        .navigationDestination(for: ClubStats.self) { stat in
-            ClubDetailView(stats: stat)
-        }
+        .toolbar(.hidden, for: .navigationBar)
     }
 
     private var emptyState: some View {
@@ -51,7 +55,11 @@ struct ClubStatsView: View {
 
     private var overviewSection: some View {
         VStack(alignment: .leading, spacing: 10) {
-            SectionHeader(title: "Overview", icon: "figure.golf")
+            SectionHeader(
+                title: "Overview",
+                icon: "figure.golf",
+                info: "Best/Most Problematic are ranked by percentage of good shots with that club (minimum 2 logged shots), not raw totals."
+            )
             StatRow(label: "Most Used Club", value: usedStats.first?.club.displayName ?? "—")
             StatRow(label: "Best Performing Club", value: bestPerforming?.club.displayName ?? "—", valueColor: .emerald)
             StatRow(label: "Most Problematic Club", value: mostProblematic?.club.displayName ?? "—")
@@ -64,7 +72,7 @@ struct ClubStatsView: View {
             SectionHeader(title: "Clubs to Practice", icon: "wrench.and.screwdriver.fill")
             VStack(spacing: 8) {
                 ForEach(clubsToPractice) { stat in
-                    NavigationLink(value: stat) {
+                    NavigationLink(destination: ClubDetailView(stats: stat)) {
                         ClubStatsRow(stats: stat)
                     }
                     .buttonStyle(.bouncy)
@@ -79,7 +87,7 @@ struct ClubStatsView: View {
             SectionHeader(title: "All Clubs", icon: "list.bullet")
             VStack(spacing: 8) {
                 ForEach(usedStats) { stat in
-                    NavigationLink(value: stat) {
+                    NavigationLink(destination: ClubDetailView(stats: stat)) {
                         ClubStatsRow(stats: stat)
                     }
                     .buttonStyle(.bouncy)

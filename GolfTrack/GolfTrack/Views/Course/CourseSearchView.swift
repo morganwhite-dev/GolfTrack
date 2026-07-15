@@ -58,9 +58,13 @@ struct CourseSearchView: View {
             .appBackground()
             .navigationTitle("Select Course")
             .navigationBarTitleDisplayMode(.inline)
+            .scrollDismissesKeyboard(.interactively)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") { dismiss() }
+                    ToolbarPillButton(title: "Cancel") {
+                        hapticTap()
+                        dismiss()
+                    }
                 }
             }
             .sheet(isPresented: $showManualCreate) {

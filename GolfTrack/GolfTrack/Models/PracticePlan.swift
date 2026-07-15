@@ -32,6 +32,8 @@ final class PracticeDrill {
     var timeMinutes: Int = 10
     var relatedSkill: String = ""
     var relatedClubRaw: String?
+    var isComplete: Bool = false
+    var completedDate: Date?
     var practicePlan: PracticePlan?
 
     init(title: String, category: DrillCategory, details: String, timeMinutes: Int, relatedSkill: String, relatedClub: ClubType? = nil) {
@@ -42,6 +44,8 @@ final class PracticeDrill {
         self.timeMinutes = timeMinutes
         self.relatedSkill = relatedSkill
         self.relatedClubRaw = relatedClub?.rawValue
+        self.isComplete = false
+        self.completedDate = nil
     }
 
     var category: DrillCategory {

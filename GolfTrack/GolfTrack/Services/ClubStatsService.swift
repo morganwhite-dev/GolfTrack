@@ -1,16 +1,19 @@
 import Foundation
 import SwiftData
 
-/// Recomputes the persisted ClubStats rows from scratch using every ClubShot across all
-/// completed rounds. Called after a round finishes so club stats always reflect full history.
+/// Recomputes the persisted ClubStats rows from scratch using every ClubShot across all of one
+/// profile's completed rounds. Called after a round finishes so club stats always reflect full
+/// history — scoped to a single profile so multiple local profiles never mix each other's stats.
 enum ClubStatsService {
-    static func recompute(in context: ModelContext) {
-        guard let rounds = try? context.fetch(FetchDescriptor<GolfRound>(predicate: #Predicate { $0.isComplete })) else { return }
+    static func recompute(for profile: UserProfile, in context: ModelContext) {
+        guard let allRounds = try? context.fetch(FetchDescriptor<GolfRound>(predicate: #Predicate { $0.isComplete })) else { return }
+        let rounds = allRounds.filter { $0.profile?.id == profile.id }
         let allShots = rounds.flatMap { round in (round.holeScores ?? []).flatMap { $0.clubShots ?? [] } }
 
-        let existing = try? context.fetch(FetchDescriptor<ClubStats>())
+        let allExisting = try? context.fetch(FetchDescriptor<ClubStats>())
+        let existing = (allExisting ?? []).filter { $0.profile?.id == profile.id }
         var statsByClub: [ClubType: ClubStats] = [:]
-        for stat in existing ?? [] {
+        for stat in existing {
             stat.timesUsed = 0
             stat.goodShots = 0
             stat.badShots = 0
@@ -35,6 +38,7 @@ enum ClubStatsService {
                 stat = found
             } else {
                 let new = ClubStats(club: club)
+                new.profile = profile
                 context.insert(new)
                 statsByClub[club] = new
                 stat = new

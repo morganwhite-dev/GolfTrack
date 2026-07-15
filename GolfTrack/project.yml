@@ -15,12 +15,14 @@ targets:
     deploymentTarget: "17.0"
     sources:
       - path: GolfTrack
+      - path: Shared
     info:
       path: GolfTrack/Resources/Info.plist
       properties:
         UILaunchScreen: {}
         NSLocationWhenInUseUsageDescription: "GolfTrack uses your location to find nearby golf courses."
         CFBundleDisplayName: GolfTrack
+        NSSupportsLiveActivities: true
         UIApplicationSceneManifest:
           UIApplicationSupportsMultipleScenes: false
     settings:
@@ -28,3 +30,28 @@ targets:
         PRODUCT_BUNDLE_IDENTIFIER: com.golftrack.app
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+        CODE_SIGN_ENTITLEMENTS: GolfTrack/GolfTrack.entitlements
+    dependencies:
+      - target: GolfTrackWidget
+        embed: true
+
+  GolfTrackWidget:
+    type: app-extension
+    platform: iOS
+    deploymentTarget: "17.0"
+    sources:
+      - path: GolfTrackWidget
+      - path: Shared
+      - path: GolfTrack/Models
+    info:
+      path: GolfTrackWidget/Info.plist
+      properties:
+        CFBundleDisplayName: GolfTrackWidget
+        CFBundlePackageType: XPC!
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.golftrack.app.widget
+        DEVELOPMENT_TEAM: "Q2LR7B96SK"
+        CODE_SIGN_ENTITLEMENTS: GolfTrackWidget/GolfTrackWidget.entitlements

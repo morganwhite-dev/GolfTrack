@@ -12,6 +12,8 @@ final class GolfRound: Hashable {
     var weatherNotes: String?
     var walkOrCartRaw: String?
     var isComplete: Bool = false
+    var activeHoleNumber: Int?
+    var profile: UserProfile?
 
     @Relationship(deleteRule: .cascade, inverse: \HoleScore.round)
     var holeScores: [HoleScore]? = []

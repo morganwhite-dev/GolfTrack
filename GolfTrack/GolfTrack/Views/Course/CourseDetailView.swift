@@ -9,6 +9,28 @@ struct CourseDetailView: View {
     @State private var showEdit = false
 
     var body: some View {
+        VStack(spacing: 0) {
+            PushedScreenHeader("Course Detail") {
+                Button {
+                    hapticTap()
+                    showEdit = true
+                } label: {
+                    Text("Edit").font(.subheadline.weight(.semibold)).foregroundStyle(.emerald)
+                }
+                .buttonStyle(.bouncy)
+            }
+            .padding(.horizontal)
+
+            courseContent
+        }
+        .appBackground()
+        .toolbar(.hidden, for: .navigationBar)
+        .sheet(isPresented: $showEdit) {
+            ManualCourseCreateView(existingCourse: course) { _ in }
+        }
+    }
+
+    private var courseContent: some View {
         ScrollView {
             VStack(spacing: 20) {
                 VStack(alignment: .leading, spacing: 12) {
@@ -63,18 +85,6 @@ struct CourseDetailView: View {
                 }
             }
             .padding()
-        }
-        .appBackground()
-        .navigationTitle("Course Detail")
-        .navigationBarTitleDisplayMode(.inline)
-        .toolbar(.visible, for: .navigationBar)
-        .toolbar {
-            ToolbarItem(placement: .primaryAction) {
-                Button("Edit") { showEdit = true }
-            }
-        }
-        .sheet(isPresented: $showEdit) {
-            ManualCourseCreateView(existingCourse: course) { _ in }
         }
     }
 }

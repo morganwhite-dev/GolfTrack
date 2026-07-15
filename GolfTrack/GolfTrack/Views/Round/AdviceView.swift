@@ -7,35 +7,19 @@ struct AdviceView: View {
     var body: some View {
         VStack(spacing: 20) {
             ratingCard
+            section(title: "Strengths", icon: "checkmark.seal.fill", color: .emerald, items: advice.strengths)
+            section(title: "Areas to Improve", icon: "arrow.up.forward.circle.fill", color: .warningAmber, items: advice.improvementAreas)
 
-                section(title: "Strengths", icon: "checkmark.seal.fill", color: .emerald, items: advice.strengths)
-                section(title: "Areas to Improve", icon: "arrow.up.forward.circle.fill", color: .warningAmber, items: advice.improvementAreas)
+            VStack(alignment: .leading, spacing: 8) {
+                SectionHeader(title: "Next Round Goal", icon: "flag.checkered")
+                Text(advice.nextRoundGoal).font(.subheadline.weight(.semibold)).foregroundStyle(.textPrimary)
+            }
+            .cardStyle()
 
-                VStack(alignment: .leading, spacing: 10) {
-                    SectionHeader(title: "Main Issue", icon: "exclamationmark.circle.fill")
-                    Text(advice.mainIssue).font(.subheadline).foregroundStyle(.textPrimary)
-                    Divider()
-                    SectionHeader(title: "Secondary Issue", icon: "exclamationmark.circle")
-                    Text(advice.secondaryIssue).font(.subheadline).foregroundStyle(.textPrimary)
-                }
-                .cardStyle()
-
-                VStack(alignment: .leading, spacing: 8) {
-                    SectionHeader(title: "Best Part of Your Round", icon: "star.fill")
-                    Text(advice.bestPart).font(.subheadline).foregroundStyle(.textPrimary)
-                }
-                .cardStyle()
-
-                VStack(alignment: .leading, spacing: 8) {
-                    SectionHeader(title: "Next Round Goal", icon: "flag.checkered")
-                    Text(advice.nextRoundGoal).font(.subheadline.weight(.semibold)).foregroundStyle(.textPrimary)
-                }
-                .cardStyle()
-
-                if let onContinue {
-                    Button("View Practice Plan") { onContinue() }
-                        .buttonStyle(.primaryGolf)
-                }
+            if let onContinue {
+                Button("View Practice Plan") { onContinue() }
+                    .buttonStyle(.primaryGolf)
+            }
         }
     }
 
@@ -52,31 +36,31 @@ struct AdviceView: View {
 
     private var ratingIcon: String {
         switch advice.rating {
-        case .great: return "trophy.fill"
-        case .solid: return "checkmark.circle.fill"
+        case .great:       return "trophy.fill"
+        case .solid:       return "checkmark.circle.fill"
         case .closeToGoal: return "target"
-        case .average: return "equal.circle.fill"
-        case .needsWork: return "wrench.and.screwdriver.fill"
-        case .tough: return "cloud.rain.fill"
+        case .average:     return "equal.circle.fill"
+        case .needsWork:   return "wrench.and.screwdriver.fill"
+        case .tough:       return "cloud.rain.fill"
         }
     }
 
     private var ratingColor: Color {
         switch advice.rating {
-        case .great, .solid: return .emerald
+        case .great, .solid:        return .emerald
         case .closeToGoal, .average: return .warningAmber
-        case .needsWork, .tough: return .slateGray
+        case .needsWork, .tough:    return .slateGray
         }
     }
 
     private var ratingBlurb: String {
         switch advice.rating {
-        case .great: return "A great round — your score matched or beat par."
-        case .solid: return "A solid, consistent round overall."
-        case .closeToGoal: return "You were close to your current goal. Useful focus areas below."
-        case .average: return "An average round with some clear, fixable patterns."
-        case .needsWork: return "A round that needs some work — but every round teaches you something."
-        case .tough: return "A tough round, but useful data for what to work on next."
+        case .great:       return "A great round — well ahead of your goal."
+        case .solid:       return "A solid, consistent round — you're on track."
+        case .closeToGoal: return "Close to your goal. A couple of improvements away."
+        case .average:     return "An average round with some clear, fixable patterns."
+        case .needsWork:   return "A round that shows what to work on — that's valuable."
+        case .tough:       return "A tough round, but every shot logged is useful data."
         }
     }
 

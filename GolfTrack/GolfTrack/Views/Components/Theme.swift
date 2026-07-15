@@ -55,9 +55,129 @@ struct AppBackdrop: View {
     }
 }
 extension View {
-    /// Applies the standard dark emerald screen backdrop behind a scrollable/static screen body.
+    /// Applies the standard dark emerald screen backdrop behind a scrollable/static screen body,
+    /// plus a tap-anywhere-to-dismiss-keyboard gesture so every screen gets it for free.
     func appBackground() -> some View {
         background(AppBackdrop())
+            .dismissKeyboardOnTap()
+    }
+}
+
+extension View {
+    /// Lets a tap anywhere in the view dismiss the active keyboard, without needing a
+    /// FocusState binding wired up at every call site. Uses `simultaneousGesture` so it never
+    /// blocks taps on buttons/links underneath — it just also resigns first responder.
+    func dismissKeyboardOnTap() -> some View {
+        simultaneousGesture(
+            TapGesture().onEnded {
+                UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+            }
+        )
+    }
+}
+
+/// Fires a haptic immediately, synchronously, inside a button's action closure. Toolbar/nav-bar
+/// buttons are hosted by UIKit as UIBarButtonItems, which don't reliably surface SwiftUI's
+/// `configuration.isPressed` — so a custom ButtonStyle's `.sensoryFeedback(trigger: isPressed)`
+/// silently never fires there. Calling this directly in the action guarantees it fires regardless.
+func hapticTap(_ style: UIImpactFeedbackGenerator.FeedbackStyle = .light) {
+    UIImpactFeedbackGenerator(style: style).impactOccurred()
+}
+
+/// Consistent custom title bar used at the root of every tab. A mix of system NavigationTitle
+/// (small system font) and custom headers (bold title3) made tabs look inconsistent with each
+/// other — every tab root now uses this exact same title treatment.
+struct ScreenTitleBar<Trailing: View>: View {
+    let title: String
+    @ViewBuilder var trailing: Trailing
+
+    init(_ title: String, @ViewBuilder trailing: () -> Trailing = { EmptyView() }) {
+        self.title = title
+        self.trailing = trailing()
+    }
+
+    var body: some View {
+        ZStack {
+            Text(title).font(.title3.weight(.bold)).foregroundStyle(.textPrimary)
+            HStack {
+                Spacer()
+                trailing
+            }
+        }
+        .padding(.top, 6)
+    }
+}
+
+/// Re-enables the system interactive edge-swipe-to-go-back gesture. SwiftUI silently disables it
+/// on screens that hide their navigation bar, and a sibling gesture (e.g. a paged TabView, like
+/// Round Detail's) can otherwise swallow the touch before the pop gesture sees it. Attaching this
+/// once per NavigationStack re-arms the gesture and lets it recognize simultaneously with others.
+private struct SwipeBackEnabler: UIViewControllerRepresentable {
+    func makeUIViewController(context: Context) -> UIViewController {
+        let controller = UIViewController()
+        controller.view.backgroundColor = .clear
+        DispatchQueue.main.async {
+            if let nav = controller.navigationController {
+                nav.interactivePopGestureRecognizer?.delegate = context.coordinator
+                nav.interactivePopGestureRecognizer?.isEnabled = true
+            }
+        }
+        return controller
+    }
+    func updateUIViewController(_ uiViewController: UIViewController, context: Context) {}
+    func makeCoordinator() -> Coordinator { Coordinator() }
+
+    final class Coordinator: NSObject, UIGestureRecognizerDelegate {
+        func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+            true
+        }
+    }
+}
+extension View {
+    /// Attach once to the root content of each NavigationStack to guarantee swipe-back works
+    /// for every screen pushed within it.
+    func enableSwipeBack() -> some View {
+        background(SwipeBackEnabler())
+    }
+}
+
+/// Custom header for screens PUSHED onto a NavigationStack — same centered-bold-title language
+/// as ScreenTitleBar, plus its own back chevron rendered in plain SwiftUI content rather than a
+/// system toolbar item. Pushing from a hidden-bar root into a screen that shows the system bar
+/// (and especially a second push beyond that) made the navigation bar flip hidden<->visible
+/// mid-transition, which produced a visible glitch (the new screen would appear frozen/stuck
+/// until another navigation event forced a re-layout). Keeping every pushed screen's bar
+/// hidden — with this as the one and only header — removes that transition entirely.
+struct PushedScreenHeader<Trailing: View>: View {
+    let title: String
+    @Environment(\.dismiss) private var dismiss
+    @ViewBuilder var trailing: Trailing
+
+    init(_ title: String, @ViewBuilder trailing: () -> Trailing = { EmptyView() }) {
+        self.title = title
+        self.trailing = trailing()
+    }
+
+    var body: some View {
+        ZStack {
+            Text(title).font(.title3.weight(.bold)).foregroundStyle(.textPrimary)
+            HStack {
+                Button {
+                    hapticTap()
+                    dismiss()
+                } label: {
+                    Image(systemName: "chevron.left")
+                        .font(.body.weight(.semibold))
+                        .foregroundStyle(.emerald)
+                        .frame(width: 34, height: 34)
+                        .background(Color.white.opacity(0.05), in: Circle())
+                }
+                .buttonStyle(.bouncy)
+                Spacer()
+                trailing
+            }
+        }
+        .padding(.top, 6)
     }
 }
 
@@ -337,8 +457,8 @@ struct CardBackground: ViewModifier {
                 RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
                     .strokeBorder(Color.cardBorder, lineWidth: 1)
             )
-            .shadow(color: Color.emerald.opacity(0.10), radius: 18, x: 0, y: 10)
-            .shadow(color: .black.opacity(0.4), radius: 10, x: 0, y: 6)
+            .shadow(color: Color.emerald.opacity(0.08), radius: 8, x: 0, y: 4)
+            .shadow(color: .black.opacity(0.3), radius: 8, x: 0, y: 5)
     }
 }
 extension View {
@@ -369,6 +489,7 @@ struct Pill: View {
 struct ScoreBadge: View {
     let scoreToPar: Int
     var size: CGFloat = 44
+    var animated: Bool = true
     @State private var appeared = false
 
     var body: some View {
@@ -380,9 +501,10 @@ struct ScoreBadge: View {
                 CountUpNumber(value: scoreToPar, font: .system(size: size * 0.32, weight: .bold, design: .rounded), color: color, formatter: scoreToParText)
                     .minimumScaleFactor(0.7)
             )
-            .scaleEffect(appeared ? 1 : 0.4)
-            .opacity(appeared ? 1 : 0)
+            .scaleEffect(animated ? (appeared ? 1 : 0.4) : 1)
+            .opacity(animated ? (appeared ? 1 : 0) : 1)
             .onAppear {
+                guard animated else { return }
                 withAnimation(.spring(response: 0.45, dampingFraction: 0.65)) { appeared = true }
             }
     }
@@ -425,10 +547,34 @@ struct CountUpNumber: View {
     }
 }
 
+/// Small tappable "?" badge that reveals a short plain-language explanation in a popover —
+/// used next to jargon-y labels (GIR, fairways hit, club rankings, etc.) so the numbers are
+/// never left unexplained.
+struct InfoTip: View {
+    let text: String
+    @State private var showing = false
+    var body: some View {
+        Button { showing = true } label: {
+            Image(systemName: "questionmark.circle.fill")
+                .font(.caption2)
+                .foregroundStyle(.textTertiary)
+        }
+        .buttonStyle(.bouncy)
+        .popover(isPresented: $showing) {
+            Text(text)
+                .font(.subheadline)
+                .padding()
+                .frame(maxWidth: 260)
+                .presentationCompactAdaptation(.popover)
+        }
+    }
+}
+
 struct SectionHeader: View {
     let title: String
     var subtitle: String? = nil
     var icon: String? = nil
+    var info: String? = nil
     var body: some View {
         HStack(spacing: 10) {
             if let icon {
@@ -439,10 +585,15 @@ struct SectionHeader: View {
                     .background(Color.emerald.opacity(0.14), in: Circle())
             }
             VStack(alignment: .leading, spacing: 2) {
-                Text(title.uppercased())
-                    .font(.caption.weight(.bold))
-                    .foregroundStyle(.textSecondary)
-                    .tracking(0.6)
+                HStack(spacing: 6) {
+                    Text(title.uppercased())
+                        .font(.caption.weight(.bold))
+                        .foregroundStyle(.textSecondary)
+                        .tracking(0.6)
+                    if let info {
+                        InfoTip(text: info)
+                    }
+                }
                 if let subtitle {
                     Text(subtitle).font(.subheadline).foregroundStyle(.textPrimary)
                 }
@@ -506,6 +657,56 @@ struct InputField: View {
     }
 }
 
+/// Horizontal bar chart showing scoring distribution (birdie/par/bogey/double+) with
+/// color-coded bars and counts. Used in Round Summary and Stats — replaces the plain StatRow list.
+struct ScoringDistributionBar: View {
+    let birdiesOrBetter: Int
+    let pars: Int
+    let bogeys: Int
+    let doublesOrWorse: Int
+
+    private var total: Int { birdiesOrBetter + pars + bogeys + doublesOrWorse }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            SectionHeader(title: "Scoring Breakdown", icon: "chart.bar.fill")
+            VStack(spacing: 8) {
+                distributionRow("Birdie+", count: birdiesOrBetter, color: .emerald)
+                distributionRow("Par",     count: pars,            color: .white)
+                distributionRow("Bogey",   count: bogeys,          color: .warningAmber)
+                distributionRow("Double+", count: doublesOrWorse,  color: .alertCoral)
+            }
+        }
+        .cardStyle()
+    }
+
+    private func distributionRow(_ label: String, count: Int, color: Color) -> some View {
+        HStack(spacing: 10) {
+            Text(label)
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(.textSecondary)
+                .frame(width: 52, alignment: .leading)
+
+            GeometryReader { geo in
+                ZStack(alignment: .leading) {
+                    Capsule().fill(Color.white.opacity(0.06))
+                    if total > 0 && count > 0 {
+                        Capsule()
+                            .fill(color.opacity(0.72))
+                            .frame(width: max(CGFloat(count) / CGFloat(total) * geo.size.width, 6))
+                    }
+                }
+            }
+            .frame(height: 10)
+
+            Text("\(count)")
+                .font(.caption.weight(.bold))
+                .foregroundStyle(count > 0 ? color : .textTertiary)
+                .frame(width: 24, alignment: .trailing)
+        }
+    }
+}
+
 /// Label/value row used throughout summary, history, stats, and club detail screens.
 struct StatRow: View {
     let label: String
@@ -526,6 +727,7 @@ struct MetricTile: View {
     let value: String
     var icon: String? = nil
     var tint: Color = .emerald
+    var info: String? = nil
     @State private var appeared = false
 
     var body: some View {
@@ -535,7 +737,12 @@ struct MetricTile: View {
             }
             Text(value).font(.title3.weight(.bold)).foregroundStyle(.textPrimary)
                 .contentTransition(.numericText())
-            Text(title).font(.caption).foregroundStyle(.textSecondary).multilineTextAlignment(.center)
+            HStack(spacing: 3) {
+                Text(title).font(.caption).foregroundStyle(.textSecondary).multilineTextAlignment(.center)
+                if let info {
+                    InfoTip(text: info)
+                }
+            }
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 12)
@@ -584,6 +791,31 @@ struct BouncyButtonStyle: ButtonStyle {
 }
 extension ButtonStyle where Self == BouncyButtonStyle {
     static var bouncy: BouncyButtonStyle { BouncyButtonStyle() }
+}
+
+/// Text action for navigation/toolbars. Toolbar buttons need their own fixed-size label because
+/// the global bouncy style can make short actions like Cancel render inside a clipped pill.
+struct ToolbarPillButton: View {
+    let title: String
+    var action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            Text(title)
+                .font(.subheadline.weight(.semibold))
+                .lineLimit(1)
+                .minimumScaleFactor(0.85)
+                .foregroundStyle(.emerald)
+                .padding(.horizontal, 12)
+                .frame(minWidth: 68, minHeight: 34)
+                .background(Color.white.opacity(0.08), in: Capsule())
+                .overlay(
+                    Capsule()
+                        .strokeBorder(Color.white.opacity(0.08), lineWidth: 1)
+                )
+        }
+        .buttonStyle(.plain)
+    }
 }
 
 /// Large tappable score chip used throughout hole entry for fast, low-typing input.

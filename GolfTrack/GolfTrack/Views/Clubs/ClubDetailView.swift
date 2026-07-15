@@ -6,6 +6,17 @@ struct ClubDetailView: View {
     @Environment(\.modelContext) private var context
 
     var body: some View {
+        VStack(spacing: 0) {
+            PushedScreenHeader(stats.club.displayName)
+                .padding(.horizontal)
+
+            detailContent
+        }
+        .appBackground()
+        .toolbar(.hidden, for: .navigationBar)
+    }
+
+    private var detailContent: some View {
         ScrollView {
             VStack(spacing: 20) {
                 VStack(spacing: 6) {
@@ -48,8 +59,6 @@ struct ClubDetailView: View {
             }
             .padding()
         }
-        .appBackground()
-        .navigationTitle("Club Detail")
-        .navigationBarTitleDisplayMode(.inline)
+        .scrollDismissesKeyboard(.interactively)
     }
 }

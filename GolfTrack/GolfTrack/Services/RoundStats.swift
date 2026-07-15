@@ -5,17 +5,22 @@ import Foundation
 /// calculated exactly once and stay consistent across screens.
 struct RoundStats {
     let round: GolfRound
+    /// Sorted once at init — avoids re-sorting on every property access.
+    let holes: [HoleScore]
+
+    init(round: GolfRound) {
+        self.round = round
+        self.holes = (round.holeScores ?? []).sorted { $0.holeNumber < $1.holeNumber }
+    }
 
     var courseName: String { round.course?.name ?? "Round" }
     var date: Date { round.date }
     var holesPlayed: Int { round.holesPlayed }
-    var totalStrokes: Int { round.totalStrokes }
-    var totalPar: Int { round.totalPar }
-    var scoreToPar: Int { round.scoreToPar }
-    var totalPutts: Int { round.totalPutts }
-    var totalPenalties: Int { round.totalPenalties }
-
-    var holes: [HoleScore] { round.sortedHoleScores }
+    var totalStrokes: Int { holes.reduce(0) { $0 + $1.strokes } }
+    var totalPar: Int { holes.reduce(0) { $0 + $1.par } }
+    var scoreToPar: Int { totalStrokes - totalPar }
+    var totalPutts: Int { holes.reduce(0) { $0 + $1.putts } }
+    var totalPenalties: Int { holes.reduce(0) { $0 + $1.penalties } }
 
     var averageStrokesPerHole: Double {
         holes.isEmpty ? 0 : Double(totalStrokes) / Double(holes.count)
@@ -85,12 +90,12 @@ struct RoundStats {
     }
 
     var mostProblematicClub: ClubType? {
-        clubTallies.filter { $0.value.bad > 0 }
-            .max(by: { $0.value.bad < $1.value.bad })?.key
+        clubTallies.filter { $0.value.uses > 0 }
+            .min(by: { Double($0.value.good) / Double($0.value.uses) < Double($1.value.good) / Double($1.value.uses) })?.key
     }
 
     var targetComparison: Int? {
         guard let target = round.targetScore else { return nil }
-        return totalStrokes - target
+        return totalStrokes - target  // totalStrokes uses cached holes
     }
 }

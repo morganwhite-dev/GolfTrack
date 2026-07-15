@@ -88,7 +88,7 @@ struct ManualCourseCreateView: View {
                     .cardStyle()
 
                     VStack(alignment: .leading, spacing: 12) {
-                        SectionHeader(title: "Optional Details", icon: "ellipsis.circle")
+                        SectionHeader(title: "Optional Details", icon: "plus.circle")
                         InputField(placeholder: "Tee box name (e.g. White, Blue)", text: $teeBoxName)
                         InputField(placeholder: "Course rating (e.g. 71.2)", text: $ratingText, keyboardType: .decimalPad)
                         InputField(placeholder: "Slope rating (e.g. 128)", text: $slopeText, keyboardType: .numberPad)
@@ -104,9 +104,13 @@ struct ManualCourseCreateView: View {
             .appBackground()
             .navigationTitle(existingCourse == nil ? "New Course" : "Edit Course")
             .navigationBarTitleDisplayMode(.inline)
+            .scrollDismissesKeyboard(.interactively)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") { dismiss() }
+                    ToolbarPillButton(title: "Cancel") {
+                        hapticTap()
+                        dismiss()
+                    }
                 }
             }
         }

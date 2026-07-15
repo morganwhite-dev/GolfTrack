@@ -9,10 +9,12 @@ struct StartRoundTabView: View {
 
     @Query(sort: \GolfRound.date, order: .reverse) private var allRounds: [GolfRound]
 
+    private var myRounds: [GolfRound] { allRounds.filter { $0.profile?.id == profile.id } }
+
     private var recentCourses: [GolfCourse] {
         var seen = Set<UUID>()
         var result: [GolfCourse] = []
-        for round in allRounds {
+        for round in myRounds {
             guard let course = round.course, !seen.contains(course.id) else { continue }
             seen.insert(course.id)
             result.append(course)
@@ -46,7 +48,7 @@ struct StartRoundTabView: View {
         }
         .navigationDestination(isPresented: $showRoundSetup) {
             if let course = selectedCourse {
-                RoundSetupView(course: course)
+                RoundSetupView(course: course, profile: profile)
             }
         }
         .sheet(isPresented: $showCourseSearch) {
@@ -57,11 +59,7 @@ struct StartRoundTabView: View {
     }
 
     private var topBar: some View {
-        Text("Start Round")
-            .font(.title3.weight(.bold))
-            .foregroundStyle(.textPrimary)
-            .frame(maxWidth: .infinity)
-            .padding(.top, 6)
+        ScreenTitleBar("Start Round")
     }
 
     private var heroCard: some View {

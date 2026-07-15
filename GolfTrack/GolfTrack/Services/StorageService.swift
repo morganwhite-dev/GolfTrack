@@ -3,23 +3,11 @@ import SwiftData
 
 enum StorageService {
     static var schema: Schema {
-        Schema([
-            UserProfile.self, GolfCourse.self, GolfHole.self,
-            GolfRound.self, HoleScore.self, ClubShot.self,
-            RoundReflection.self, RoundAdvice.self,
-            PracticePlan.self, PracticeDrill.self, ClubStats.self
-        ])
+        LiveActivityRoundStore.schema
     }
 
     static func makeModelContainer() -> ModelContainer {
-        let configuration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
-        do {
-            return try ModelContainer(for: schema, configurations: [configuration])
-        } catch {
-            // Fall back to an in-memory store rather than crashing if the on-disk store can't open.
-            let memoryConfig = ModelConfiguration(schema: schema, isStoredInMemoryOnly: true)
-            return try! ModelContainer(for: schema, configurations: [memoryConfig])
-        }
+        LiveActivityRoundStore.makeModelContainer()
     }
 
     /// Seeds a couple of example courses on first launch so Start Round and Course Search
@@ -56,7 +44,7 @@ extension StorageService {
         let existingRounds = try? context.fetch(FetchDescriptor<GolfRound>(predicate: #Predicate<GolfRound> { $0.isComplete }))
         guard (existingRounds ?? []).isEmpty else { return }
         guard let course = (try? context.fetch(FetchDescriptor<GolfCourse>()))?.first(where: { $0.numberOfHoles == 9 }) else { return }
-        let profile = try? context.fetch(FetchDescriptor<UserProfile>()).first
+        guard let profile = try? context.fetch(FetchDescriptor<UserProfile>()).first else { return }
 
         struct HoleSeed {
             let strokes: Int, putts: Int, penalties: Int
@@ -83,6 +71,7 @@ extension StorageService {
             let date = Calendar.current.date(byAdding: .day, value: -daysAgo, to: Date()) ?? Date()
             let round = GolfRound(course: course, date: date, holesPlayed: holes.count)
             round.isComplete = true
+            round.profile = profile
 
             var scores: [HoleScore] = []
             for (index, seed) in holes.enumerated() {
@@ -140,7 +129,7 @@ extension StorageService {
             try? context.save()
         }
 
-        makeRound(daysAgo: 16, holes: [
+        makeRound(daysAgo: 24, holes: [
             HoleSeed(strokes: 5, putts: 3, penalties: 0, club: .iron7, miss: .short, contact: .poor, confidence: .low),
             HoleSeed(strokes: 4, putts: 2, penalties: 0, club: .iron8, miss: .left, contact: .okay, confidence: .medium),
             HoleSeed(strokes: 5, putts: 2, penalties: 1, club: .iron6, miss: .right, contact: .poor, confidence: .low),
@@ -159,7 +148,7 @@ extension StorageService {
             improve: "Slow down on the greens and commit to a speed before putting."
         ))
 
-        makeRound(daysAgo: 10, holes: [
+        makeRound(daysAgo: 15, holes: [
             HoleSeed(strokes: 4, putts: 2, penalties: 0, club: .iron7, miss: .good, contact: .good, confidence: .high),
             HoleSeed(strokes: 5, putts: 3, penalties: 0, club: .iron8, miss: .left, contact: .okay, confidence: .medium),
             HoleSeed(strokes: 4, putts: 2, penalties: 0, club: .iron6, miss: .short, contact: .okay, confidence: .medium),
@@ -177,7 +166,7 @@ extension StorageService {
             improve: "Work on wedge distances this week."
         ))
 
-        makeRound(daysAgo: 5, holes: [
+        makeRound(daysAgo: 8, holes: [
             HoleSeed(strokes: 4, putts: 2, penalties: 0, club: .iron7, miss: .good, contact: .good, confidence: .high),
             HoleSeed(strokes: 4, putts: 2, penalties: 0, club: .iron8, miss: .good, contact: .okay, confidence: .medium),
             HoleSeed(strokes: 4, putts: 1, penalties: 0, club: .iron6, miss: .good, contact: .good, confidence: .high),
@@ -213,7 +202,7 @@ extension StorageService {
             improve: "Keep the same pre-shot routine going into the next round."
         ))
 
-        ClubStatsService.recompute(in: context)
+        ClubStatsService.recompute(for: profile, in: context)
     }
 }
 #endif

@@ -19,6 +19,7 @@ final class ClubStats: Hashable {
     var averageConfidence: Double = 0
     var notes: String = ""
     var lastUpdated: Date = Date()
+    var profile: UserProfile?
 
     init(club: ClubType) {
         self.id = UUID()

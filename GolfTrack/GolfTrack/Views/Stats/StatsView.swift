@@ -3,9 +3,12 @@ import SwiftData
 import Charts
 
 struct StatsView: View {
-    @Query(filter: #Predicate<GolfRound> { $0.isComplete }, sort: \GolfRound.date, order: .reverse)
-    private var rounds: [GolfRound]
+    let profile: UserProfile
 
+    @Query(filter: #Predicate<GolfRound> { $0.isComplete }, sort: \GolfRound.date, order: .reverse)
+    private var allRounds: [GolfRound]
+
+    private var rounds: [GolfRound] { allRounds.filter { $0.profile?.id == profile.id } }
     private var statsList: [RoundStats] { rounds.map { RoundStats(round: $0) } }
     private var nineHole: [RoundStats] { statsList.filter { $0.holesPlayed <= 9 } }
     private var eighteenHole: [RoundStats] { statsList.filter { $0.holesPlayed > 9 } }
@@ -34,6 +37,15 @@ struct StatsView: View {
         return combined
     }
 
+    private var scoringDistributionSection: some View {
+        ScoringDistributionBar(
+            birdiesOrBetter: statsList.reduce(0) { $0 + $1.birdiesOrBetter },
+            pars:            statsList.reduce(0) { $0 + $1.pars },
+            bogeys:          statsList.reduce(0) { $0 + $1.bogeys },
+            doublesOrWorse:  statsList.reduce(0) { $0 + $1.doubleBogeys + $1.triplesOrWorse }
+        )
+    }
+
     private var commonMissDirection: MissDirection? {
         let misses = statsList.compactMap(\.mainMissDirection)
         guard !misses.isEmpty else { return nil }
@@ -47,22 +59,33 @@ struct StatsView: View {
     }
 
     var body: some View {
-        ScrollView {
-            if statsList.isEmpty {
-                emptyState
-            } else {
-                VStack(spacing: 20) {
-                    SectionHeader(title: "Overview", icon: "chart.bar.fill")
-                    headlineGrid
-                    trendsSection
-                    patternsSection
-                    clubSection
+        VStack(spacing: 0) {
+            ScreenTitleBar("Stats")
+                .padding(.horizontal)
+
+            ScrollView {
+                if statsList.isEmpty {
+                    emptyState
+                } else {
+                    VStack(spacing: 20) {
+                        SectionHeader(
+                            title: "Overview",
+                            subtitle: "Based on \(statsList.count) round\(statsList.count == 1 ? "" : "s")",
+                            icon: "chart.bar.fill"
+                        )
+                        headlineGrid
+                        scoringDistributionSection
+                        progressSection
+                        trendsSection
+                        patternsSection
+                        clubSection
+                    }
+                    .padding()
                 }
-                .padding()
             }
         }
         .appBackground()
-        .navigationTitle("Stats")
+        .toolbar(.hidden, for: .navigationBar)
     }
 
     private var emptyState: some View {
@@ -98,11 +121,40 @@ struct StatsView: View {
                 MetricTile(title: "Avg Penalties", value: String(format: "%.1f", penalties), icon: "exclamationmark.triangle.fill", tint: .warningAmber)
             }
             if let fairway = averagePct(statsList.compactMap(\.fairwayHitPercentage)) {
-                MetricTile(title: "Fairways Hit", value: "\(Int(fairway))%", icon: "arrow.up")
+                MetricTile(title: "Fairways Hit", value: "\(Int(fairway))%", icon: "arrow.up", info: "Percent of tee shots on par 4s/5s that landed in the fairway, averaged across all your rounds.")
             }
             if let gir = averagePct(statsList.compactMap(\.girPercentage)) {
-                MetricTile(title: "Greens in Reg.", value: "\(Int(gir))%", icon: "target")
+                MetricTile(title: "Greens in Reg.", value: "\(Int(gir))%", icon: "target", info: "Greens in Regulation — reaching the green in par minus 2 strokes (e.g. your 1st shot on a par 3, 2nd on a par 4, 3rd on a par 5).")
             }
+        }
+    }
+
+    @ViewBuilder
+    private var progressSection: some View {
+        if let trends = ProgressTrendService.trends(from: statsList) {
+            VStack(alignment: .leading, spacing: 10) {
+                SectionHeader(
+                    title: "Your Progress",
+                    icon: "chart.line.uptrend.xyaxis",
+                    info: "Your last \(ProgressTrendService.windowSize) rounds compared to the \(ProgressTrendService.windowSize) before that — proof of whether what you've been working on is actually working."
+                )
+                VStack(spacing: 4) {
+                    ForEach(Array(trends.enumerated()), id: \.element.id) { index, trend in
+                        ProgressTrendRow(trend: trend)
+                        if index < trends.count - 1 {
+                            Divider().background(Color.white.opacity(0.08))
+                        }
+                    }
+                }
+            }
+            .cardStyle(raised: true)
+        } else {
+            VStack(alignment: .leading, spacing: 10) {
+                SectionHeader(title: "Your Progress", icon: "chart.line.uptrend.xyaxis")
+                Text("Play \(ProgressTrendService.windowSize * 2) rounds total to start seeing whether you're improving.")
+                    .font(.caption).foregroundStyle(.textSecondary)
+            }
+            .cardStyle()
         }
     }
 
@@ -116,7 +168,11 @@ struct StatsView: View {
 
     private var patternsSection: some View {
         VStack(alignment: .leading, spacing: 10) {
-            SectionHeader(title: "Patterns", icon: "waveform.path.ecg")
+            SectionHeader(
+                title: "Patterns",
+                icon: "waveform.path.ecg",
+                info: "Your most frequent miss direction and contact issue across every hole you've logged — the recurring thing worth working on, not a one-off."
+            )
             StatRow(label: "Common Miss Direction", value: commonMissDirection?.displayName ?? "—")
             StatRow(label: "Common Contact Issue", value: commonContactIssue?.displayName ?? "—")
         }
@@ -124,10 +180,14 @@ struct StatsView: View {
     }
 
     private var clubSection: some View {
-        NavigationLink(destination: ClubStatsView()) {
+        NavigationLink(destination: ClubStatsView(profile: profile)) {
             VStack(alignment: .leading, spacing: 10) {
                 HStack {
-                    SectionHeader(title: "Club Performance", icon: "figure.golf")
+                    SectionHeader(
+                        title: "Club Performance",
+                        icon: "figure.golf",
+                        info: "Best/Worst are ranked by percentage of good shots logged with that club, not total uses — a club you've only swung once won't outrank one you've tracked for months."
+                    )
                     Spacer()
                     Image(systemName: "chevron.right").font(.caption.weight(.semibold)).foregroundStyle(.textTertiary)
                 }
@@ -146,7 +206,36 @@ struct StatsView: View {
             .max(by: { Double($0.value.good) / Double($0.value.uses) < Double($1.value.good) / Double($1.value.uses) })?.key
     }
     private var worstClub: ClubType? {
-        allClubTallies.filter { $0.value.bad > 0 }.max(by: { $0.value.bad < $1.value.bad })?.key
+        allClubTallies.filter { $0.value.uses > 0 }
+            .min(by: { Double($0.value.good) / Double($0.value.uses) < Double($1.value.good) / Double($1.value.uses) })?.key
+    }
+}
+
+private struct ProgressTrendRow: View {
+    let trend: ProgressTrend
+
+    private var statusColor: Color {
+        trend.improved ? .emerald : (trend.declined ? .alertCoral : .charcoal)
+    }
+    private var statusLabel: String {
+        trend.improved ? "Improving" : (trend.declined ? "Needs Work" : "Steady")
+    }
+
+    var body: some View {
+        HStack(spacing: 12) {
+            IconBadge(
+                icon: trend.improved ? "checkmark.circle.fill" : (trend.declined ? "exclamationmark.circle.fill" : "minus.circle.fill"),
+                color: statusColor,
+                size: 34
+            )
+            VStack(alignment: .leading, spacing: 2) {
+                Text(trend.label).font(.subheadline.weight(.semibold)).foregroundStyle(.textPrimary)
+                Text("\(trend.priorText) → \(trend.recentText)").font(.caption).foregroundStyle(.textSecondary)
+            }
+            Spacer()
+            Pill(text: statusLabel, color: statusColor, filled: trend.improved)
+        }
+        .padding(.vertical, 4)
     }
 }
 
