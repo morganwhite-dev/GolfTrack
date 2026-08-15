@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		0614904FEBAE348A85004D90 /* Enums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17C1863C7E613A15626833BE /* Enums.swift */; };
+		094CBEE180FCCA6053D1B2E3 /* GolfTrackTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8C9570F628919722D8078D8 /* GolfTrackTests.swift */; };
 		11A44D4C71DA566238C70387 /* RoundSummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 419C005652CE5EAF06539123 /* RoundSummaryView.swift */; };
 		14FD25F39F2CECE9F6119BF5 /* RoundReflection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7379234CD4DB51B5F647411A /* RoundReflection.swift */; };
 		15979FB747F9D72FCD466C2E /* RoundDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A868BC46B30B4D559023B47 /* RoundDetailView.swift */; };
@@ -37,7 +38,6 @@
 		74C3036A5AB7AF3AAABE1B08 /* RoundAnalysisService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C956A2FD0A79BFC3586725E5 /* RoundAnalysisService.swift */; };
 		765B5910096889490E7D5A33 /* GolfCourse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 864E23350F680EC4EAC5ACCA /* GolfCourse.swift */; };
 		76BF512ACE916D8DDC58DB76 /* RoundReflectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60C63AA9D894317FB6AC364B /* RoundReflectionView.swift */; };
-		77474531D91C621BA87EB8D2 /* GolfTrackWidget.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = B66C55F4196E42F541C72489 /* GolfTrackWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		7C0098274A4D20E9D7D33DFB /* StatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04B823DEBBD997D2C3369B51 /* StatsView.swift */; };
 		7CD2E4993120CF66E61D2318 /* CourseSearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37A1AD6510173527D0EC07C8 /* CourseSearchView.swift */; };
 		802B0591D253D37DF52B0D72 /* LiveActivityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98FE437E324D4B34CB0BD354 /* LiveActivityManager.swift */; };
@@ -70,28 +70,14 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		C4A1006B26D5899216CFE2A0 /* PBXContainerItemProxy */ = {
+		F2AA2E37D0A17AD266B1FBB5 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = D97016FF95882BE2BE5C6952 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = B4CBD8B15AD56321797C576E;
-			remoteInfo = GolfTrackWidget;
+			remoteGlobalIDString = 611F6D75F3A9514BDE8A5B87;
+			remoteInfo = GolfTrack;
 		};
 /* End PBXContainerItemProxy section */
-
-/* Begin PBXCopyFilesBuildPhase section */
-		E4B79A56033ECABDEC2970CE /* Embed Foundation Extensions */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 13;
-			files = (
-				77474531D91C621BA87EB8D2 /* GolfTrackWidget.appex in Embed Foundation Extensions */,
-			);
-			name = "Embed Foundation Extensions";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		033289298741820BC938ED69 /* UserProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfile.swift; sourceTree = "<group>"; };
@@ -100,13 +86,14 @@
 		17C1863C7E613A15626833BE /* Enums.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Enums.swift; sourceTree = "<group>"; };
 		227F8E5F22332EF29DA30A24 /* GolfTrackApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GolfTrackApp.swift; sourceTree = "<group>"; };
 		274E377B8AC88A3C91F00265 /* LiveActivityRoundStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveActivityRoundStore.swift; sourceTree = "<group>"; };
-		33E4E37604AB24CBB7163EF5 /* GolfTrack.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = GolfTrack.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		33E4E37604AB24CBB7163EF5 /* GolfTrack.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GolfTrack.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		37A1AD6510173527D0EC07C8 /* CourseSearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourseSearchView.swift; sourceTree = "<group>"; };
 		3A0EC0AF6A2F8CF25CD8E8F7 /* CourseSearchService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourseSearchService.swift; sourceTree = "<group>"; };
 		3FDB70A2026418418994C8E0 /* HoleEntryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HoleEntryView.swift; sourceTree = "<group>"; };
 		419C005652CE5EAF06539123 /* RoundSummaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundSummaryView.swift; sourceTree = "<group>"; };
 		44A0E5988340E6A0FBEF5A74 /* StorageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageService.swift; sourceTree = "<group>"; };
 		4506E4BB5935F879CF05F692 /* CourseDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourseDetailView.swift; sourceTree = "<group>"; };
+		49C8BC702679B96D982DD765 /* GolfTrackTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = GolfTrackTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		4A7995F5247E265916FE02B3 /* RoundProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundProgressView.swift; sourceTree = "<group>"; };
 		4FC7B2AA3AFF6B7B39B78AE5 /* RoundActivityAttributes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundActivityAttributes.swift; sourceTree = "<group>"; };
 		5A868BC46B30B4D559023B47 /* RoundDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundDetailView.swift; sourceTree = "<group>"; };
@@ -145,6 +132,7 @@
 		D63E4E8924977CE3DC0D5661 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		D7931EAAF67BC2F7B3D0FE03 /* GolfTrackWidget.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = GolfTrackWidget.entitlements; sourceTree = "<group>"; };
 		E758D3D715F8951EC60955FE /* RoundSetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundSetupView.swift; sourceTree = "<group>"; };
+		E8C9570F628919722D8078D8 /* GolfTrackTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GolfTrackTests.swift; sourceTree = "<group>"; };
 		EB69B8152370A850BA675632 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		F532787E3779F76DD615C69A /* RoundLiveActivityWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundLiveActivityWidget.swift; sourceTree = "<group>"; };
 		FA2D56CEBADF64B10ACF9F83 /* HistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryView.swift; sourceTree = "<group>"; };
@@ -258,6 +246,7 @@
 			isa = PBXGroup;
 			children = (
 				C6F24B607A25D7A84F7AA503 /* GolfTrack */,
+				B4EA65A4C81C9DB46843628E /* GolfTrackTests */,
 				3403E90EC7311D4137811A91 /* GolfTrackWidget */,
 				9926817B9568A117D492B305 /* Shared */,
 				F31EDC5B15A6C94BBED8C8FF /* Products */,
@@ -296,6 +285,14 @@
 				B09B9E52C3CC6FD278A11C5C /* Theme.swift */,
 			);
 			path = Components;
+			sourceTree = "<group>";
+		};
+		B4EA65A4C81C9DB46843628E /* GolfTrackTests */ = {
+			isa = PBXGroup;
+			children = (
+				E8C9570F628919722D8078D8 /* GolfTrackTests.swift */,
+			);
+			path = GolfTrackTests;
 			sourceTree = "<group>";
 		};
 		C6F24B607A25D7A84F7AA503 /* GolfTrack */ = {
@@ -340,6 +337,7 @@
 			isa = PBXGroup;
 			children = (
 				33E4E37604AB24CBB7163EF5 /* GolfTrack.app */,
+				49C8BC702679B96D982DD765 /* GolfTrackTests.xctest */,
 				B66C55F4196E42F541C72489 /* GolfTrackWidget.appex */,
 			);
 			name = Products;
@@ -364,12 +362,10 @@
 			buildPhases = (
 				0A8C27BCE6A3B00FE695308A /* Sources */,
 				A0E151DABC0EC4CE38A291FC /* Resources */,
-				E4B79A56033ECABDEC2970CE /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				CCA7E08693A4C837F3F356DC /* PBXTargetDependency */,
 			);
 			name = GolfTrack;
 			packageProductDependencies = (
@@ -395,6 +391,24 @@
 			productReference = B66C55F4196E42F541C72489 /* GolfTrackWidget.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
+		C73A78742B7F7E4AC7A43C49 /* GolfTrackTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 5F9D205449108FA4AF558D9A /* Build configuration list for PBXNativeTarget "GolfTrackTests" */;
+			buildPhases = (
+				BD055D7D16FA22EF89EAD613 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				562FF9AC45865E7B2594C75F /* PBXTargetDependency */,
+			);
+			name = GolfTrackTests;
+			packageProductDependencies = (
+			);
+			productName = GolfTrackTests;
+			productReference = 49C8BC702679B96D982DD765 /* GolfTrackTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -404,11 +418,11 @@
 				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 1430;
 				TargetAttributes = {
-					611F6D75F3A9514BDE8A5B87 = {
+					B4CBD8B15AD56321797C576E = {
 						DevelopmentTeam = Q2LR7B96SK;
 						ProvisioningStyle = Automatic;
 					};
-					B4CBD8B15AD56321797C576E = {
+					C73A78742B7F7E4AC7A43C49 = {
 						DevelopmentTeam = Q2LR7B96SK;
 						ProvisioningStyle = Automatic;
 					};
@@ -429,6 +443,7 @@
 			projectRoot = "";
 			targets = (
 				611F6D75F3A9514BDE8A5B87 /* GolfTrack */,
+				C73A78742B7F7E4AC7A43C49 /* GolfTrackTests */,
 				B4CBD8B15AD56321797C576E /* GolfTrackWidget */,
 			);
 		};
@@ -518,13 +533,21 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		BD055D7D16FA22EF89EAD613 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				094CBEE180FCCA6053D1B2E3 /* GolfTrackTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		CCA7E08693A4C837F3F356DC /* PBXTargetDependency */ = {
+		562FF9AC45865E7B2594C75F /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = B4CBD8B15AD56321797C576E /* GolfTrackWidget */;
-			targetProxy = C4A1006B26D5899216CFE2A0 /* PBXContainerItemProxy */;
+			target = 611F6D75F3A9514BDE8A5B87 /* GolfTrack */;
+			targetProxy = F2AA2E37D0A17AD266B1FBB5 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -535,7 +558,9 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = GolfTrack/GolfTrack.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = Q2LR7B96SK;
 				INFOPLIST_FILE = GolfTrack/Resources/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -543,6 +568,7 @@
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.golftrack.app;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -612,7 +638,9 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = GolfTrack/GolfTrack.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = Q2LR7B96SK;
 				INFOPLIST_FILE = GolfTrack/Resources/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -620,8 +648,26 @@
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.golftrack.app;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		815DDC433CA36772A75717A7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.golftrack.app.tests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/GolfTrack.app/GolfTrack";
 			};
 			name = Debug;
 		};
@@ -726,6 +772,23 @@
 			};
 			name = Release;
 		};
+		FED945DCE6AD0695F645F91D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.golftrack.app.tests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/GolfTrack.app/GolfTrack";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -734,6 +797,15 @@
 			buildConfigurations = (
 				A80C9825E4BFC53F2A480C74 /* Debug */,
 				1B440F2F1C60040FE008A24A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		5F9D205449108FA4AF558D9A /* Build configuration list for PBXNativeTarget "GolfTrackTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				815DDC433CA36772A75717A7 /* Debug */,
+				FED945DCE6AD0695F645F91D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;

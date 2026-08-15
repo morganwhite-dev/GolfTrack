@@ -322,15 +322,16 @@ struct RoundSummaryView: View {
             ))
         }
 
-        let blowUpStrokes = stats.holes.reduce(0) { $0 + max(0, $1.scoreToPar - 1) }
-        if blowUpStrokes > 0 {
+        let bigNumberStrokes = stats.holes.reduce(0) { $0 + max(0, $1.scoreToPar - 1) }
+        let bigNumberHoles = stats.holes.filter { $0.scoreToPar >= 2 }.count
+        if bigNumberStrokes > 0 {
             rows.append(ScoringOpportunityRow(
                 id: "blowups",
                 icon: "flame.fill",
                 color: .alertCoral,
                 title: "Limit Big Numbers",
-                detail: "\(stats.blowUpHoles) blow-up hole\(stats.blowUpHoles == 1 ? "" : "s") drove the score up. Play the next shot to remove disaster first.",
-                badge: "\(blowUpStrokes)"
+                detail: "\(bigNumberHoles) double-or-worse hole\(bigNumberHoles == 1 ? "" : "s") added recoverable strokes. Play the next shot to remove disaster first.",
+                badge: "\(bigNumberStrokes)"
             ))
         }
 

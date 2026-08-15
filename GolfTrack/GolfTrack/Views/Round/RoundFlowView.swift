@@ -104,8 +104,7 @@ private struct RoundDetailCleanupView: View {
     @Bindable var round: GolfRound
     var onContinue: () -> Void
     @Environment(\.modelContext) private var context
-    @State private var selectedHoleID: UUID?
-    @State private var showingHoleEditor = false
+    @State private var selectedHole: HoleScore?
 
     private var holes: [HoleScore] {
         round.sortedHoleScores
@@ -113,11 +112,6 @@ private struct RoundDetailCleanupView: View {
 
     private var holesNeedingDetail: [HoleScore] {
         holes.filter { !$0.detailIsStrong }
-    }
-
-    private var selectedHole: HoleScore? {
-        guard let selectedHoleID else { return nil }
-        return holes.first { $0.id == selectedHoleID }
     }
 
     var body: some View {
@@ -140,24 +134,22 @@ private struct RoundDetailCleanupView: View {
             .padding()
         }
         .appBackground()
-        .sheet(isPresented: $showingHoleEditor) {
-            if let selectedHole {
-                NavigationStack {
-                    HoleEntryView(holeScore: selectedHole)
-                        .navigationTitle("Hole \(selectedHole.holeNumber)")
-                        .navigationBarTitleDisplayMode(.inline)
-                        .toolbar {
-                            ToolbarItem(placement: .confirmationAction) {
-                                ToolbarPillButton(title: "Done") {
-                                    hapticTap()
-                                    try? context.save()
-                                    showingHoleEditor = false
-                                }
+        .sheet(item: $selectedHole) { hole in
+            NavigationStack {
+                HoleEntryView(holeScore: hole)
+                    .navigationTitle("Hole \(hole.holeNumber)")
+                    .navigationBarTitleDisplayMode(.inline)
+                    .toolbar {
+                        ToolbarItem(placement: .confirmationAction) {
+                            ToolbarPillButton(title: "Done") {
+                                hapticTap()
+                                try? context.save()
+                                selectedHole = nil
                             }
                         }
-                }
-                .preferredColorScheme(.dark)
+                    }
             }
+            .preferredColorScheme(.dark)
         }
     }
 
@@ -213,8 +205,7 @@ private struct RoundDetailCleanupView: View {
 
             ForEach(holesNeedingDetail, id: \.id) { hole in
                 Button {
-                    selectedHoleID = hole.id
-                    showingHoleEditor = true
+                    selectedHole = hole
                 } label: {
                     HStack(spacing: 12) {
                         VStack(alignment: .leading, spacing: 2) {
@@ -227,6 +218,12 @@ private struct RoundDetailCleanupView: View {
                                 .lineLimit(2)
                         }
                         Spacer()
+                        Text("Review")
+                            .font(.caption.weight(.bold))
+                            .foregroundStyle(.emerald)
+                            .padding(.horizontal, 9)
+                            .padding(.vertical, 5)
+                            .background(Color.emerald.opacity(0.12), in: Capsule())
                         Image(systemName: "chevron.right")
                             .font(.caption.weight(.bold))
                             .foregroundStyle(.textTertiary)

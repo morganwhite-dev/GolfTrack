@@ -5,19 +5,37 @@ struct CourseDetailView: View {
     @Bindable var course: GolfCourse
     var onSelect: ((GolfCourse) -> Void)? = nil
 
+    @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
     @State private var showEdit = false
+    @State private var showDeleteConfirm = false
 
     var body: some View {
         VStack(spacing: 0) {
             PushedScreenHeader("Course Detail") {
-                Button {
-                    hapticTap()
-                    showEdit = true
+                Menu {
+                    Button {
+                        hapticTap()
+                        showEdit = true
+                    } label: {
+                        Label("Edit Course", systemImage: "pencil")
+                    }
+                    Button(role: .destructive) {
+                        hapticTap(.medium)
+                        showDeleteConfirm = true
+                    } label: {
+                        Label("Delete Course", systemImage: "trash")
+                    }
                 } label: {
-                    Text("Edit").font(.subheadline.weight(.semibold)).foregroundStyle(.emerald)
+                    Image(systemName: "ellipsis")
+                        .font(.body.weight(.bold))
+                        .foregroundStyle(.emerald)
+                        .frame(width: 44, height: 44)
+                        .background(Color.white.opacity(0.05), in: Circle())
+                        .contentShape(Circle())
                 }
-                .buttonStyle(.bouncy)
+                .buttonStyle(.plain)
+                .accessibilityLabel("Course actions")
             }
             .padding(.horizontal)
 
@@ -27,6 +45,12 @@ struct CourseDetailView: View {
         .toolbar(.hidden, for: .navigationBar)
         .sheet(isPresented: $showEdit) {
             ManualCourseCreateView(existingCourse: course) { _ in }
+        }
+        .alert("Delete This Course?", isPresented: $showDeleteConfirm) {
+            Button("Delete Course", role: .destructive) { deleteCourse() }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("Rounds already played will stay in your history, but this course will be removed from saved courses.")
         }
     }
 
@@ -86,6 +110,12 @@ struct CourseDetailView: View {
             }
             .padding()
         }
+    }
+
+    private func deleteCourse() {
+        context.delete(course)
+        try? context.save()
+        dismiss()
     }
 }
 

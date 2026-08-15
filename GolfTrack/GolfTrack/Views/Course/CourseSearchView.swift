@@ -15,6 +15,7 @@ struct CourseSearchView: View {
     @State private var isSearchingNearby = false
     @State private var nearbyResults: [NearbyCourseResult] = []
     @State private var nearbyMessage: String?
+    @State private var coursePendingDelete: GolfCourse?
 
     private var filteredSaved: [GolfCourse] {
         CourseSearchService.filterSavedCourses(savedCourses, matching: searchText)
@@ -34,10 +35,25 @@ struct CourseSearchView: View {
                         } else {
                             VStack(spacing: 4) {
                                 ForEach(filteredSaved) { course in
-                                    Button { select(course) } label: {
-                                        CourseRow(course: course)
+                                    HStack(spacing: 10) {
+                                        Button { select(course) } label: {
+                                            CourseRow(course: course)
+                                        }
+                                        .buttonStyle(.bouncy)
+
+                                        Button {
+                                            hapticTap(.medium)
+                                            coursePendingDelete = course
+                                        } label: {
+                                            Image(systemName: "trash")
+                                                .font(.caption.weight(.bold))
+                                                .foregroundStyle(.alertCoral)
+                                                .frame(width: 34, height: 34)
+                                                .background(Color.alertCoral.opacity(0.1), in: Circle())
+                                        }
+                                        .buttonStyle(.plain)
+                                        .accessibilityLabel("Delete \(course.name)")
                                     }
-                                    .buttonStyle(.bouncy)
                                 }
                             }
                         }
@@ -81,6 +97,22 @@ struct CourseSearchView: View {
                 nearbyMessage = error
                 isSearchingNearby = false
             }
+            .alert("Delete This Course?", isPresented: Binding(
+                get: { coursePendingDelete != nil },
+                set: { if !$0 { coursePendingDelete = nil } }
+            )) {
+                Button("Delete Course", role: .destructive) {
+                    if let coursePendingDelete {
+                        delete(coursePendingDelete)
+                    }
+                    coursePendingDelete = nil
+                }
+                Button("Cancel", role: .cancel) {
+                    coursePendingDelete = nil
+                }
+            } message: {
+                Text("Rounds already played will stay in your history, but this course will be removed from saved courses.")
+            }
         }
         .tint(.emerald)
         .buttonStyle(.bouncy)
@@ -120,6 +152,11 @@ struct CourseSearchView: View {
     private func select(_ course: GolfCourse) {
         onSelect(course)
         dismiss()
+    }
+
+    private func delete(_ course: GolfCourse) {
+        context.delete(course)
+        try? context.save()
     }
 
     private func addNearby(_ result: NearbyCourseResult) {

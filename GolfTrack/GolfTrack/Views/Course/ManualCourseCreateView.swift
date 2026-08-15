@@ -18,6 +18,8 @@ struct ManualCourseCreateView: View {
     @State private var slopeText = ""
     @State private var teeBoxName = ""
     @State private var didCustomizePars = false
+    @State private var saveError: String?
+    @State private var isSaving = false
 
     private var totalPar: Int { pars.reduce(0, +) }
 
@@ -46,10 +48,26 @@ struct ManualCourseCreateView: View {
                         Divider()
 
                         Text("Number of Holes").font(.subheadline.weight(.semibold)).foregroundStyle(.textPrimary)
-                        HStack(spacing: 10) {
-                            ChoiceChip(label: "9 holes", isSelected: holeCount == 9) { setHoleCount(9) }
-                            ChoiceChip(label: "18 holes", isSelected: holeCount == 18) { setHoleCount(18) }
+                        Stepper(value: Binding(
+                            get: { holeCount },
+                            set: { setHoleCount($0) }
+                        ), in: 1...36) {
+                            Text("\(holeCount) hole\(holeCount == 1 ? "" : "s")")
+                                .font(.subheadline.weight(.semibold))
+                                .foregroundStyle(.textPrimary)
                         }
+                        .tint(.emerald)
+
+                        ScrollView(.horizontal, showsIndicators: false) {
+                            HStack(spacing: 10) {
+                                ForEach([3, 5, 6, 9, 12, 18], id: \.self) { count in
+                                    ChoiceChip(label: "\(count)", isSelected: holeCount == count) { setHoleCount(count) }
+                                }
+                            }
+                        }
+                        Text("Use any hole count, then set each hole's par below.")
+                            .font(.caption2)
+                            .foregroundStyle(.textTertiary)
                     }
                     .cardStyle()
 
@@ -68,6 +86,7 @@ struct ManualCourseCreateView: View {
                             ForEach(0..<holeCount, id: \.self) { index in
                                 HoleParRow(
                                     holeNumber: index + 1,
+                                    canDelete: holeCount > 1,
                                     par: Binding(
                                         get: { pars.indices.contains(index) ? pars[index] : 4 },
                                         set: { newValue in
@@ -80,7 +99,8 @@ struct ManualCourseCreateView: View {
                                         set: { newValue in
                                             if yardageTexts.indices.contains(index) { yardageTexts[index] = newValue }
                                         }
-                                    )
+                                    ),
+                                    onDelete: { removeHole(at: index) }
                                 )
                             }
                         }
@@ -95,9 +115,9 @@ struct ManualCourseCreateView: View {
                     }
                     .cardStyle()
 
-                    Button(existingCourse == nil ? "Save Course" : "Save Changes") { save() }
+                    Button(isSaving ? "Saving..." : (existingCourse == nil ? "Save Course" : "Save Changes")) { save() }
                         .buttonStyle(.primaryGolf)
-                        .disabled(name.trimmingCharacters(in: .whitespaces).isEmpty)
+                        .disabled(name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || isSaving)
                 }
                 .padding()
             }
@@ -117,6 +137,14 @@ struct ManualCourseCreateView: View {
         .tint(.emerald)
         .buttonStyle(.bouncy)
         .onAppear { loadExistingIfNeeded() }
+        .alert("Course Could Not Save", isPresented: Binding(
+            get: { saveError != nil },
+            set: { if !$0 { saveError = nil } }
+        )) {
+            Button("OK", role: .cancel) { saveError = nil }
+        } message: {
+            Text(saveError ?? "Please try again.")
+        }
     }
 
     private func setHoleCount(_ count: Int) {
@@ -130,6 +158,14 @@ struct ManualCourseCreateView: View {
             pars = Array(pars.prefix(count))
             yardageTexts = Array(yardageTexts.prefix(count))
         }
+    }
+
+    private func removeHole(at index: Int) {
+        guard holeCount > 1 else { return }
+        didCustomizePars = true
+        if pars.indices.contains(index) { pars.remove(at: index) }
+        if yardageTexts.indices.contains(index) { yardageTexts.remove(at: index) }
+        holeCount -= 1
     }
 
     private func applyDefaultPars() {
@@ -155,15 +191,21 @@ struct ManualCourseCreateView: View {
     }
 
     private func save() {
+        isSaving = true
         let course = existingCourse ?? GolfCourse(name: "", courseType: .standard, numberOfHoles: holeCount)
-        course.name = name.trimmingCharacters(in: .whitespaces)
-        course.location = location.trimmingCharacters(in: .whitespaces)
+        let isNewCourse = existingCourse == nil
+        course.name = name.trimmingCharacters(in: .whitespacesAndNewlines)
+        course.location = location.trimmingCharacters(in: .whitespacesAndNewlines)
         course.courseType = courseType
         course.numberOfHoles = holeCount
-        course.teeBoxName = teeBoxName.isEmpty ? nil : teeBoxName
+        course.teeBoxName = teeBoxName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? nil : teeBoxName.trimmingCharacters(in: .whitespacesAndNewlines)
         course.courseRating = Double(ratingText)
         course.slopeRating = Int(slopeText)
         course.isCustom = true
+
+        if isNewCourse {
+            context.insert(course)
+        }
 
         for hole in course.holes ?? [] { context.delete(hole) }
         var newHoles: [GolfHole] = []
@@ -177,32 +219,36 @@ struct ManualCourseCreateView: View {
         }
         course.holes = newHoles
 
-        if existingCourse == nil {
-            context.insert(course)
+        do {
+            try context.save()
+            onSave(course)
+            dismiss()
+        } catch {
+            saveError = error.localizedDescription
+            isSaving = false
         }
-        try? context.save()
-        onSave(course)
-        dismiss()
     }
 
     static func defaultPars(courseType: CourseType, holeCount: Int) -> [Int] {
-        let nine: [Int]
+        let pattern: [Int]
         switch courseType {
         case .par3:
-            nine = Array(repeating: 3, count: 9)
+            pattern = Array(repeating: 3, count: 9)
         case .executive:
-            nine = [3, 3, 4, 3, 3, 4, 3, 3, 4]
+            pattern = [3, 3, 4, 3, 3, 4, 3, 3, 4]
         case .standard, .other:
-            nine = [4, 4, 3, 5, 4, 4, 3, 5, 4]
+            pattern = [4, 4, 3, 5, 4, 4, 3, 5, 4]
         }
-        return holeCount == 9 ? nine : nine + nine
+        return (0..<holeCount).map { pattern[$0 % pattern.count] }
     }
 }
 
 private struct HoleParRow: View {
     let holeNumber: Int
+    let canDelete: Bool
     @Binding var par: Int
     @Binding var yardageText: String
+    var onDelete: () -> Void
 
     var body: some View {
         HStack(spacing: 12) {
@@ -225,6 +271,20 @@ private struct HoleParRow: View {
                 .padding(.vertical, 6)
                 .padding(.horizontal, 8)
                 .background(Color.white.opacity(0.06), in: RoundedRectangle(cornerRadius: 8, style: .continuous))
+
+            Button {
+                hapticTap(.medium)
+                onDelete()
+            } label: {
+                Image(systemName: "minus.circle.fill")
+                    .font(.body.weight(.semibold))
+                    .foregroundStyle(.alertCoral)
+                    .frame(width: 30, height: 30)
+            }
+            .buttonStyle(.plain)
+            .disabled(!canDelete)
+            .opacity(canDelete ? 1 : 0.35)
+            .accessibilityLabel("Remove hole \(holeNumber)")
         }
     }
 }

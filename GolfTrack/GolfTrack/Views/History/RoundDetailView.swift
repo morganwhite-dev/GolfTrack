@@ -6,8 +6,8 @@ struct RoundDetailView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var context
     @State private var page = 0
-    @State private var shareImage: UIImage? = nil
     @State private var showDeleteConfirm = false
+    @State private var showEditRound = false
 
     /// Available pages — tags are fixed so taps and swipe order stay consistent
     /// regardless of which optional sections exist on this round.
@@ -24,35 +24,42 @@ struct RoundDetailView: View {
     var body: some View {
         VStack(spacing: 0) {
             PushedScreenHeader("Round Detail") {
-                HStack(spacing: 8) {
+                Menu {
                     Button {
+                        hapticTap()
+                        showEditRound = true
+                    } label: {
+                        Label("Edit Round", systemImage: "pencil")
+                    }
+                    Button {
+                        hapticTap()
+                        shareDetailedRound()
+                    } label: {
+                        Label("Share Round Detail", systemImage: "list.bullet.rectangle")
+                    }
+                    Button {
+                        hapticTap()
+                        shareMinimalSummary()
+                    } label: {
+                        Label("Share Minimal Summary", systemImage: "square.and.arrow.up")
+                    }
+                    Divider()
+                    Button(role: .destructive) {
                         hapticTap(.medium)
                         showDeleteConfirm = true
                     } label: {
-                        Image(systemName: "trash")
-                            .font(.body.weight(.semibold))
-                            .foregroundStyle(.alertCoral)
-                            .frame(width: 44, height: 44)
-                            .background(Color.alertCoral.opacity(0.11), in: Circle())
-                            .contentShape(Circle())
+                        Label("Delete Round", systemImage: "trash")
                     }
-                    .buttonStyle(.plain)
-                    .accessibilityLabel("Delete round")
-
-                    Button {
-                        hapticTap()
-                        presentShareSheet()
-                    } label: {
-                        Image(systemName: "square.and.arrow.up")
-                            .font(.body.weight(.semibold))
-                            .foregroundStyle(.emerald)
-                            .frame(width: 44, height: 44)
-                            .background(Color.white.opacity(0.05), in: Circle())
-                            .contentShape(Circle())
-                    }
-                    .buttonStyle(.plain)
-                    .accessibilityLabel("Share round")
+                } label: {
+                    Image(systemName: "ellipsis")
+                        .font(.body.weight(.bold))
+                        .foregroundStyle(.emerald)
+                        .frame(width: 44, height: 44)
+                        .background(Color.white.opacity(0.05), in: Circle())
+                        .contentShape(Circle())
                 }
+                .buttonStyle(.plain)
+                .accessibilityLabel("Round actions")
             }
             .padding(.horizontal)
             pageHeader
@@ -95,11 +102,9 @@ struct RoundDetailView: View {
         }
         .appBackground()
         .toolbar(.hidden, for: .navigationBar)
-        .task {
-            // Defer so the navigation slide animation completes before ImageRenderer
-            // runs synchronously on the main thread.
-            try? await Task.sleep(nanoseconds: 350_000_000)
-            renderShareCard()
+        .sheet(isPresented: $showEditRound) {
+            RoundEditView(round: round)
+                .preferredColorScheme(.dark)
         }
         .confirmationDialog("Delete This Round?", isPresented: $showDeleteConfirm, titleVisibility: .visible) {
             Button("Delete Round", role: .destructive) { deleteRound() }
@@ -111,16 +116,22 @@ struct RoundDetailView: View {
 
     // MARK: - Share
 
-    private func renderShareCard() {
+    private func shareDetailedRound() {
+        let renderer = ImageRenderer(content: RoundDetailShareCardView(round: round))
+        renderer.scale = 3.0
+        presentShareSheet(image: renderer.uiImage)
+    }
+
+    private func shareMinimalSummary() {
         let renderer = ImageRenderer(content: RoundShareCardView(round: round))
         renderer.scale = 3.0
-        shareImage = renderer.uiImage
+        presentShareSheet(image: renderer.uiImage)
     }
 
     // UIActivityViewController can't be embedded in a SwiftUI .sheet — it must be
     // presented directly on the UIKit view controller hierarchy.
-    private func presentShareSheet() {
-        guard let image = shareImage else { return }
+    private func presentShareSheet(image: UIImage?) {
+        guard let image else { return }
         let vc = UIActivityViewController(activityItems: [image], applicationActivities: nil)
         guard
             let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
@@ -167,7 +178,376 @@ struct RoundDetailView: View {
     }
 }
 
+// MARK: - Edit Round
+
+private struct RoundEditView: View {
+    @Bindable var round: GolfRound
+    @Environment(\.dismiss) private var dismiss
+    @Environment(\.modelContext) private var context
+    @State private var selectedHole: HoleScore?
+    @State private var holePendingDelete: HoleScore?
+
+    private var holes: [HoleScore] { round.sortedHoleScores }
+
+    var body: some View {
+        NavigationStack {
+            ScrollView {
+                VStack(spacing: 16) {
+                    roundDetailsCard
+                    holesCard
+                }
+                .padding()
+            }
+            .appBackground()
+            .navigationTitle("Edit Round")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    ToolbarPillButton(title: "Done") {
+                        saveAndDismiss()
+                    }
+                }
+            }
+            .sheet(item: $selectedHole) { hole in
+                NavigationStack {
+                    HoleEntryView(holeScore: hole)
+                        .navigationTitle("Hole \(hole.holeNumber)")
+                        .navigationBarTitleDisplayMode(.inline)
+                        .toolbar {
+                            ToolbarItem(placement: .confirmationAction) {
+                                ToolbarPillButton(title: "Done") {
+                                    hapticTap()
+                                    try? context.save()
+                                    selectedHole = nil
+                                }
+                            }
+                        }
+                }
+                .preferredColorScheme(.dark)
+            }
+            .alert("Delete This Hole?", isPresented: Binding(
+                get: { holePendingDelete != nil },
+                set: { if !$0 { holePendingDelete = nil } }
+            )) {
+                Button("Delete Hole", role: .destructive) {
+                    if let holePendingDelete {
+                        deleteHole(holePendingDelete)
+                    }
+                    holePendingDelete = nil
+                }
+                Button("Cancel", role: .cancel) {
+                    holePendingDelete = nil
+                }
+            } message: {
+                Text("Use this for extra holes that were added by mistake. Existing hole scores on that hole will be removed.")
+            }
+        }
+    }
+
+    private var roundDetailsCard: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            SectionHeader(title: "Round Details", icon: "pencil.circle.fill")
+            DatePicker("Date", selection: $round.date, displayedComponents: .date)
+                .tint(.emerald)
+                .foregroundStyle(.textPrimary)
+            InputField(placeholder: "Tee box", text: optionalStringBinding(\.teeBoxName))
+            InputField(placeholder: "Weather / wind notes", text: optionalStringBinding(\.weatherNotes))
+
+            Text("Walking or Cart").font(.subheadline.weight(.semibold)).foregroundStyle(.textPrimary)
+            HStack(spacing: 10) {
+                ChoiceChip(label: "Walking", isSelected: round.walkOrCart == .walking) { toggle(.walking) }
+                ChoiceChip(label: "Cart", isSelected: round.walkOrCart == .cart) { toggle(.cart) }
+            }
+        }
+        .cardStyle()
+    }
+
+    private var holesCard: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            SectionHeader(title: "Scorecard", subtitle: "Tap a hole to edit it. Delete extra holes that do not exist on the course.", icon: "list.number")
+            ForEach(holes) { hole in
+                VStack(spacing: 8) {
+                    HStack(spacing: 10) {
+                        Button {
+                            selectedHole = hole
+                        } label: {
+                            HStack(spacing: 12) {
+                                VStack(alignment: .leading, spacing: 2) {
+                                    Text("Hole \(hole.holeNumber)")
+                                        .font(.subheadline.weight(.bold))
+                                        .foregroundStyle(.textPrimary)
+                                    Text(hole.strokes > 0 ? "\(hole.strokes) strokes • \(hole.putts) putts • \(scoreToParText(hole.scoreToPar))" : "No score entered")
+                                        .font(.caption)
+                                        .foregroundStyle(.textSecondary)
+                                }
+                                Spacer()
+                                Image(systemName: "chevron.right")
+                                    .font(.caption.weight(.bold))
+                                    .foregroundStyle(.textTertiary)
+                            }
+                        }
+                        .buttonStyle(.plain)
+
+                        Button {
+                            hapticTap(.medium)
+                            holePendingDelete = hole
+                        } label: {
+                            Image(systemName: "trash")
+                                .font(.caption.weight(.bold))
+                                .foregroundStyle(.alertCoral)
+                                .frame(width: 34, height: 34)
+                                .background(Color.alertCoral.opacity(0.1), in: Circle())
+                        }
+                        .buttonStyle(.plain)
+                        .accessibilityLabel("Delete hole \(hole.holeNumber)")
+                        .disabled(holes.count <= 1)
+                        .opacity(holes.count <= 1 ? 0.35 : 1)
+                    }
+
+                    Stepper("Par \(hole.par)", value: Binding(
+                        get: { hole.par },
+                        set: { hole.par = $0 }
+                    ), in: 2...6)
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(.textSecondary)
+                }
+                .padding(.vertical, 8)
+
+                if hole.id != holes.last?.id {
+                    Divider().background(Color.white.opacity(0.06))
+                }
+            }
+        }
+        .cardStyle()
+    }
+
+    private func deleteHole(_ hole: HoleScore) {
+        let remaining = holes.filter { $0.id != hole.id }
+        round.holeScores = remaining
+        round.holesPlayed = remaining.count
+        if round.activeHoleNumber == hole.holeNumber {
+            round.activeHoleNumber = remaining.first?.holeNumber
+        }
+        context.delete(hole)
+        try? context.save()
+    }
+
+    private func optionalStringBinding(_ keyPath: ReferenceWritableKeyPath<GolfRound, String?>) -> Binding<String> {
+        Binding(
+            get: { round[keyPath: keyPath] ?? "" },
+            set: { round[keyPath: keyPath] = $0.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? nil : $0 }
+        )
+    }
+
+    private func toggle(_ value: WalkOrCart) {
+        round.walkOrCart = (round.walkOrCart == value) ? nil : value
+    }
+
+    private func saveAndDismiss() {
+        hapticTap()
+        round.holesPlayed = holes.count
+        try? context.save()
+        if let profile = round.profile {
+            ClubStatsService.recompute(for: profile, in: context)
+        }
+        dismiss()
+    }
+}
+
 // MARK: - Share card
+
+private struct RoundDetailShareCardView: View {
+    let round: GolfRound
+
+    private var stats: RoundStats { RoundStats(round: round) }
+    private var holes: [HoleScore] { round.sortedHoleScores }
+    private let bg = Color(red: 0.07, green: 0.09, blue: 0.11)
+    private let surface = Color(red: 0.13, green: 0.16, blue: 0.19)
+    private let emerald = Color(red: 0.24, green: 0.82, blue: 0.59)
+    private let amber = Color(red: 0.93, green: 0.58, blue: 0.27)
+    private let coral = Color(red: 0.95, green: 0.38, blue: 0.38)
+
+    private var cardHeight: CGFloat {
+        var height = 260 + CGFloat(max(holes.count, 1)) * 44
+        if round.reflection != nil { height += 126 }
+        if round.advice != nil { height += 108 }
+        if round.practicePlan != nil { height += 84 }
+        return max(height, 640)
+    }
+
+    var body: some View {
+        ZStack {
+            bg
+            VStack(alignment: .leading, spacing: 18) {
+                header
+                summaryGrid
+                scorecard
+                if let reflection = round.reflection {
+                    detailSection(
+                        title: "Reflection",
+                        icon: "text.bubble.fill",
+                        lines: reflectionLines(reflection)
+                    )
+                }
+                if let advice = round.advice {
+                    detailSection(
+                        title: "Advice",
+                        icon: "lightbulb.fill",
+                        lines: [advice.bestPart, advice.mainIssue, advice.nextRoundGoal].filter { !$0.isEmpty }
+                    )
+                }
+                if let plan = round.practicePlan {
+                    detailSection(
+                        title: "Practice Plan",
+                        icon: "figure.golf",
+                        lines: [plan.mainFocus, plan.secondaryFocus, plan.nextRoundGoal].filter { !$0.isEmpty }
+                    )
+                }
+                Spacer(minLength: 0)
+                footer
+            }
+            .padding(26)
+        }
+        .frame(width: 430, height: cardHeight)
+        .clipShape(RoundedRectangle(cornerRadius: 0))
+    }
+
+    private var header: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack {
+                Label("GOLFTRACK", systemImage: "figure.golf")
+                    .font(.caption.weight(.heavy))
+                    .tracking(2.0)
+                    .foregroundStyle(emerald)
+                Spacer()
+                Text(round.date.formatted(date: .abbreviated, time: .omitted))
+                    .font(.caption2)
+                    .foregroundStyle(.white.opacity(0.45))
+            }
+            Text(stats.courseName)
+                .font(.system(size: 24, weight: .black, design: .rounded))
+                .foregroundStyle(.white)
+                .lineLimit(2)
+                .minimumScaleFactor(0.75)
+            Text("\(stats.holesPlayed)-hole round • Par \(stats.totalPar)")
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(.white.opacity(0.48))
+        }
+    }
+
+    private var summaryGrid: some View {
+        HStack(spacing: 8) {
+            shareMetric("Score", "\(stats.totalStrokes)", scoreToParText(stats.scoreToPar), color: scoreColor(stats.scoreToPar))
+            shareMetric("Putts", "\(stats.totalPutts)", String(format: "%.1f / hole", stats.averagePuttsPerHole), color: emerald)
+            shareMetric("Penalties", "\(stats.totalPenalties)", "\(stats.holesWithPenalties) holes", color: stats.totalPenalties > 0 ? coral : emerald)
+        }
+    }
+
+    private var scorecard: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            shareSectionTitle("Scorecard", icon: "list.number")
+            VStack(spacing: 0) {
+                ForEach(holes) { hole in
+                    HStack(spacing: 10) {
+                        Text("H\(hole.holeNumber)")
+                            .font(.caption.weight(.bold))
+                            .foregroundStyle(.white.opacity(0.5))
+                            .frame(width: 34, alignment: .leading)
+                        Text("P\(hole.par)")
+                            .font(.caption.weight(.semibold))
+                            .foregroundStyle(.white.opacity(0.42))
+                            .frame(width: 28, alignment: .leading)
+                        Text(hole.strokes > 0 ? "\(hole.strokes)" : "-")
+                            .font(.subheadline.weight(.black))
+                            .foregroundStyle(hole.strokes > 0 ? scoreColor(hole.scoreToPar) : .white.opacity(0.32))
+                            .frame(width: 28)
+                        Text(holeDetailText(hole))
+                            .font(.caption)
+                            .foregroundStyle(.white.opacity(0.66))
+                            .lineLimit(1)
+                        Spacer()
+                    }
+                    .padding(.vertical, 7)
+                    if hole.id != holes.last?.id {
+                        Rectangle().fill(.white.opacity(0.06)).frame(height: 1)
+                    }
+                }
+            }
+            .padding(.horizontal, 12)
+            .padding(.vertical, 6)
+            .background(surface, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+        }
+    }
+
+    private var footer: some View {
+        Text("golftrack.app")
+            .font(.caption2.weight(.medium))
+            .tracking(0.8)
+            .foregroundStyle(.white.opacity(0.22))
+            .frame(maxWidth: .infinity, alignment: .center)
+    }
+
+    private func shareMetric(_ title: String, _ value: String, _ subtitle: String, color: Color) -> some View {
+        VStack(alignment: .leading, spacing: 3) {
+            Text(title).font(.caption2.weight(.bold)).foregroundStyle(.white.opacity(0.38))
+            Text(value).font(.system(size: 24, weight: .black, design: .rounded)).foregroundStyle(.white)
+            Text(subtitle).font(.caption2.weight(.semibold)).foregroundStyle(color)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(12)
+        .background(surface, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+    }
+
+    private func detailSection(title: String, icon: String, lines: [String]) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            shareSectionTitle(title, icon: icon)
+            VStack(alignment: .leading, spacing: 5) {
+                ForEach(Array(lines.prefix(3).enumerated()), id: \.offset) { _, line in
+                    Text(line)
+                        .font(.caption)
+                        .foregroundStyle(.white.opacity(0.68))
+                        .lineLimit(2)
+                }
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(12)
+            .background(surface, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+        }
+    }
+
+    private func shareSectionTitle(_ title: String, icon: String) -> some View {
+        HStack(spacing: 6) {
+            Image(systemName: icon).font(.caption.weight(.bold)).foregroundStyle(emerald)
+            Text(title).font(.caption.weight(.heavy)).foregroundStyle(.white.opacity(0.82))
+        }
+    }
+
+    private func holeDetailText(_ hole: HoleScore) -> String {
+        var parts = ["\(hole.putts) putts"]
+        if hole.penalties > 0 { parts.append("+\(hole.penalties) pen") }
+        if let club = hole.teeClub { parts.append(club.displayName) }
+        if hole.missDirection != .na, hole.missDirection != .good { parts.append("Miss \(hole.missDirection.displayName)") }
+        if !hole.notes.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty { parts.append(hole.notes) }
+        return parts.joined(separator: " • ")
+    }
+
+    private func reflectionLines(_ reflection: RoundReflection) -> [String] {
+        var lines: [String] = []
+        if let miss = reflection.biggestMiss { lines.append("Biggest miss: \(miss.displayName)") }
+        if !reflection.feltBestText.isEmpty { lines.append("Best: \(reflection.feltBestText)") }
+        if !reflection.frustratedText.isEmpty { lines.append("Frustrated by: \(reflection.frustratedText)") }
+        if !reflection.improveNextText.isEmpty { lines.append("Next: \(reflection.improveNextText)") }
+        return lines.isEmpty ? ["No reflection notes logged."] : lines
+    }
+
+    private func scoreColor(_ scoreToPar: Int) -> Color {
+        switch scoreToPar {
+        case ..<0: return emerald
+        case 0...4: return scoreToPar == 0 ? .white : amber
+        default: return coral
+        }
+    }
+}
 
 struct RoundShareCardView: View {
     let round: GolfRound

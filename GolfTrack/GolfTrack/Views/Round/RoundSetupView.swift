@@ -1,8 +1,8 @@
 import SwiftUI
 import SwiftData
 
-private enum NineHoleSelection {
-    case front9, back9
+private enum HoleSelectionMode {
+    case fullCourse, front9, back9, custom
 }
 
 struct RoundSetupView: View {
@@ -12,8 +12,9 @@ struct RoundSetupView: View {
     @Environment(\.dismiss) private var dismiss
 
     @State private var date = Date()
-    @State private var playFullEighteen: Bool
-    @State private var nineHoleSelection: NineHoleSelection = .front9
+    @State private var holeSelectionMode: HoleSelectionMode
+    @State private var customStartIndex = 0
+    @State private var customHoleCount: Int
     @State private var teeBoxName = ""
     @State private var targetScoreText = ""
     @State private var weatherNotes = ""
@@ -23,14 +24,32 @@ struct RoundSetupView: View {
     init(course: GolfCourse, profile: UserProfile) {
         self.course = course
         self.profile = profile
-        _playFullEighteen = State(initialValue: course.numberOfHoles == 18)
+        _holeSelectionMode = State(initialValue: .fullCourse)
+        _customHoleCount = State(initialValue: min(max(course.numberOfHoles, 1), 9))
         _teeBoxName = State(initialValue: course.teeBoxName ?? "")
     }
 
+    private var availableHoleNumbers: [Int] {
+        let saved = course.sortedHoles.map(\.holeNumber)
+        if !saved.isEmpty { return saved }
+        return Array(1...max(course.numberOfHoles, 1))
+    }
+
     private var holeNumbers: [Int] {
-        if course.numberOfHoles == 9 { return Array(1...9) }
-        if playFullEighteen { return Array(1...18) }
-        return nineHoleSelection == .front9 ? Array(1...9) : Array(10...18)
+        switch holeSelectionMode {
+        case .fullCourse:
+            return availableHoleNumbers
+        case .front9:
+            return Array(availableHoleNumbers.prefix(9))
+        case .back9:
+            return Array(availableHoleNumbers.dropFirst(9).prefix(9))
+        case .custom:
+            guard !availableHoleNumbers.isEmpty else { return [] }
+            let safeCount = min(max(customHoleCount, 1), availableHoleNumbers.count)
+            let maxStart = max(availableHoleNumbers.count - safeCount, 0)
+            let safeStart = min(max(customStartIndex, 0), maxStart)
+            return Array(availableHoleNumbers.dropFirst(safeStart).prefix(safeCount))
+        }
     }
 
     private var totalParForSelection: Int {
@@ -65,21 +84,43 @@ struct RoundSetupView: View {
 
                 VStack(alignment: .leading, spacing: 12) {
                     SectionHeader(title: "Holes to Play", icon: "number.circle.fill")
-                    if course.numberOfHoles == 9 {
-                        Text("This course has 9 holes.").font(.subheadline).foregroundStyle(.textSecondary)
-                    } else {
+                    VStack(alignment: .leading, spacing: 10) {
+                        Text("\(course.name) has \(availableHoleNumbers.count) saved hole\(availableHoleNumbers.count == 1 ? "" : "s").")
+                            .font(.subheadline)
+                            .foregroundStyle(.textSecondary)
+
                         HStack(spacing: 10) {
-                            ChoiceChip(label: "18 Holes", isSelected: playFullEighteen) { playFullEighteen = true }
-                            ChoiceChip(label: "9 Holes", isSelected: !playFullEighteen) { playFullEighteen = false }
-                        }
-                        if !playFullEighteen {
-                            HStack(spacing: 10) {
-                                ChoiceChip(label: "Front 9", isSelected: nineHoleSelection == .front9) { nineHoleSelection = .front9 }
-                                ChoiceChip(label: "Back 9", isSelected: nineHoleSelection == .back9) { nineHoleSelection = .back9 }
+                            ChoiceChip(label: "\(availableHoleNumbers.count) Holes", isSelected: holeSelectionMode == .fullCourse) {
+                                holeSelectionMode = .fullCourse
+                            }
+                            if availableHoleNumbers.count >= 9 {
+                                ChoiceChip(label: "Front 9", isSelected: holeSelectionMode == .front9) {
+                                    holeSelectionMode = .front9
+                                }
+                            }
+                            if availableHoleNumbers.count >= 18 {
+                                ChoiceChip(label: "Back 9", isSelected: holeSelectionMode == .back9) {
+                                    holeSelectionMode = .back9
+                                }
+                            }
+                            ChoiceChip(label: "Custom", isSelected: holeSelectionMode == .custom) {
+                                holeSelectionMode = .custom
+                                clampCustomSelection()
                             }
                         }
+
+                        if holeSelectionMode == .custom {
+                            VStack(alignment: .leading, spacing: 10) {
+                                Stepper("Holes: \(customHoleCount)", value: $customHoleCount, in: 1...availableHoleNumbers.count)
+                                    .onChange(of: customHoleCount) { _, _ in clampCustomSelection() }
+                                Stepper("Start at hole \(availableHoleNumbers[min(customStartIndex, availableHoleNumbers.count - 1)])", value: $customStartIndex, in: 0...max(availableHoleNumbers.count - customHoleCount, 0))
+                                    .onChange(of: customStartIndex) { _, _ in clampCustomSelection() }
+                            }
+                            .font(.subheadline.weight(.semibold))
+                            .foregroundStyle(.textPrimary)
+                        }
                     }
-                    Text("Par for these holes: \(totalParForSelection)")
+                    Text("Playing holes \(holeNumbers.map(String.init).joined(separator: ", ")) • Par \(totalParForSelection)")
                         .font(.caption).foregroundStyle(.textSecondary)
                 }
                 .cardStyle()
@@ -108,6 +149,12 @@ struct RoundSetupView: View {
 
     private func toggle(_ value: WalkOrCart) {
         walkOrCart = (walkOrCart == value) ? nil : value
+    }
+
+    private func clampCustomSelection() {
+        let maxCount = max(availableHoleNumbers.count, 1)
+        customHoleCount = min(max(customHoleCount, 1), maxCount)
+        customStartIndex = min(max(customStartIndex, 0), max(maxCount - customHoleCount, 0))
     }
 
     private func startRound() {

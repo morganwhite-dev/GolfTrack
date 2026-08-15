@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
    LastUpgradeVersion = "1430"
-   wasCreatedForAppExtension = "YES"
-   version = "1.7">
+   version = "2.0">
    <BuildAction
       parallelizeBuildables = "YES"
-      buildImplicitDependencies = "YES"
-      runPostActionsOnFailure = "NO">
+      buildImplicitDependencies = "YES">
       <BuildActionEntries>
          <BuildActionEntry
             buildForTesting = "YES"
@@ -16,9 +14,23 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "B4CBD8B15AD56321797C576E"
-               BuildableName = "GolfTrackWidget.appex"
-               BlueprintName = "GolfTrackWidget"
+               BlueprintIdentifier = "611F6D75F3A9514BDE8A5B87"
+               BuildableName = "GolfTrack.app"
+               BlueprintName = "GolfTrack"
+               ReferencedContainer = "container:GolfTrack.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "NO"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "C73A78742B7F7E4AC7A43C49"
+               BuildableName = "GolfTrackTests.xctest"
+               BlueprintName = "GolfTrackTests"
                ReferencedContainer = "container:GolfTrack.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -28,38 +40,50 @@
       buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
-      shouldUseLaunchSchemeArgsEnv = "YES"
-      onlyGenerateCoverageForSpecifiedTargets = "NO">
+      shouldUseLaunchSchemeArgsEnv = "YES">
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "B4CBD8B15AD56321797C576E"
-            BuildableName = "GolfTrackWidget.appex"
-            BlueprintName = "GolfTrackWidget"
+            BlueprintIdentifier = "611F6D75F3A9514BDE8A5B87"
+            BuildableName = "GolfTrack.app"
+            BlueprintName = "GolfTrack"
             ReferencedContainer = "container:GolfTrack.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <Testables>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "C73A78742B7F7E4AC7A43C49"
+               BuildableName = "GolfTrackTests.xctest"
+               BlueprintName = "GolfTrackTests"
+               ReferencedContainer = "container:GolfTrack.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction
-      buildConfiguration = "Debug"
+      buildConfiguration = "Release"
       selectedDebuggerIdentifier = ""
       selectedLauncherIdentifier = "Xcode.IDEFoundation.Launcher.PosixSpawn"
+      disableMainThreadChecker = "YES"
       launchStyle = "0"
       useCustomWorkingDirectory = "NO"
       ignoresPersistentStateOnLaunch = "NO"
       debugDocumentVersioning = "YES"
-      debugServiceExtension = "internal"
+      debugXPCServices = "NO"
+      enableViewDebugging = "No"
       allowLocationSimulation = "YES"
-      launchAutomaticallySubstyle = "2">
+      disablePerformanceAntipatternChecker = "YES">
       <BuildableProductRunnable
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "B4CBD8B15AD56321797C576E"
-            BuildableName = "GolfTrackWidget.appex"
-            BlueprintName = "GolfTrackWidget"
+            BlueprintIdentifier = "611F6D75F3A9514BDE8A5B87"
+            BuildableName = "GolfTrack.app"
+            BlueprintName = "GolfTrack"
             ReferencedContainer = "container:GolfTrack.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -74,9 +98,9 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "B4CBD8B15AD56321797C576E"
-            BuildableName = "GolfTrackWidget.appex"
-            BlueprintName = "GolfTrackWidget"
+            BlueprintIdentifier = "611F6D75F3A9514BDE8A5B87"
+            BuildableName = "GolfTrack.app"
+            BlueprintName = "GolfTrack"
             ReferencedContainer = "container:GolfTrack.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
