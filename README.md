@@ -21,7 +21,6 @@ Screenshots use built-in sample rounds, not real scores.
 - Review completed rounds with scoring summaries and hole history
 - Generate round advice and a focused practice plan
 - Track club tendencies from saved shot data
-- Optional widget/live activity target for faster round logging
 
 ## Open The Project
 
@@ -31,11 +30,7 @@ Open this file in Xcode:
 GolfTrack/GolfTrack.xcodeproj
 ```
 
-Use the `GolfTrack` scheme to run the app. The widget is intentionally separate so normal iPhone installs can avoid widget signing/container issues during development.
-
-## Optional Widget
-
-The `GolfTrackWidget` target still exists, but it is not embedded by the default `GolfTrack` scheme. Build or run the widget separately only when working on live activity/widget behavior.
+Use the `GolfTrack` scheme to run the app.
 
 ## Free Developer Account Note
 
@@ -46,10 +41,8 @@ Apps installed from Xcode with a free Apple Developer account may expire after a
 ```text
 GolfTrack/GolfTrack/App        App entry and tab navigation
 GolfTrack/GolfTrack/Models     SwiftData models
-GolfTrack/GolfTrack/Services   Storage, analysis, stats, live activity services
+GolfTrack/GolfTrack/Services   Storage, analysis, and stats services
 GolfTrack/GolfTrack/Views      SwiftUI screens and reusable UI
-GolfTrack/GolfTrackWidget      Widget/live activity extension
-GolfTrack/Shared               Shared live activity code
 ```
 
 ## Development
