@@ -664,6 +664,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
+				GENERATE_INFOPLIST_FILE = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.golftrack.app.tests;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -782,6 +783,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
+				GENERATE_INFOPLIST_FILE = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.golftrack.app.tests;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
