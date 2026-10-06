@@ -2,6 +2,17 @@
 
 GolfTrack is a SwiftUI iPhone app for tracking golf rounds, hole-by-hole scoring, club trends, post-round reflection, and practice recommendations.
 
+## Screenshots
+
+Screenshots use built-in sample rounds, not real scores.
+
+<p>
+  <img src="screenshots/home.png" width="22%" alt="Home screen with next practice step">
+  <img src="screenshots/start-round.png" width="22%" alt="Start Round screen">
+  <img src="screenshots/history.png" width="22%" alt="Round history">
+  <img src="screenshots/stats.png" width="22%" alt="Stats overview">
+</p>
+
 ## What It Does
 
 - Track 3-hole, 5-hole, 9-hole, 18-hole, or custom-length rounds

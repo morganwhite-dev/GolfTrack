@@ -21,4 +21,3 @@ struct GolfTrackApp: App {
         .modelContainer(container)
     }
 }
-ampskadperf 
